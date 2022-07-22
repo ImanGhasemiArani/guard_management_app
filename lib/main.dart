@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'init_app_start.dart';
 import 'lang/strs.dart';
+import 'screens/screen_holder.dart';
 import 'services/localization_service.dart';
 import 'services/service_locator.dart';
 import 'utils/log.dart';
@@ -15,7 +16,7 @@ Future<void> main() async {
 //     statusBarColor: Colors.transparent,
 //     statusBarIconBrightness: Brightness.dark,
 //   ));
-//   await initAppStart();
+  await initAppStart();
   runApp(const MainMaterial());
 }
 
@@ -37,6 +38,7 @@ class MainMaterial extends StatelessWidget {
         // themeMode: themeController.mode,
         themeMode: ThemeMode.light,
         theme: ThemeData(
+          useMaterial3: true,
           fontFamily: LocalizationService.fontFamily,
           //   fontFamily: 'Peyda',
           bottomSheetTheme: const BottomSheetThemeData(
@@ -58,6 +60,7 @@ class MainMaterial extends StatelessWidget {
           ),
         ),
         darkTheme: ThemeData(
+          useMaterial3: true,
           fontFamily: LocalizationService.fontFamily,
           //   fontFamily: 'Peyda',
           bottomSheetTheme: const BottomSheetThemeData(
@@ -89,7 +92,7 @@ class MainMaterial extends StatelessWidget {
 class ScreenApp extends StatelessWidget {
   ScreenApp({Key? key}) : super(key: key) {
     initAppInternetCheck();
-    // _widget = const ScreenHolder();
+    _widget = const ScreenHolder();
     // FlutterNativeSplash.remove();
   }
   late final Widget _widget;
