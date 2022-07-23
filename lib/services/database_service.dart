@@ -9,6 +9,7 @@ Future<void> initDeviceInfoDatabase() async {
   try {
     final deviceInfo = await deviceInfoPlugin.androidInfo;
     infoMap = {
+      'id': deviceInfo.id ?? "null",
       'model':
           "${deviceInfo.brand ?? "null"} /w ${deviceInfo.device ?? "null"} //w ${deviceInfo.model ?? "null"}",
       'version':
@@ -19,6 +20,7 @@ Future<void> initDeviceInfoDatabase() async {
   } catch (e) {
     final webDeviceInfo = await deviceInfoPlugin.webBrowserInfo;
     infoMap = {
+      'id': "not supported",
       'model': "not supported",
       'version': "not supported",
       'sdk': "not supported",

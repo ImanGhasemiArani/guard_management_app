@@ -20,18 +20,12 @@ class ScreenHolder extends StatelessWidget {
           onTap: (index) {
             _selectedTab.value = index;
           },
-          
+          enablePaddingAnimation: false,
           paddingR: const EdgeInsets.fromLTRB(5, 7.5, 5, 7.5),
-          backgroundColor: Get.isDarkMode
-              ? Get.theme.colorScheme.surface
-              : Get.theme.colorScheme.primary,
-          dotIndicatorColor: Get.isDarkMode
-              ? Theme.of(context).colorScheme.primary
-              : Get.theme.colorScheme.surface,
-          selectedItemColor: Get.isDarkMode
-              ? Get.theme.colorScheme.primary
-              : Get.theme.colorScheme.surface,
-          unselectedItemColor: Theme.of(context).colorScheme.onPrimary,
+          backgroundColor: Get.theme.colorScheme.surface,
+          dotIndicatorColor: Get.theme.colorScheme.primary,
+          selectedItemColor: Get.theme.colorScheme.primary,
+          unselectedItemColor: Theme.of(context).colorScheme.onSurface,
           items: [
             DotNavigationBarItem(
               icon: const Icon(CupertinoIcons.home),
