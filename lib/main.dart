@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:guard_management_app/screens/screen_log_in.dart';
 
 import 'init_app_start.dart';
 import 'lang/strs.dart';
@@ -39,12 +40,17 @@ class MainMaterial extends StatelessWidget {
         themeMode: ThemeMode.dark,
         theme: ThemeData(
           useMaterial3: true,
-          fontFamily: LocalizationService.fontFamily,
           //   fontFamily: 'Peyda',
+          fontFamily: LocalizationService.fontFamily,
+          textTheme: const TextTheme().copyWith(
+            button: const TextStyle().copyWith(
+              fontFamily: LocalizationService.fontFamily,
+            ),
+          ),
           brightness: Brightness.light,
           colorScheme: const ColorScheme.light().copyWith(
-            onBackground: const Color(0xff26282b),
             background: const Color(0xffefedff),
+            onBackground: const Color(0xff26282b),
             surface: const Color(0xff353941),
             onSurface: const Color(0xffefedff),
             primary: const Color(0xff5f85db),
@@ -53,8 +59,13 @@ class MainMaterial extends StatelessWidget {
         ),
         darkTheme: ThemeData(
           useMaterial3: true,
-          fontFamily: LocalizationService.fontFamily,
           //   fontFamily: 'Peyda',
+          fontFamily: LocalizationService.fontFamily,
+          textTheme: const TextTheme().copyWith(
+            button: const TextStyle().copyWith(
+              fontFamily: LocalizationService.fontFamily,
+            ),
+          ),
           brightness: Brightness.dark,
           colorScheme: const ColorScheme.dark().copyWith(
             background: const Color(0xff001021),
@@ -65,7 +76,7 @@ class MainMaterial extends StatelessWidget {
             onPrimary: const Color(0xff0a174e),
           ),
         ),
-        title: Strs.appName,
+        title: Strs.appNameStr,
         home: ScreenApp(),
       );
     });
@@ -75,7 +86,8 @@ class MainMaterial extends StatelessWidget {
 class ScreenApp extends StatelessWidget {
   ScreenApp({Key? key}) : super(key: key) {
     initAppInternetCheck();
-    _widget = const ScreenHolder();
+    // _widget = const ScreenHolder();
+    _widget = const ScreenLogIn();
     // FlutterNativeSplash.remove();
   }
   late final Widget _widget;

@@ -26,11 +26,11 @@ Future<void> _initInternetWork() async {
   var isConnected = await _checkInternetConnection();
   if (!isConnected) {
     Get.defaultDialog(
-      title: Strs.noInternetConnection.tr,
-      textCancel: Strs.okStr.tr,
+      title: Strs.noInternetConnectionStr.tr,
+      textCancel: Strs.okStrStr.tr,
       onCancel: SystemNavigator.pop,
       content: Text(
-        Strs.noInternetConnection.tr,
+        Strs.noInternetConnectionStr.tr,
         style: const TextStyle(fontSize: 20),
       ),
     );
