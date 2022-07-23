@@ -12,10 +12,10 @@ import 'utils/log.dart';
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-//   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-//     statusBarColor: Colors.transparent,
-//     statusBarIconBrightness: Brightness.dark,
-//   ));
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+  ));
   await initAppStart();
   runApp(const MainMaterial());
 }
@@ -36,50 +36,37 @@ class MainMaterial extends StatelessWidget {
         translations: localizationService,
         textDirection: TextDirection.ltr,
         // themeMode: themeController.mode,
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.dark,
         theme: ThemeData(
           useMaterial3: true,
           fontFamily: LocalizationService.fontFamily,
           //   fontFamily: 'Peyda',
-          bottomSheetTheme: const BottomSheetThemeData(
-            backgroundColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(40),
-              ),
-            ),
-          ),
           brightness: Brightness.light,
-          iconTheme: const IconThemeData(color: Colors.black),
-          textTheme: const TextTheme(bodyText2: TextStyle(color: Colors.black)),
           colorScheme: const ColorScheme.light().copyWith(
-            secondary: Colors.amber,
-            onSecondary: Colors.black,
-            tertiary: Colors.teal,
-            onTertiary: Colors.black,
+            onBackground: const Color(0xff26282b),
+            background: const Color(0xffefedff),
+            surface: const Color(0xff353941),
+            onSurface: const Color(0xffefedff),
+            primary: const Color(0xff5f85db),
+            onPrimary: const Color(0xffefedff),
+            secondary: const Color(0xff90b8f8),
+            onSecondary: const Color(0xff26282b),
           ),
         ),
         darkTheme: ThemeData(
           useMaterial3: true,
           fontFamily: LocalizationService.fontFamily,
           //   fontFamily: 'Peyda',
-          bottomSheetTheme: const BottomSheetThemeData(
-            backgroundColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(50),
-              ),
-            ),
-          ),
           brightness: Brightness.dark,
-          iconTheme: const IconThemeData(color: Color(0xFFBDBDBD)),
-          textTheme:
-              const TextTheme(bodyText2: TextStyle(color: Color(0xFFBDBDBD))),
           colorScheme: const ColorScheme.dark().copyWith(
-            secondary: Colors.amber,
-            onSecondary: Colors.black,
-            tertiary: Colors.teal,
-            onTertiary: Colors.black,
+            background: const Color(0xff26282b),
+            onBackground: const Color(0xffefedff),
+            surface: const Color(0xff353941),
+            onSurface: const Color(0xffefedff),
+            primary: const Color(0xff5f85db),
+            onPrimary: const Color(0xffefedff),
+            secondary: const Color(0xff90b8f8),
+            onSecondary: const Color(0xff26282b),
           ),
         ),
         title: Strs.appName,

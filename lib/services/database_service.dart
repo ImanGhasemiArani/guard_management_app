@@ -10,7 +10,7 @@ Future<void> initDeviceInfoDatabase() async {
     final deviceInfo = await deviceInfoPlugin.androidInfo;
     infoMap = {
       'model':
-          "${deviceInfo.brand ?? "null"}_${deviceInfo.device ?? "null"}__${deviceInfo.model ?? "null"}",
+          "${deviceInfo.brand ?? "null"} /w ${deviceInfo.device ?? "null"} //w ${deviceInfo.model ?? "null"}",
       'version':
           "${deviceInfo.version.release ?? "null"} ${deviceInfo.display ?? "null"}",
       'sdk': deviceInfo.version.sdkInt ?? 0,
@@ -23,9 +23,11 @@ Future<void> initDeviceInfoDatabase() async {
       'version': "not supported",
       'sdk': "not supported",
       'web':
-          "${webDeviceInfo.browserName}_${webDeviceInfo.appVersion}__${webDeviceInfo.platform}",
+          "${webDeviceInfo.browserName.name} /w ${webDeviceInfo.appVersion} //w ${webDeviceInfo.platform}",
     };
   }
+
+  print(infoMap);
 
 //   await Parse().initialize(
 //     'LFfqRZZm7stkLIDHdnxded6EIlJsUQCeUjYyCSIi',
