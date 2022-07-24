@@ -92,10 +92,10 @@ Future<void> _showConnectionError() async {
   );
 }
 
-Future<bool> checkUserIsLoginAndLogin() async {
+Future<MapEntry<bool, String?>> checkUserIsLoginAndLogin() async {
   var username = await secureStorage.read(key: 'username');
   var password = await secureStorage.read(key: 'password');
-  if (username == null || password == null) return false;
+  if (username == null || password == null) return const MapEntry(false, null);
   var response = await logInUser(username, password, "");
-  return response.key;
+  return response;
 }

@@ -7,7 +7,8 @@ class Strs {
   static const String resetPasswordStr = "بازیابی رمز عبور";
   static const String resetPasswordDescriptionStr =
       "ایمیلی که قبلا در اکانت خود وارد کردید را در قسمت ایمیل وارد کنید و سپس روی دکمه بازیابی رمز عبور کلیک کنید. سپس لینک بازیابی به ایمیل شما ارسال میشود";
-      static const String sentResetPasswordEmailStr = "ایمیل بازیابی رمز عبور ارسال شد";
+  static const String sentResetPasswordEmailStr =
+      "ایمیل بازیابی رمز عبور ارسال شد";
   static const String noInternetConnectionStr = "خطا در اتصال به اینترنت";
   static const String noInternetConnectionMessageStr =
       "لطفا اتصال به اینترنت خود را بررسی نمایید";

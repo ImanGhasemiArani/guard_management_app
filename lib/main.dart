@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'init_app_start.dart';
 import 'lang/strs.dart';
@@ -12,8 +12,7 @@ import 'services/service_locator.dart';
 import 'utils/log.dart';
 
 Future<void> main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -79,25 +78,41 @@ class MainMaterial extends StatelessWidget {
           ),
         ),
         title: Strs.appNameStr,
-        home: ScreenApp(),
+        home: FutureBuilder(
+          future: setups(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if ((snapshot.data as MapEntry<bool, String?>).key) {
+                return const ScreenHolder();
+              } else {
+                return const ScreenLogIn();
+              }
+            } else {
+              return const ScreenSplash();
+            }
+          },
+        ),
       );
     });
   }
 }
 
-class ScreenApp extends StatelessWidget {
-  ScreenApp({Key? key}) : super(key: key) {
-    // _widget = const ScreenHolder();
-    setupServiceLocator();
-    checkUserIsLoginAndLogin();
-    _widget = const ScreenLogIn();
-    FlutterNativeSplash.remove();
-  }
-  late final Widget _widget;
+class ScreenSplash extends StatelessWidget {
+  const ScreenSplash({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return _widget;
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Get.theme.colorScheme.background,
+      child: Center(
+        child: LoadingAnimationWidget.dotsTriangle(
+          color: const Color(0xfff5d042),
+          size: 40,
+        ),
+      ),
+    );
   }
 }
 
@@ -112,4 +127,9 @@ class ThemeController {
     _mode = themeMode;
     sharedPreferences.setString("themeMode", _mode.name);
   }
+}
+
+Future<MapEntry<bool, String?>> setups() async {
+  await setupServiceLocator();
+  return await checkUserIsLoginAndLogin();
 }

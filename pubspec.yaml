@@ -41,6 +41,7 @@ dependencies:
   parse_server_sdk: ^3.1.2
   flutter_secure_storage: ^5.0.2
   flutter_native_splash: ^2.2.6
+  loading_animation_widget: ^1.2.0+2
 
 dev_dependencies:
   flutter_test:
@@ -65,7 +66,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+      - assets/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
@@ -153,7 +155,7 @@ flutter_native_splash:
   # set.
   color_dark: "#001021"
   #background_image_dark: "assets/dark-background.png"
-  #image_dark: assets/splash-invert.png
+  image_dark: assets/splash-invert.png
   #branding_dark: assets/dart_dark.png
 
   # Android 12 handles the splash screen differently than previous versions.  Please visit

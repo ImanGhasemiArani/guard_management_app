@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,10 +6,11 @@ import 'package:get/get.dart';
 import '../lang/strs.dart';
 import '../services/database_service.dart';
 import '../utils/show_toast.dart';
+import 'screen_holder.dart';
 
-late final TextEditingController _usernameController = TextEditingController();
-late final TextEditingController _passwordController = TextEditingController();
-late final TextEditingController _emailController = TextEditingController();
+final TextEditingController _usernameController = TextEditingController();
+final TextEditingController _passwordController = TextEditingController();
+final TextEditingController _emailController = TextEditingController();
 RxString _loginErrorMessage = "".obs;
 
 class ScreenLogIn extends StatelessWidget {
@@ -273,10 +272,13 @@ class ScreenLogIn extends StatelessWidget {
       return;
     }
 
-    showSnackbar(Strs.loginSuccessfullyMessageStr.tr);
-    // _usernameController.dispose();
-    // _passwordController.dispose();
-    // _emailController.dispose();
+    showSnackbar(Strs.loginSuccessfullyMessageStr.tr,
+        duration: const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
+    Get.off(const ScreenHolder(), transition: Transition.cupertino);
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _emailController.dispose();
   }
 
   Widget _getErrorMessageBox() {
