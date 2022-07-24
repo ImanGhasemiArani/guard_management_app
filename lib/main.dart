@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 
 import 'init_app_start.dart';
@@ -12,6 +13,7 @@ import 'utils/log.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -86,11 +88,10 @@ class MainMaterial extends StatelessWidget {
 class ScreenApp extends StatelessWidget {
   ScreenApp({Key? key}) : super(key: key) {
     // _widget = const ScreenHolder();
-    Logger("setup services successfully",
-            asyncAction: setupServiceLocator, isShowTime: true)
-        .start();
+    setupServiceLocator();
+    checkUserIsLoginAndLogin();
     _widget = const ScreenLogIn();
-    // FlutterNativeSplash.remove();
+    FlutterNativeSplash.remove();
   }
   late final Widget _widget;
 

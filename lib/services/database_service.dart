@@ -29,6 +29,8 @@ Future<MapEntry<bool, String?>> logInUser(
       user.set("email", email);
       await user.save();
     }
+    await secureStorage.write(key: 'username', value: username);
+    await secureStorage.write(key: 'password', value: password);
     return const MapEntry(true, null);
   } else {
     return MapEntry(false, "${response.statusCode}-${response.error!.message}");

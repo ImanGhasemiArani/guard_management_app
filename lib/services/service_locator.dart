@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,6 +10,7 @@ import '../lang/strs.dart';
 import 'database_service.dart';
 
 late SharedPreferences sharedPreferences;
+late FlutterSecureStorage secureStorage;
 bool isShowDialog = false;
 
 Future<void> setupServiceLocator() async {
@@ -88,4 +90,12 @@ Future<void> _showConnectionError() async {
       );
     },
   );
+}
+
+Future<bool> checkUserIsLoginAndLogin() async {
+  var username = await secureStorage.read(key: 'username');
+  var password = await secureStorage.read(key: 'password');
+  if (username == null || password == null) return false;
+  var response = await logInUser(username, password, "");
+  return response.key;
 }
