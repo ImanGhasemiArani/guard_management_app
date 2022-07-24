@@ -1,45 +1,41 @@
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:get/get.dart';
+import 'package:parse_server_sdk/parse_server_sdk.dart';
 
+import '../lang/strs.dart';
+import '../utils/device_info.dart';
+import '../utils/show_toast.dart';
 import 'service_locator.dart';
 
-Future<void> initDeviceInfoDatabase() async {
-  final deviceInfoPlugin = DeviceInfoPlugin();
-  late final infoMap;
-  try {
-    final deviceInfo = await deviceInfoPlugin.androidInfo;
-    infoMap = {
-      'id': deviceInfo.id ?? "null",
-      'model':
-          "${deviceInfo.brand ?? "null"} /w ${deviceInfo.device ?? "null"} //w ${deviceInfo.model ?? "null"}",
-      'version':
-          "${deviceInfo.version.release ?? "null"} ${deviceInfo.display ?? "null"}",
-      'sdk': deviceInfo.version.sdkInt ?? 0,
-      'web': "not supported",
-    };
-  } catch (e) {
-    final webDeviceInfo = await deviceInfoPlugin.webBrowserInfo;
-    infoMap = {
-      'id': "not supported",
-      'model': "not supported",
-      'version': "not supported",
-      'sdk': "not supported",
-      'web':
-          "${webDeviceInfo.browserName.name} /w ${webDeviceInfo.appVersion} //w ${webDeviceInfo.platform}",
-    };
+Future<void> sendDeviceInfoToServer() async {
+  if (sharedPreferences.getBool('isSendDeviceInfo') ?? false) return;
+  final infoMap = await getDeviceInfo();
+  var objRef = ParseObject('Devices');
+  infoMap.forEach((key, value) => objRef.set(key, value));
+  final response = await objRef.save();
+  if (response.success) {
+    sharedPreferences.setBool('isSendDeviceInfo', true);
+    showSnackbar(Strs.deviceInfoSuccessfullySentStr.tr);
+  } else {
+    showSnackbar(Strs.deviceInfoFailedToSendStr.tr);
   }
+}
 
-  print(infoMap);
+Future<MapEntry<bool, String?>> logInUser(
+    String username, String password, String email) async {
+  var user = ParseUser(username, password, email);
+  final response = await user.login();
+  if (response.success) {
+    if (email.isNotEmpty) {
+      user.set("email", email);
+      await user.save();
+    }
+    return const MapEntry(true, null);
+  } else {
+    return MapEntry(false, "${response.statusCode}-${response.error!.message}");
+  }
+}
 
-//   await Parse().initialize(
-//     'LFfqRZZm7stkLIDHdnxded6EIlJsUQCeUjYyCSIi',
-//     'https://parseapi.back4app.com',
-//     clientKey: 'lV11wBilBDxOd4rF7NOpnmWXciL8W55VoxTNB2y0',
-//     autoSendSessionId: true,
-//   );
-//   var dataRef = ParseObject('Devices');
-//   infoMap.forEach((key, value) => dataRef.set(key, value));
-//   dataRef
-//       .save()
-//       .then((value) => sharedPreferences.setBool('isSendDeviceInfo', true));
+Future<void> sendResetPasswordEmail(String email) async {
+  await ParseUser(null, null, email).requestPasswordReset();
+  showSnackbar(Strs.sentResetPasswordEmailStr.tr);
 }

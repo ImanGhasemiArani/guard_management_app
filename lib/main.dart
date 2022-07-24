@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:guard_management_app/screens/screen_log_in.dart';
 
 import 'init_app_start.dart';
 import 'lang/strs.dart';
 import 'screens/screen_holder.dart';
+import 'screens/screen_log_in.dart';
 import 'services/localization_service.dart';
 import 'services/service_locator.dart';
 import 'utils/log.dart';
@@ -85,8 +85,10 @@ class MainMaterial extends StatelessWidget {
 
 class ScreenApp extends StatelessWidget {
   ScreenApp({Key? key}) : super(key: key) {
-    initAppInternetCheck();
     // _widget = const ScreenHolder();
+    Logger("setup services successfully",
+            asyncAction: setupServiceLocator, isShowTime: true)
+        .start();
     _widget = const ScreenLogIn();
     // FlutterNativeSplash.remove();
   }
