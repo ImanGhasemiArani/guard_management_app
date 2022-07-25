@@ -85,7 +85,7 @@ class MainMaterial extends StatelessWidget {
               if ((snapshot.data as MapEntry<bool, String?>).key) {
                 return const ScreenHolder();
               } else {
-                return const ScreenLogIn();
+                return ScreenLogin();
               }
             } else {
               return const ScreenSplash();

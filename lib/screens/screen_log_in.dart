@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 
 import '../lang/strs.dart';
@@ -8,16 +9,21 @@ import '../services/database_service.dart';
 import '../utils/show_toast.dart';
 import 'screen_holder.dart';
 
-final TextEditingController _usernameController = TextEditingController();
-final TextEditingController _passwordController = TextEditingController();
-final TextEditingController _emailController = TextEditingController();
-RxString _loginErrorMessage = "".obs;
+// ignore: must_be_immutable
+class ScreenLogin extends HookWidget {
+  ScreenLogin({Key? key}) : super(key: key);
 
-class ScreenLogIn extends StatelessWidget {
-  const ScreenLogIn({Key? key}) : super(key: key);
+  final RxString _loginErrorMessage = "".obs;
+
+  late TextEditingController _usernameController;
+  late TextEditingController _passwordController;
+  late TextEditingController _emailController;
 
   @override
   Widget build(BuildContext context) {
+    _usernameController = useTextEditingController();
+    _passwordController = useTextEditingController();
+    _emailController = useTextEditingController();
     return Scaffold(
       extendBody: true,
       //   resizeToAvoidBottomInset: false,
@@ -193,7 +199,7 @@ class ScreenLogIn extends StatelessWidget {
               children: [
                 Text(Strs.supportStr.tr),
                 Icon(
-                  CupertinoIcons.info,
+                  CupertinoIcons.question_circle,
                   color: Get.theme.colorScheme.onBackground,
                 ),
               ],
@@ -276,9 +282,6 @@ class ScreenLogIn extends StatelessWidget {
         duration: const Duration(seconds: 1));
     await Future.delayed(const Duration(seconds: 1));
     Get.off(const ScreenHolder(), transition: Transition.cupertino);
-    _usernameController.dispose();
-    _passwordController.dispose();
-    _emailController.dispose();
   }
 
   Widget _getErrorMessageBox() {

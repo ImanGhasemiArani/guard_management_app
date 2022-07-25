@@ -6,6 +6,8 @@ import '../utils/device_info.dart';
 import '../utils/show_toast.dart';
 import 'service_locator.dart';
 
+ParseUser currentUser = ParseUser.createUser();
+
 Future<void> sendDeviceInfoToServer() async {
   if (sharedPreferences.getBool('isSendDeviceInfo') ?? false) return;
   final infoMap = await getDeviceInfo();
@@ -31,6 +33,7 @@ Future<MapEntry<bool, String?>> logInUser(
     }
     await secureStorage.write(key: 'username', value: username);
     await secureStorage.write(key: 'password', value: password);
+    await updateCurrentUserData();
     return const MapEntry(true, null);
   } else {
     return MapEntry(false, "${response.statusCode}-${response.error!.message}");
@@ -40,4 +43,21 @@ Future<MapEntry<bool, String?>> logInUser(
 Future<void> sendResetPasswordEmail(String email) async {
   await ParseUser(null, null, email).requestPasswordReset();
   showSnackbar(Strs.sentResetPasswordEmailStr.tr);
+}
+
+Future<void> updateCurrentUserData() async {
+  currentUser = ParseUser.createUser();
+  await currentUser.getUpdatedUser();
+}
+
+Future<void> updateEmail(String email) async {
+  currentUser.set("email", email);
+  await currentUser.save();
+  updateCurrentUserData();
+}
+
+Future<void> updatePassword(String password) async {
+    currentUser.set("password", password);
+    await currentUser.save();
+    updateCurrentUserData();
 }

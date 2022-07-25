@@ -42,6 +42,8 @@ dependencies:
   flutter_secure_storage: ^5.0.2
   flutter_native_splash: ^2.2.6
   loading_animation_widget: ^1.2.0+2
+  flutter_hooks: ^0.18.5+1
+  persian_number_utility: ^1.1.2
 
 dev_dependencies:
   flutter_test:

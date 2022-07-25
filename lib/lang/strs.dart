@@ -32,4 +32,12 @@ class Strs {
   static const String loginFailedMessageStr =
       "نام کاربری یا رمز عبور اشتباه است";
   static const String emptyFieldsErrorStr = "لطفا فیلدهای خالی را پر کنید";
+  static const String logoutStr = "خروج";
+  static const String noDataStr = "چیزی ثبت نشده است";
+  static const String phoneNumberProfileStr = "تلفن همراه: ";
+  static const String emailProfileStr = "ایمیل: ";
+  static const String editEmailTitleStr = "ویرایش ایمیل";
+  static const String saveStr = "ذخیره";
+  static const String successfullyWorkStr = "با موفقیت انجام شد";
+  static const String editPasswordStr = "تغییر رمز عبور";
 }
