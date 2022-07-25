@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/btn_nav_bar/button_navigation_bar.dart';
+import '../widget/btn_nav_bar/button_navigation_bar.dart';
 
 final PageController _controller = PageController(initialPage: 1);
 
