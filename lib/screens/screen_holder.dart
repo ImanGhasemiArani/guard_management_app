@@ -2,43 +2,84 @@ import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/bottom_nav_bar/dot_navigation_bar.dart';
+import '../widgets/btn_nav_bar/button_navigation_bar.dart';
 
-final RxInt _selectedTab = 0.obs;
+final PageController _controller = PageController(initialPage: 1);
 
-class ScreenHolder extends StatelessWidget {
+class ScreenHolder extends StatefulWidget {
   const ScreenHolder({Key? key}) : super(key: key);
 
+  @override
+  State<ScreenHolder> createState() => _ScreenHolderState();
+}
+
+class _ScreenHolderState extends State<ScreenHolder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       extendBody: true,
-      bottomNavigationBar: Obx(
-        () => DotNavigationBar(
-          currentIndex: _selectedTab.value,
-          onTap: (index) {
-            _selectedTab.value = index;
-          },
-          enablePaddingAnimation: false,
-          paddingR: const EdgeInsets.fromLTRB(5, 7.5, 5, 7.5),
-          backgroundColor: Get.theme.colorScheme.surface,
-          dotIndicatorColor: Get.theme.colorScheme.primary,
-          selectedItemColor: Get.theme.colorScheme.primary,
-          unselectedItemColor: Theme.of(context).colorScheme.onSurface,
-          items: [
-            DotNavigationBarItem(
-              icon: const Icon(CupertinoIcons.home),
+      body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _controller,
+        children: [
+          Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.background,
+            body: const Center(
+              child: Text('تقویم'),
             ),
-            DotNavigationBarItem(
-              icon: const Icon(CupertinoIcons.calendar),
+          ),
+          Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.background,
+            body: const Center(
+              child: Text('خانه'),
             ),
-            DotNavigationBarItem(
-              icon: const Icon(CupertinoIcons.person),
+          ),
+          Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.background,
+            body: const Center(
+              child: Text('اکانت'),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: _getBtnNavBar(),
+    );
+  }
+
+  Widget _getBtnNavBar() {
+    return ButtonNavigationBar(
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      children: [
+        ButtonNavigationItem(
+          icon: const Icon(CupertinoIcons.calendar),
+          color: Get.theme.colorScheme.surface,
+          onPressed: () {
+            _controller.animateToPage(0,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut);
+          },
+        ),
+        ButtonNavigationItem(
+          icon: const Icon(CupertinoIcons.home),
+          color: Get.theme.colorScheme.surface,
+          onPressed: () {
+            _controller.animateToPage(1,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut);
+          },
+        ),
+        ButtonNavigationItem(
+          icon: const Icon(CupertinoIcons.person),
+          color: Get.theme.colorScheme.surface,
+          onPressed: () {
+            _controller.animateToPage(2,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut);
+          },
+        ),
+      ],
     );
   }
 }
