@@ -16,7 +16,7 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
+    statusBarIconBrightness: Brightness.light,
   ));
   await initAppStart();
   runApp(const MainMaterial());
@@ -30,37 +30,15 @@ class MainMaterial extends StatelessWidget {
     logging("Start App", isShowTime: true);
     LocalizationService localizationService = Get.find();
     return Builder(builder: (context) {
-      //   final ThemeController themeController = Get.find();
       return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         locale: localizationService.locale,
         fallbackLocale: LocalizationService.fallBackLocale,
         translations: localizationService,
         textDirection: TextDirection.ltr,
-        // themeMode: themeController.mode,
         themeMode: ThemeMode.dark,
-        theme: ThemeData(
-          useMaterial3: true,
-          //   fontFamily: 'Peyda',
-          fontFamily: LocalizationService.fontFamily,
-          textTheme: const TextTheme().copyWith(
-            button: const TextStyle().copyWith(
-              fontFamily: LocalizationService.fontFamily,
-            ),
-          ),
-          brightness: Brightness.light,
-          colorScheme: const ColorScheme.light().copyWith(
-            background: const Color(0xffefedff),
-            onBackground: const Color(0xff26282b),
-            surface: const Color(0xff353941),
-            onSurface: const Color(0xffefedff),
-            primary: const Color(0xff5f85db),
-            onPrimary: const Color(0xffefedff),
-          ),
-        ),
         darkTheme: ThemeData(
           useMaterial3: true,
-          //   fontFamily: 'Peyda',
           fontFamily: LocalizationService.fontFamily,
           textTheme: const TextTheme().copyWith(
             button: const TextStyle().copyWith(
@@ -78,22 +56,34 @@ class MainMaterial extends StatelessWidget {
           ),
         ),
         title: Strs.appNameStr,
-        home: FutureBuilder(
-          future: setups(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              if ((snapshot.data as MapEntry<bool, String?>).key) {
-                return const ScreenHolder();
-              } else {
-                return ScreenLogin();
-              }
-            } else {
-              return const ScreenSplash();
-            }
-          },
-        ),
+        home: const ScreenApp(),
       );
     });
+  }
+}
+
+class ScreenApp extends StatelessWidget {
+  const ScreenApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Get.theme.colorScheme.background,
+      body: FutureBuilder(
+        future: setupServices(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if ((snapshot.data as MapEntry<bool, String?>).key) {
+              return ScreenHolder();
+            } else {
+              return ScreenLogin();
+            }
+          } else {
+            return const ScreenSplash();
+          }
+        },
+      ),
+    );
   }
 }
 
@@ -102,10 +92,9 @@ class ScreenSplash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: double.infinity,
-      color: Get.theme.colorScheme.background,
       child: Center(
         child: LoadingAnimationWidget.dotsTriangle(
           color: const Color(0xfff5d042),
@@ -114,22 +103,4 @@ class ScreenSplash extends StatelessWidget {
       ),
     );
   }
-}
-
-class ThemeController {
-  late ThemeMode _mode;
-
-  ThemeController(this._mode);
-
-  ThemeMode get mode => _mode;
-
-  set mode(ThemeMode themeMode) {
-    _mode = themeMode;
-    sharedPreferences.setString("themeMode", _mode.name);
-  }
-}
-
-Future<MapEntry<bool, String?>> setups() async {
-  await setupServiceLocator();
-  return await checkUserIsLoginAndLogin();
 }

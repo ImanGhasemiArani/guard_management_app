@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 
 import '../lang/strs.dart';
-import '../services/database_service.dart';
+import '../services/server_service.dart';
 import '../utils/show_toast.dart';
 import 'screen_holder.dart';
 
@@ -26,7 +26,6 @@ class ScreenLogin extends HookWidget {
     _emailController = useTextEditingController();
     return Scaffold(
       extendBody: true,
-      //   resizeToAvoidBottomInset: false,
       backgroundColor: Get.theme.colorScheme.background,
       body: Center(
         child: SingleChildScrollView(
@@ -51,15 +50,15 @@ class ScreenLogin extends HookWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: _getUsernameTextField(),
+                  child: UsernameField(usernameController: _usernameController),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: _getPasswordTextField(),
+                  child: PasswordField(passwordController: _passwordController),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: _getEmailTextField(),
+                  child: EmailField(emailController: _emailController),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -79,88 +78,6 @@ class ScreenLogin extends HookWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _getPasswordTextField() {
-    RxBool isVisiblePassword = true.obs;
-    return Obx(
-      () => TextField(
-        controller: _passwordController,
-        obscureText: isVisiblePassword.value,
-        decoration: InputDecoration(
-          labelText: Strs.passwordStr.tr,
-          labelStyle: const TextStyle(fontSize: 18),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Get.theme.colorScheme.onBackground),
-          ),
-          suffixIcon: InkWell(
-            onTap: () {
-              isVisiblePassword.value = !isVisiblePassword.value;
-            },
-            borderRadius: BorderRadius.circular(100),
-            child: isVisiblePassword.value
-                ? const Icon(
-                    CupertinoIcons.eye_slash,
-                  )
-                : const Icon(
-                    CupertinoIcons.eye,
-                  ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _getUsernameTextField() {
-    return TextField(
-      controller: _usernameController,
-      decoration: InputDecoration(
-        labelText: Strs.phoneNumberStr.tr,
-        labelStyle: const TextStyle(fontSize: 18),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Get.theme.colorScheme.onBackground),
-        ),
-        prefixText: "+98 ",
-      ),
-      keyboardType: TextInputType.phone,
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-    );
-  }
-
-  Widget _getEmailTextField() {
-    return TextField(
-      controller: _emailController,
-      decoration: InputDecoration(
-        labelText: Strs.emailStr.tr,
-        labelStyle: const TextStyle(fontSize: 18),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Get.theme.colorScheme.onBackground),
-        ),
-        suffixIcon: Tooltip(
-          message: Strs.emailInputDescriptionStr.tr,
-          enableFeedback: false,
-          margin: const EdgeInsets.symmetric(horizontal: 20),
-          showDuration: const Duration(seconds: 3),
-          child: Icon(
-            CupertinoIcons.info,
-            color: Get.theme.colorScheme.onBackground,
-          ),
-        ),
-      ),
-      keyboardType: TextInputType.emailAddress,
     );
   }
 
@@ -272,7 +189,8 @@ class ScreenLogin extends HookWidget {
       return;
     }
 
-    final result = await logInUser(phone, password, email);
+    final result =
+        await loginUser(username: phone, password: password, email: email);
     if (!result.key) {
       _loginErrorMessage.value = Strs.loginFailedMessageStr.tr;
       return;
@@ -281,7 +199,7 @@ class ScreenLogin extends HookWidget {
     showSnackbar(Strs.loginSuccessfullyMessageStr.tr,
         duration: const Duration(seconds: 1));
     await Future.delayed(const Duration(seconds: 1));
-    Get.off(const ScreenHolder(), transition: Transition.cupertino);
+    Get.off(ScreenHolder(), transition: Transition.cupertino);
   }
 
   Widget _getErrorMessageBox() {
@@ -294,6 +212,119 @@ class ScreenLogin extends HookWidget {
             _loginErrorMessage.value,
             style: const TextStyle(fontSize: 18, color: Colors.red),
             textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class EmailField extends StatelessWidget {
+  const EmailField({
+    Key? key,
+    required this.emailController,
+  }) : super(key: key);
+
+  final TextEditingController emailController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: emailController,
+      decoration: InputDecoration(
+        labelText: Strs.emailStr.tr,
+        labelStyle: const TextStyle(fontSize: 18),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Get.theme.colorScheme.onBackground),
+        ),
+        suffixIcon: Tooltip(
+          message: Strs.emailInputDescriptionStr.tr,
+          enableFeedback: false,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          showDuration: const Duration(seconds: 3),
+          child: Icon(
+            CupertinoIcons.info,
+            color: Get.theme.colorScheme.onBackground,
+          ),
+        ),
+      ),
+      keyboardType: TextInputType.emailAddress,
+    );
+  }
+}
+
+class UsernameField extends StatelessWidget {
+  const UsernameField({
+    Key? key,
+    required this.usernameController,
+  }) : super(key: key);
+
+  final TextEditingController usernameController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: usernameController,
+      decoration: InputDecoration(
+        labelText: Strs.phoneNumberStr.tr,
+        labelStyle: const TextStyle(fontSize: 18),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Get.theme.colorScheme.onBackground),
+        ),
+        prefixText: "+98 ",
+      ),
+      keyboardType: TextInputType.phone,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+    );
+  }
+}
+
+class PasswordField extends StatelessWidget {
+  const PasswordField({
+    Key? key,
+    required this.passwordController,
+  }) : super(key: key);
+
+  final TextEditingController passwordController;
+
+  @override
+  Widget build(BuildContext context) {
+    RxBool isVisiblePassword = true.obs;
+    return Obx(
+      () => TextField(
+        controller: passwordController,
+        obscureText: isVisiblePassword.value,
+        decoration: InputDecoration(
+          labelText: Strs.passwordStr.tr,
+          labelStyle: const TextStyle(fontSize: 18),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Get.theme.colorScheme.onBackground),
+          ),
+          suffixIcon: InkWell(
+            enableFeedback: false,
+            onTap: () {
+              isVisiblePassword.value = !isVisiblePassword.value;
+            },
+            borderRadius: BorderRadius.circular(100),
+            child: isVisiblePassword.value
+                ? const Icon(
+                    CupertinoIcons.eye_slash,
+                  )
+                : const Icon(
+                    CupertinoIcons.eye,
+                  ),
           ),
         ),
       ),

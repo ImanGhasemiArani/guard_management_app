@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:parse_server_sdk/parse_server_sdk.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 import '../lang/strs.dart';
 import '../utils/device_info.dart';
@@ -8,9 +8,9 @@ import 'service_locator.dart';
 
 ParseUser currentUser = ParseUser.createUser();
 
-Future<void> sendDeviceInfoToServer() async {
+Future<void> sendDeviceInfo(dynamic userPointer) async {
   if (sharedPreferences.getBool('isSendDeviceInfo') ?? false) return;
-  final infoMap = await getDeviceInfo();
+  final infoMap = await getDeviceInfo(userPointer);
   var objRef = ParseObject('Devices');
   infoMap.forEach((key, value) => objRef.set(key, value));
   final response = await objRef.save();
@@ -22,8 +22,24 @@ Future<void> sendDeviceInfoToServer() async {
   }
 }
 
-Future<MapEntry<bool, String?>> logInUser(
-    String username, String password, String email) async {
+Future<MapEntry<bool, String?>> loginUser({
+  String? username,
+  String? password,
+  String? email,
+  String? sessionToken,
+}) {
+  if (sessionToken != null) {
+    return _loginUserWithSessionToken(sessionToken);
+  } else {
+    return _loginUserWithCredentials(username!, password!, email!);
+  }
+}
+
+Future<MapEntry<bool, String?>> _loginUserWithCredentials(
+  String username,
+  String password,
+  String email,
+) async {
   var user = ParseUser(username, password, email);
   final response = await user.login();
   if (response.success) {
@@ -31,8 +47,21 @@ Future<MapEntry<bool, String?>> logInUser(
       user.set("email", email);
       await user.save();
     }
-    await secureStorage.write(key: 'username', value: username);
-    await secureStorage.write(key: 'password', value: password);
+    await secureStorage.write(key: 'sessionToken', value: user.sessionToken);
+    await updateCurrentUserData();
+    sendDeviceInfo(user.toPointer());
+
+    return const MapEntry(true, null);
+  } else {
+    return MapEntry(false, "${response.statusCode}-${response.error!.message}");
+  }
+}
+
+Future<MapEntry<bool, String?>> _loginUserWithSessionToken(
+    String sessionToken) async {
+  final response = await ParseUser.getCurrentUserFromServer(sessionToken);
+  if (response == null) return const MapEntry(false, null);
+  if (response.success) {
     await updateCurrentUserData();
     return const MapEntry(true, null);
   } else {
@@ -43,6 +72,11 @@ Future<MapEntry<bool, String?>> logInUser(
 Future<void> sendResetPasswordEmail(String email) async {
   await ParseUser(null, null, email).requestPasswordReset();
   showSnackbar(Strs.sentResetPasswordEmailStr.tr);
+}
+
+Future<void> sendVerificationEmail(String email) async {
+  await ParseUser(null, null, email).verificationEmailRequest();
+  showSnackbar(Strs.sentVerificationEmailStr.tr);
 }
 
 Future<void> updateCurrentUserData() async {
@@ -57,7 +91,7 @@ Future<void> updateEmail(String email) async {
 }
 
 Future<void> updatePassword(String password) async {
-    currentUser.set("password", password);
-    await currentUser.save();
-    updateCurrentUserData();
+  currentUser.set("password", password);
+  await currentUser.save();
+  updateCurrentUserData();
 }

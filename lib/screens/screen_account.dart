@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
-import 'package:guard_management_app/utils/show_toast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../lang/strs.dart';
-import '../services/database_service.dart';
+import '../services/server_service.dart';
 import '../services/service_locator.dart';
+import '../utils/show_toast.dart';
 import 'screen_log_in.dart';
 
 // ignore: must_be_immutable
@@ -47,7 +47,7 @@ class ScreenAccount extends HookWidget {
                             direction: Axis.vertical,
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              _getNameWidget(),
+                              const NameContent(),
                               _getLogoutButton(),
                             ],
                           ),
@@ -66,14 +66,15 @@ class ScreenAccount extends HookWidget {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Column(children: [
-                            _getUsernameWidget(),
+                            const UsernameContent(),
                             const Divider(thickness: 2),
-                            _getEmailWidget(),
+                            EmailContent(emailController: _emailController),
                             const Padding(
                               padding: EdgeInsets.only(top: 10, bottom: 10),
                               child: Divider(thickness: 2),
                             ),
-                            _getPasswordChangeWidget(),
+                            PasswordContent(
+                                passwordController: _passwordController),
                           ]),
                         ),
                       ),
@@ -95,7 +96,169 @@ class ScreenAccount extends HookWidget {
     );
   }
 
-  Widget _getEmailWidget() {
+  Widget _getLogoutButton() {
+    return CupertinoButton(
+      onPressed: _onLogoutButtonPressed,
+      child: Text(
+        Strs.logoutStr.tr,
+        style: TextStyle(
+          fontFamily: Get.theme.textTheme.button!.fontFamily,
+          color: Colors.red,
+        ),
+      ),
+    );
+  }
+
+  void _onLogoutButtonPressed() {
+    currentUser.logout().then((value) {
+      secureStorage.deleteAll();
+      Get.off(ScreenLogin());
+    });
+  }
+}
+
+class NameContent extends StatelessWidget {
+  const NameContent({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Wrap(
+        direction: Axis.vertical,
+        children: [
+          Text(
+            currentUser.get('name') as String,
+            style: const TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            "${currentUser.get('roleRank') as String} - ${currentUser.get('rank') as String}",
+            style: const TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PasswordContent extends StatelessWidget {
+  const PasswordContent({
+    Key? key,
+    required this.passwordController,
+  }) : super(key: key);
+
+  final TextEditingController passwordController;
+
+  @override
+  Widget build(BuildContext context) {
+    final RxBool isEditPassword = false.obs;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Obx(
+          () {
+            if (!isEditPassword.value) {
+              return CupertinoButton(
+                onPressed: () {
+                  isEditPassword.value = true;
+                },
+                child: Text(
+                  Strs.editPasswordStr.tr,
+                  style: TextStyle(
+                      fontFamily: Get.theme.textTheme.button!.fontFamily),
+                ),
+              );
+            } else {
+              final RxBool isVisiblePassword = true.obs;
+              return Obx(
+                () => TextField(
+                  controller: passwordController,
+                  obscureText: isVisiblePassword.value,
+                  decoration: InputDecoration(
+                    labelText: Strs.passwordStr.tr,
+                    labelStyle: const TextStyle(fontSize: 18),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Get.theme.colorScheme.onBackground),
+                    ),
+                    suffixIcon: InkWell(
+                      enableFeedback: false,
+                      onTap: () {
+                        isVisiblePassword.value = !isVisiblePassword.value;
+                      },
+                      borderRadius: BorderRadius.circular(100),
+                      child: isVisiblePassword.value
+                          ? const Icon(
+                              CupertinoIcons.eye_slash,
+                            )
+                          : const Icon(
+                              CupertinoIcons.eye,
+                            ),
+                    ),
+                  ),
+                ),
+              );
+            }
+          },
+        ),
+        Obx(
+          () => Visibility(
+            visible: isEditPassword.value,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CupertinoButton(
+                onPressed: () {
+                  _onEditPasswordSaveButtonPressed();
+                  isEditPassword.value = false;
+                },
+                child: Text(
+                  Strs.saveStr.tr,
+                  style: TextStyle(
+                      fontFamily: Get.theme.textTheme.button!.fontFamily),
+                ),
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  void _onEditPasswordSaveButtonPressed() {
+    FocusManager.instance.primaryFocus!.unfocus();
+    final password = passwordController.text;
+    if (password.isEmpty) {
+      return;
+    }
+    updatePassword(password).then(
+      (value) {
+        showSnackbar(Strs.successfullyWorkStr.tr);
+        Get.off(ScreenLogin());
+      },
+    );
+  }
+}
+
+class EmailContent extends StatelessWidget {
+  const EmailContent({
+    Key? key,
+    required this.emailController,
+  }) : super(key: key);
+
+  final TextEditingController emailController;
+
+  @override
+  Widget build(BuildContext context) {
     final RxBool isEditable = false.obs;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -122,7 +285,7 @@ class ScreenAccount extends HookWidget {
         ),
         Obx(
           () => TextField(
-            controller: _emailController..text = currentUser.emailAddress ?? "",
+            controller: emailController..text = currentUser.emailAddress ?? "",
             readOnly: !isEditable.value,
             decoration: InputDecoration(
               labelText: Strs.emailStr.tr,
@@ -162,83 +325,28 @@ class ScreenAccount extends HookWidget {
     );
   }
 
-  Widget _getPasswordChangeWidget() {
-    final RxBool isEditPassword = false.obs;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Obx(
-          () {
-            if (!isEditPassword.value) {
-              return CupertinoButton(
-                onPressed: () {
-                  isEditPassword.value = true;
-                },
-                child: Text(
-                  Strs.editPasswordStr.tr,
-                  style: TextStyle(
-                      fontFamily: Get.theme.textTheme.button!.fontFamily),
-                ),
-              );
-            } else {
-              RxBool isVisiblePassword = true.obs;
-              return TextField(
-                controller: _passwordController,
-                obscureText: isVisiblePassword.value,
-                decoration: InputDecoration(
-                  labelText: Strs.passwordStr.tr,
-                  labelStyle: const TextStyle(fontSize: 18),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide:
-                        BorderSide(color: Get.theme.colorScheme.onBackground),
-                  ),
-                  suffixIcon: InkWell(
-                    onTap: () {
-                      isVisiblePassword.value = !isVisiblePassword.value;
-                    },
-                    borderRadius: BorderRadius.circular(100),
-                    child: isVisiblePassword.value
-                        ? const Icon(
-                            CupertinoIcons.eye_slash,
-                          )
-                        : const Icon(
-                            CupertinoIcons.eye,
-                          ),
-                  ),
-                ),
-              );
-            }
-          },
-        ),
-        Obx(
-          () => Visibility(
-            visible: isEditPassword.value,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CupertinoButton(
-                onPressed: () {
-                  _onEditPasswordSaveButtonPressed();
-                  isEditPassword.value = false;
-                },
-                child: Text(
-                  Strs.saveStr.tr,
-                  style: TextStyle(
-                      fontFamily: Get.theme.textTheme.button!.fontFamily),
-                ),
-              ),
-            ),
-          ),
-        )
-      ],
+  void _onEditEmailSaveButtonPressed() {
+    FocusManager.instance.primaryFocus!.unfocus();
+    final email = emailController.text;
+    if (email.isNotEmpty && !GetUtils.isEmail(email)) {
+      emailController.text = currentUser.emailAddress ?? "";
+      return;
+    }
+    updateEmail(email).then(
+      (value) {
+        showSnackbar(Strs.successfullyWorkStr.tr);
+      },
     );
   }
+}
 
-  Widget _getUsernameWidget() {
+class UsernameContent extends StatelessWidget {
+  const UsernameContent({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Wrap(
       direction: Axis.vertical,
       alignment: WrapAlignment.center,
@@ -260,76 +368,6 @@ class ScreenAccount extends HookWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _getNameWidget() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Wrap(
-        direction: Axis.vertical,
-        children: [
-          Text(
-            currentUser.get('name') as String,
-            style: const TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            "${currentUser.get('roleRank') as String} - ${currentUser.get('rank') as String}",
-            style: const TextStyle(fontSize: 16),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _getLogoutButton() {
-    return CupertinoButton(
-      onPressed: _onLogoutButtonPressed,
-      child: Text(
-        Strs.logoutStr.tr,
-        style: TextStyle(
-          fontFamily: Get.theme.textTheme.button!.fontFamily,
-          color: Colors.red,
-        ),
-      ),
-    );
-  }
-
-  void _onLogoutButtonPressed() {
-    currentUser.logout().then((value) {
-      secureStorage.deleteAll();
-      Get.off(ScreenLogin());
-    });
-  }
-
-  void _onEditEmailSaveButtonPressed() {
-    FocusManager.instance.primaryFocus!.unfocus();
-    final email = _emailController.text;
-    if (email.isNotEmpty && !GetUtils.isEmail(email)) {
-      _emailController.text = currentUser.emailAddress ?? "";
-      return;
-    }
-    updateEmail(email).then(
-      (value) {
-        showSnackbar(Strs.successfullyWorkStr.tr);
-      },
-    );
-  }
-
-  void _onEditPasswordSaveButtonPressed() {
-    FocusManager.instance.primaryFocus!.unfocus();
-    final password = _passwordController.text;
-    if (password.isEmpty) {
-      return;
-    }
-    updatePassword(password).then(
-      (value) {
-        showSnackbar(Strs.successfullyWorkStr.tr);
-        Get.off(ScreenLogin());
-      },
     );
   }
 }

@@ -12,6 +12,5 @@ Future<void> initAppStart() async {
       encryptedSharedPreferences: true,
     ),
   );
-//   NotificationService().init();
   Get.put(LocalizationService('فارسی'));
 }

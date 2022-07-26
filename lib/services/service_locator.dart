@@ -3,22 +3,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:parse_server_sdk/parse_server_sdk.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../lang/strs.dart';
-import 'database_service.dart';
+import 'server_service.dart';
 
 late SharedPreferences sharedPreferences;
 late FlutterSecureStorage secureStorage;
 bool isShowDialog = false;
 
-Future<void> setupServiceLocator() async {
-  _setupConnectionListener();
-  await _checkConnection();
-  _initParseServer();
+Future<MapEntry<bool, String?>> setupServices() async {
+  await _setupServiceLocator();
+  return await _hasLoginUser();
+}
 
-  await sendDeviceInfoToServer();
+Future<void> _setupServiceLocator() async {
+  _setupConnectionListener();
+  await _checkInternetConnection();
+  await _initParseServer();
 }
 
 Future<void> _initParseServer() async {
@@ -26,11 +29,10 @@ Future<void> _initParseServer() async {
     'K3yL8XzVdSzmalKXwungWmewdA7owL2M9QbHn9Sb',
     'https://parseapi.back4app.com',
     clientKey: 'EPXyTqyFnU3lgaIFW27elMWZgVAp57C7kQUFOWHf',
-    autoSendSessionId: true,
   );
 }
 
-_setupConnectionListener() {
+void _setupConnectionListener() {
   Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
     if (result == ConnectivityResult.none) {
       _showConnectionError();
@@ -38,17 +40,14 @@ _setupConnectionListener() {
   });
 }
 
-Future<void> _checkConnection() async {
-  final isConnectedToInternet = await _checkInternetConnection();
+Future<void> _checkInternetConnection() async {
+  final connectivityResult = await Connectivity().checkConnectivity();
+  final isConnectedToInternet =
+      connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi;
   if (!isConnectedToInternet) {
     _showConnectionError();
   }
-}
-
-Future<bool> _checkInternetConnection() async {
-  final connectivityResult = await Connectivity().checkConnectivity();
-  return connectivityResult == ConnectivityResult.mobile ||
-      connectivityResult == ConnectivityResult.wifi;
 }
 
 Future<void> _showConnectionError() async {
@@ -83,7 +82,7 @@ Future<void> _showConnectionError() async {
             onPressed: () {
               isShowDialog = false;
               Get.back();
-              _checkConnection();
+              _checkInternetConnection();
             },
           ),
         ],
@@ -92,10 +91,8 @@ Future<void> _showConnectionError() async {
   );
 }
 
-Future<MapEntry<bool, String?>> checkUserIsLoginAndLogin() async {
-  var username = await secureStorage.read(key: 'username');
-  var password = await secureStorage.read(key: 'password');
-  if (username == null || password == null) return const MapEntry(false, null);
-  var response = await logInUser(username, password, "");
-  return response;
+Future<MapEntry<bool, String?>> _hasLoginUser() async {
+  var sessionToken = await secureStorage.read(key: 'sessionToken');
+  if (sessionToken == null) return const MapEntry(false, null);
+  return loginUser(sessionToken: sessionToken);
 }
