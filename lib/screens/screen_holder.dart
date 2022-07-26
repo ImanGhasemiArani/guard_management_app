@@ -16,7 +16,7 @@ class ScreenHolder extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    _pageController = usePageController(initialPage: 1);
+    _pageController = usePageController(initialPage: 0);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       extendBody: true,
