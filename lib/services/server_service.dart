@@ -95,3 +95,19 @@ Future<void> updatePassword(String password) async {
   await currentUser.save();
   updateCurrentUserData();
 }
+
+Future<List<Map<String, dynamic>>> getAllPlanFromServer() async {
+  final response = await ParseObject('workingPlan').getAll();
+  var resultMap = <Map<String, dynamic>>[];
+  response.result!.forEach((e) {
+    var obj = e as ParseObject;
+    resultMap.add(
+      {
+        "userId": obj.get("userId")["objectId"],
+        "name": (obj.get("name")),
+        "plan": obj.get("plan")
+      },
+    );
+  });
+  return resultMap;
+}

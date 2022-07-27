@@ -41,4 +41,5 @@ class Strs {
   static const String successfullyWorkStr = "با موفقیت انجام شد";
   static const String editPasswordStr = "تغییر رمز عبور";
   static const String sentVerificationEmailStr = "ایمیل تایید ارسال شد";
+  static const String requestExChangePlanStr = "درخواست تعویض";
 }
