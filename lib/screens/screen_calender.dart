@@ -8,6 +8,7 @@ import 'package:shamsi_date/shamsi_date.dart';
 
 import '../lang/strs.dart';
 import '../widget/calendar/calendar.dart';
+import '../widget/calendar/classes/persian_date.dart';
 
 Rx<DateTime> currentSelectedDate =
     DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).obs;
@@ -117,11 +118,12 @@ class EventContent extends StatelessWidget {
     return Obx(
       () {
         var newEvents = events[currentSelectedDate.value] ?? [];
+        newEvents = _getSortedEvents(newEvents);
         return Expanded(
           child: AnimationLimiter(
             key: UniqueKey(),
             child: ListView.builder(
-              itemCount: newEvents.length,
+              itemCount: newEvents.length + 1,
               itemBuilder: (context, index) {
                 return AnimationConfiguration.staggeredList(
                   position: index,
@@ -129,7 +131,10 @@ class EventContent extends StatelessWidget {
                   child: SlideAnimation(
                     verticalOffset: 50,
                     child: FadeInAnimation(
-                      child: EventListChild(newEvents: newEvents, index: index),
+                      child: index == 0
+                          ? _getFirstContent()
+                          : EventListChild(
+                              newEvents: newEvents, index: index - 1),
                     ),
                   ),
                 );
@@ -139,6 +144,43 @@ class EventContent extends StatelessWidget {
         );
       },
     );
+  }
+
+  Container _getFirstContent() {
+    var currentDate = Jalali.fromDateTime(currentSelectedDate.value);
+    var nowTime = DateTime.now();
+    bool isToday = currentSelectedDate.value.year == nowTime.year &&
+        currentSelectedDate.value.month == nowTime.month &&
+        currentSelectedDate.value.day == nowTime.day;
+    print(currentDate.weekDay);
+    String title =
+        "${isToday ? ' امروز' : ''} ${dayLong[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthLong[currentDate.month - 1]}  ${currentDate.year}";
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      height: 50,
+      color: Get.theme.colorScheme.background,
+      alignment: Alignment.centerRight,
+      child: Text(
+        "برنامه کاری$title",
+        style: Get.theme.textTheme.subtitle1,
+      ),
+    );
+  }
+
+  List<dynamic> _getSortedEvents(List<dynamic> allEvents) {
+    var userId = currentUser.objectId!;
+    var currentUserEvents = List<dynamic>.from(allEvents);
+    currentUserEvents.sort((a, b) {
+      if (a["userId"] == userId) {
+        return -1;
+      } else if (b["userId"] == userId) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    return currentUserEvents;
   }
 }
 
@@ -157,7 +199,6 @@ class EventListChild extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      //   color: Colors.red,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

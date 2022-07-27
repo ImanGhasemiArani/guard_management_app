@@ -48,6 +48,31 @@ const String u = 'u'; // نمایش میکرو ثانیه
 const String am = 'am'; // نمایش وقت به صورت کوتاه
 const String AM = 'AM'; // نمایش وقت به صورت کامل
 
+List<String> monthLong = const <String>[
+  'فروردین',
+  'اردیبهشت',
+  'خرداد',
+  'تیر',
+  'مرداد',
+  'شهریور',
+  'مهر',
+  'آبان',
+  'آذر',
+  'دی',
+  'بهمن',
+  'اسفند'
+];
+
+List<String> dayLong = const [
+  'شنبه',
+  'یکشنبه',
+  'دوشنبه',
+  'سه شنبه',
+  'چهارشنبه',
+  'پنج شنبه',
+  'جمعه',
+];
+
 class PersianDate {
   int? _year;
   int? _month;
@@ -329,7 +354,7 @@ class PersianDate {
     if (weekday == 5) {
       return true;
     } else if (shamsiHoliday
-            .contains("${_digits(month, 2)}${_digits(day, 2)}")) {
+        .contains("${_digits(month, 2)}${_digits(day, 2)}")) {
       return true;
     } else {
       return false;
@@ -406,8 +431,8 @@ class PersianDate {
       newFormat = newFormat.replaceFirst(h, (hour! % 12).toString());
     }
     if (newFormat.contains(AM)) {
-      newFormat = newFormat.replaceFirst(
-          AM, hour! < 12 ? 'قبل از ظهر' : 'بعد از ظهر');
+      newFormat =
+          newFormat.replaceFirst(AM, hour! < 12 ? 'قبل از ظهر' : 'بعد از ظهر');
     }
     if (newFormat.contains(am)) {
       newFormat = newFormat.replaceFirst(am, hour! < 12 ? 'ق.ظ' : 'ب.ظ');
