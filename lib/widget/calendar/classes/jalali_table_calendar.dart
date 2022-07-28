@@ -305,7 +305,7 @@ class CalendarDayPicker extends StatelessWidget {
           itemStyle = themeData.textTheme.bodyText2
               ?.copyWith(color: themeData.colorScheme.onBackground);
           decoration = BoxDecoration(
-              color: Colors.black.withOpacity(0.5), shape: BoxShape.circle);
+              color: themeData.colorScheme.surface, shape: BoxShape.circle);
         } else if (disabled) {
           itemStyle = themeData.textTheme.bodyText2!
               .copyWith(color: themeData.disabledColor);
@@ -368,6 +368,34 @@ class CalendarDayPicker extends StatelessWidget {
       }
     }
 
+        return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Column(
+        children: [
+          SizedBox(
+            height: _kDayPickerRowHeight,
+            child: Center(
+              child: Text(
+                "${pDate.monthname}  ${pDate.year}",
+                style: themeData.textTheme.headline5,
+              ),
+            ),
+          ),
+          PreferredSize(
+            preferredSize: const Size(500, 500),
+            child: GridView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: _kDayPickerGridDelegate,
+              addAutomaticKeepAlives: true,
+              addRepaintBoundaries: false,
+              children: labels,
+            ),
+          ),
+        ],
+      ),
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Directionality(
@@ -387,6 +415,7 @@ class CalendarDayPicker extends StatelessWidget {
               ),
               Flexible(
                 child: GridView.custom(
+                  physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: _kDayPickerGridDelegate,
                   childrenDelegate: SliverChildListDelegate(labels,
                       addRepaintBoundaries: false),
