@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shamsi_date/shamsi_date.dart';
@@ -9,7 +8,8 @@ import 'package:shamsi_date/shamsi_date.dart';
 import '../lang/strs.dart';
 import '../services/server_service.dart';
 import '../widget/calendar/calendar.dart';
-import '../widget/calendar/classes/persian_date.dart';
+import '../widget/calendar/src/persian_date.dart';
+import '../widget/staggered_animations/flutter_staggered_animations.dart';
 
 Rx<DateTime> currentSelectedDate =
     DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).obs;
@@ -31,6 +31,7 @@ class ScreenCalender extends HookWidget {
           if (snapshot.connectionState == ConnectionState.done) {
             var allEvents = snapshot.data as Map<DateTime, List<dynamic>>;
             var currentUserEvents = _getCurrentUserEvents(allEvents);
+            RxInt segmentController = 0.obs;
             return Scaffold(
               backgroundColor: Theme.of(context).colorScheme.background,
               body: SafeArea(
@@ -59,14 +60,55 @@ class ScreenCalender extends HookWidget {
                                   maxHeight: Get.size.height * 0.5 + 20,
                                   maxWidth: 600),
                               child: CalendarContent(
-                                  events: currentUserEvents,
-                                  scrollController: _scrollController),
+                                events: currentUserEvents,
+                                scrollController: _scrollController,
+                                segmentController: segmentController,
+                              ),
                             ),
                           ),
                         ),
+                        SliverAppBar(
+                          pinned: true,
+                          forceElevated: true,
+                          backgroundColor: Get.theme.colorScheme.background,
+                          centerTitle: true,
+                          surfaceTintColor: Get.theme.colorScheme.background,
+                          title: Obx(
+                            () => CupertinoSlidingSegmentedControl<int>(
+                              groupValue: segmentController.value,
+                              children: {
+                                1: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Text(
+                                    Strs.eventDayContentTitleStr.tr,
+                                    style: Get.theme.textTheme.subtitle2,
+                                  ),
+                                ),
+                                0: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Text(
+                                    Strs.workingPlanTitleStr.tr,
+                                    style: Get.theme.textTheme.subtitle2,
+                                  ),
+                                ),
+                              },
+                              onValueChanged: (index) {
+                                segmentController.value = index ?? 0;
+                              },
+                            ),
+                          ),
+                        )
                       ],
-                      body: EventContent(
-                        events: allEvents,
+                      body: Column(
+                        children: [
+                          Obx(
+                            () => segmentController.value == 0
+                                ? PlanEventContent(
+                                    events: allEvents,
+                                  )
+                                : const DayEventContent(),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -128,8 +170,97 @@ class ScreenCalender extends HookWidget {
   }
 }
 
-class EventContent extends StatelessWidget {
-  const EventContent({
+class DayEventContent extends StatelessWidget {
+  const DayEventContent({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+      () {
+        return FutureBuilder(
+          future: getDayEvents(currentSelectedDate.value),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              var dayMap = snapshot.data as Map<String, dynamic>;
+              var events = dayMap['events'] as List<dynamic>;
+              return Expanded(
+                child: AnimationLimiter(
+                  key: UniqueKey(),
+                  child: ListView.builder(
+                    itemCount: events.length + 1,
+                    itemBuilder: (context, index) {
+                      return AnimationConfiguration.staggeredList(
+                        position: index,
+                        duration: const Duration(milliseconds: 500),
+                        child: SlideAnimation(
+                          verticalOffset: 50,
+                          child: FadeInAnimation(
+                            child: index == 0
+                                ? _getFirstContent(
+                                    dayMap['is_holiday'] ?? false)
+                                : _getEventChild(events, index - 1),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            } else {
+              return Expanded(
+                child: Center(
+                  child: LoadingAnimationWidget.dotsTriangle(
+                    color: const Color(0xfff5d042),
+                    size: 40,
+                  ),
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Container _getFirstContent(bool isHoliday) {
+    var currentDate = Jalali.fromDateTime(currentSelectedDate.value);
+    var nowTime = DateTime.now();
+    bool isToday = currentSelectedDate.value.year == nowTime.year &&
+        currentSelectedDate.value.month == nowTime.month &&
+        currentSelectedDate.value.day == nowTime.day;
+    String title =
+        "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayLong[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthLong[currentDate.month - 1]}  ${currentDate.year} ${isHoliday ? '- ${Strs.holidayStr.tr}' : ''}";
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      height: 50,
+      color: Get.theme.colorScheme.background,
+      alignment: Alignment.centerRight,
+      child: Text(
+        "${Strs.eventsDayStr.tr}$title",
+        style: Get.theme.textTheme.subtitle1,
+      ),
+    );
+  }
+
+  Container _getEventChild(List<dynamic> events, int index) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      alignment: Alignment.centerRight,
+      child: Text(
+        events[index]['description'],
+        style: Get.theme.textTheme.subtitle1,
+        textDirection: TextDirection.rtl,
+      ),
+    );
+  }
+}
+
+class PlanEventContent extends StatelessWidget {
+  const PlanEventContent({
     Key? key,
     required this.events,
   }) : super(key: key);
@@ -156,7 +287,7 @@ class EventContent extends StatelessWidget {
                     child: FadeInAnimation(
                       child: index == 0
                           ? _getFirstContent()
-                          : EventListChild(
+                          : PlanEventListChild(
                               newEvents: newEvents, index: index - 1),
                     ),
                   ),
@@ -175,9 +306,8 @@ class EventContent extends StatelessWidget {
     bool isToday = currentSelectedDate.value.year == nowTime.year &&
         currentSelectedDate.value.month == nowTime.month &&
         currentSelectedDate.value.day == nowTime.day;
-    print(currentDate.weekDay);
     String title =
-        "${isToday ? ' امروز' : ''} ${dayLong[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthLong[currentDate.month - 1]}  ${currentDate.year}";
+        "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayLong[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthLong[currentDate.month - 1]}  ${currentDate.year}";
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -185,7 +315,7 @@ class EventContent extends StatelessWidget {
       color: Get.theme.colorScheme.background,
       alignment: Alignment.centerRight,
       child: Text(
-        "برنامه کاری$title",
+        "${Strs.workingPlanStr.tr}$title",
         style: Get.theme.textTheme.subtitle1,
       ),
     );
@@ -207,8 +337,8 @@ class EventContent extends StatelessWidget {
   }
 }
 
-class EventListChild extends StatelessWidget {
-  const EventListChild({
+class PlanEventListChild extends StatelessWidget {
+  const PlanEventListChild({
     Key? key,
     required this.newEvents,
     required this.index,
@@ -246,7 +376,6 @@ class EventListChild extends StatelessWidget {
                 newEvents[index]["event"],
                 style: Get.theme.textTheme.bodyText2,
               ),
-              Divider(),
             ],
           ),
         ],
@@ -260,10 +389,12 @@ class CalendarContent extends StatelessWidget {
     Key? key,
     required this.events,
     required this.scrollController,
+    required this.segmentController,
   }) : super(key: key);
 
   final Map<DateTime, List<dynamic>>? events;
   final ScrollController scrollController;
+  final RxInt segmentController;
 
   @override
   Widget build(BuildContext context) {
@@ -279,6 +410,7 @@ class CalendarContent extends StatelessWidget {
           scrollController.animateTo(0,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeIn);
+          segmentController.value = 0;
           currentSelectedDate.value = day;
         },
         marker: (date, events) {

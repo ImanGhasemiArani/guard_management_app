@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:http/http.dart' as http;
 
 import '../lang/strs.dart';
 import '../utils/device_info.dart';
@@ -110,4 +113,11 @@ Future<List<Map<String, dynamic>>> getAllPlanFromServer() async {
     );
   });
   return resultMap;
+}
+
+Future<Map<String, dynamic>> getDayEvents(DateTime date) async {
+  var response = await http.get(Uri.parse(
+      "https://persiancalapi.ir/gregorian/${date.year}/${date.month}/${date.day}"));
+
+  return json.decode(utf8.decode(response.bodyBytes));
 }

@@ -42,4 +42,10 @@ class Strs {
   static const String editPasswordStr = "تغییر رمز عبور";
   static const String sentVerificationEmailStr = "ایمیل تایید ارسال شد";
   static const String requestExChangePlanStr = "درخواست تعویض";
+  static const String eventDayContentTitleStr = "مناسبت های روز";
+  static const String workingPlanTitleStr = "شیفت ها";
+  static const String workingPlanStr = "برنامه کاری";
+  static const String eventsDayStr = "مناسبت های";
+  static const String holidayStr = "تعطیل";
+  static const String todayStr = "امروز";
 }
