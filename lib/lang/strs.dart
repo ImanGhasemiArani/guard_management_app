@@ -48,4 +48,5 @@ class Strs {
   static const String eventsDayStr = "مناسبت های";
   static const String holidayStr = "تعطیل";
   static const String todayStr = "امروز";
+  static const String failedToLoadErrorStr = "متاسفانه خطایی رخ داده است. دوباره تلاش کنید";
 }

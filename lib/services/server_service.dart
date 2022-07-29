@@ -82,9 +82,11 @@ Future<void> sendVerificationEmail(String email) async {
   showSnackbar(Strs.sentVerificationEmailStr.tr);
 }
 
-Future<void> updateCurrentUserData() async {
+Future<MapEntry<bool, String?>> updateCurrentUserData() async {
   currentUser = ParseUser.createUser();
-  await currentUser.getUpdatedUser();
+  var res = await currentUser.getUpdatedUser();
+  if (res.success) return const MapEntry(true, null);
+  return const MapEntry(false, null);
 }
 
 Future<void> updateEmail(String email) async {

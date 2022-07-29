@@ -29,92 +29,112 @@ class ScreenCalender extends HookWidget {
         future: getEvents(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            var allEvents = snapshot.data as Map<DateTime, List<dynamic>>;
-            var currentUserEvents = _getCurrentUserEvents(allEvents);
-            RxInt segmentController = 0.obs;
-            return Scaffold(
-              backgroundColor: Theme.of(context).colorScheme.background,
-              body: SafeArea(
-                child: Center(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 25),
-                    constraints: const BoxConstraints(maxWidth: 600),
-                    child: NestedScrollView(
-                      controller: _scrollController,
-                      headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                        SliverAppBar(
-                          floating: false,
-                          forceElevated: innerBoxIsScrolled,
-                          backgroundColor: Colors.transparent,
-                          expandedHeight: 400 < Get.size.height * 0.5 + 20
-                              ? 400
-                              : Get.size.height * 0.5 + 20,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          flexibleSpace: SingleChildScrollView(
-                            physics: const NeverScrollableScrollPhysics(),
-                            child: Container(
-                              constraints: BoxConstraints(
-                                  maxHeight: Get.size.height * 0.5 + 20,
-                                  maxWidth: 600),
-                              child: CalendarContent(
-                                events: currentUserEvents,
-                                scrollController: _scrollController,
-                                segmentController: segmentController,
+            if (snapshot.data == null || !snapshot.hasData) {
+              return Center(
+                child: Text(
+                  Strs.failedToLoadErrorStr.tr,
+                  style: Get.theme.textTheme.subtitle2,
+                ),
+              );
+            } else {
+              try {
+                var allEvents = snapshot.data as Map<DateTime, List<dynamic>>;
+                var currentUserEvents = _getCurrentUserEvents(allEvents);
+                RxInt segmentController = 0.obs;
+                return Scaffold(
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  body: SafeArea(
+                    child: Center(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 25),
+                        constraints: const BoxConstraints(maxWidth: 600),
+                        child: NestedScrollView(
+                          controller: _scrollController,
+                          headerSliverBuilder: (context, innerBoxIsScrolled) =>
+                              [
+                            SliverAppBar(
+                              floating: false,
+                              forceElevated: innerBoxIsScrolled,
+                              backgroundColor: Colors.transparent,
+                              expandedHeight: 400 < Get.size.height * 0.5 + 20
+                                  ? 400
+                                  : Get.size.height * 0.5 + 20,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              flexibleSpace: SingleChildScrollView(
+                                physics: const NeverScrollableScrollPhysics(),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxHeight: Get.size.height * 0.5 + 20,
+                                      maxWidth: 600),
+                                  child: CalendarContent(
+                                    events: currentUserEvents,
+                                    scrollController: _scrollController,
+                                    segmentController: segmentController,
+                                  ),
+                                ),
                               ),
                             ),
+                            SliverAppBar(
+                              pinned: true,
+                              forceElevated: true,
+                              backgroundColor: Get.theme.colorScheme.background,
+                              centerTitle: true,
+                              surfaceTintColor:
+                                  Get.theme.colorScheme.background,
+                              title: Obx(
+                                () => CupertinoSlidingSegmentedControl<int>(
+                                  groupValue: segmentController.value,
+                                  children: {
+                                    1: Padding(
+                                      padding: const EdgeInsets.all(5),
+                                      child: Text(
+                                        Strs.eventDayContentTitleStr.tr,
+                                        style: Get.theme.textTheme.subtitle2,
+                                      ),
+                                    ),
+                                    0: Padding(
+                                      padding: const EdgeInsets.all(5),
+                                      child: Text(
+                                        Strs.workingPlanTitleStr.tr,
+                                        style: Get.theme.textTheme.subtitle2,
+                                      ),
+                                    ),
+                                  },
+                                  onValueChanged: (index) {
+                                    segmentController.value = index ?? 0;
+                                  },
+                                ),
+                              ),
+                            )
+                          ],
+                          body: Column(
+                            children: [
+                              Obx(
+                                () => segmentController.value == 0
+                                    ? PlanEventContent(
+                                        events: allEvents,
+                                      )
+                                    : const DayEventContent(),
+                              ),
+                            ],
                           ),
                         ),
-                        SliverAppBar(
-                          pinned: true,
-                          forceElevated: true,
-                          backgroundColor: Get.theme.colorScheme.background,
-                          centerTitle: true,
-                          surfaceTintColor: Get.theme.colorScheme.background,
-                          title: Obx(
-                            () => CupertinoSlidingSegmentedControl<int>(
-                              groupValue: segmentController.value,
-                              children: {
-                                1: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Text(
-                                    Strs.eventDayContentTitleStr.tr,
-                                    style: Get.theme.textTheme.subtitle2,
-                                  ),
-                                ),
-                                0: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Text(
-                                    Strs.workingPlanTitleStr.tr,
-                                    style: Get.theme.textTheme.subtitle2,
-                                  ),
-                                ),
-                              },
-                              onValueChanged: (index) {
-                                segmentController.value = index ?? 0;
-                              },
-                            ),
-                          ),
-                        )
-                      ],
-                      body: Column(
-                        children: [
-                          Obx(
-                            () => segmentController.value == 0
-                                ? PlanEventContent(
-                                    events: allEvents,
-                                  )
-                                : const DayEventContent(),
-                          ),
-                        ],
                       ),
                     ),
                   ),
-                ),
-              ),
-            );
+                );
+              } catch (e) {
+                return Center(
+                  child: Text(
+                    Strs.failedToLoadErrorStr.tr,
+                    style: Get.theme.textTheme.subtitle2,
+                  ),
+                );
+              }
+            }
           } else {
             return Center(
               child: LoadingAnimationWidget.dotsTriangle(
@@ -183,31 +203,49 @@ class DayEventContent extends StatelessWidget {
           future: getDayEvents(currentSelectedDate.value),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              var dayMap = snapshot.data as Map<String, dynamic>;
-              var events = dayMap['events'] as List<dynamic>;
-              return Expanded(
-                child: AnimationLimiter(
-                  key: UniqueKey(),
-                  child: ListView.builder(
-                    itemCount: events.length + 1,
-                    itemBuilder: (context, index) {
-                      return AnimationConfiguration.staggeredList(
-                        position: index,
-                        duration: const Duration(milliseconds: 500),
-                        child: SlideAnimation(
-                          verticalOffset: 50,
-                          child: FadeInAnimation(
-                            child: index == 0
-                                ? _getFirstContent(
-                                    dayMap['is_holiday'] ?? false)
-                                : _getEventChild(events, index - 1),
-                          ),
-                        ),
-                      );
-                    },
+              if (snapshot.data == null || !snapshot.hasData) {
+                return Center(
+                  child: Text(
+                    Strs.failedToLoadErrorStr.tr,
+                    style: Get.theme.textTheme.subtitle2,
                   ),
-                ),
-              );
+                );
+              } else {
+                try {
+                  var dayMap = snapshot.data as Map<String, dynamic>;
+                  var events = dayMap['events'] as List<dynamic>;
+                  return Expanded(
+                    child: AnimationLimiter(
+                      key: UniqueKey(),
+                      child: ListView.builder(
+                        itemCount: events.length + 1,
+                        itemBuilder: (context, index) {
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 500),
+                            child: SlideAnimation(
+                              verticalOffset: 50,
+                              child: FadeInAnimation(
+                                child: index == 0
+                                    ? _getFirstContent(
+                                        dayMap['is_holiday'] ?? false)
+                                    : _getEventChild(events, index - 1),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                } catch (e) {
+                  return Center(
+                    child: Text(
+                      Strs.failedToLoadErrorStr.tr,
+                      style: Get.theme.textTheme.subtitle2,
+                    ),
+                  );
+                }
+              }
             } else {
               return Expanded(
                 child: Center(

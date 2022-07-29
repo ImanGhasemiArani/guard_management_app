@@ -26,64 +26,84 @@ class ScreenAccount extends HookWidget {
       future: updateCurrentUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return Scaffold(
-            backgroundColor: Theme.of(context).colorScheme.background,
-            body: SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        constraints: BoxConstraints(
-                          minHeight: high,
-                        ),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Wrap(
-                            direction: Axis.vertical,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              const NameContent(),
-                              _getLogoutButton(),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        constraints: BoxConstraints(
-                          minHeight: high * 2,
-                        ),
-                        child: Container(
-                          constraints: const BoxConstraints(maxWidth: 400),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 40, horizontal: 25),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(children: [
-                            const UsernameContent(),
-                            const Divider(thickness: 2),
-                            EmailContent(emailController: _emailController),
-                            const Padding(
-                              padding: EdgeInsets.only(top: 10, bottom: 10),
-                              child: Divider(thickness: 2),
+          if (snapshot.data == null ||
+              !snapshot.hasData ||
+              !(snapshot.data as MapEntry).key) {
+            return Center(
+              child: Text(
+                Strs.failedToLoadErrorStr.tr,
+                style: Get.theme.textTheme.subtitle2,
+              ),
+            );
+          } else {
+            try {
+              return Scaffold(
+                backgroundColor: Theme.of(context).colorScheme.background,
+                body: SafeArea(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 25),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            constraints: BoxConstraints(
+                              minHeight: high,
                             ),
-                            PasswordContent(
-                                passwordController: _passwordController),
-                          ]),
-                        ),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Wrap(
+                                direction: Axis.vertical,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  const NameContent(),
+                                  _getLogoutButton(),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            constraints: BoxConstraints(
+                              minHeight: high * 2,
+                            ),
+                            child: Container(
+                              constraints: const BoxConstraints(maxWidth: 400),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 40, horizontal: 25),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.4),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(children: [
+                                const UsernameContent(),
+                                const Divider(thickness: 2),
+                                EmailContent(emailController: _emailController),
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                                  child: Divider(thickness: 2),
+                                ),
+                                PasswordContent(
+                                    passwordController: _passwordController),
+                              ]),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
+              );
+            } catch (e) {
+              return Center(
+                child: Text(
+                  Strs.failedToLoadErrorStr.tr,
+                  style: Get.theme.textTheme.subtitle2,
+                ),
+              );
+            }
+          }
         } else {
           return Center(
             child: LoadingAnimationWidget.dotsTriangle(
