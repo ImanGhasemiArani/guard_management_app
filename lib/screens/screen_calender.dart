@@ -57,7 +57,7 @@ class ScreenCalender extends HookWidget {
                               floating: false,
                               forceElevated: innerBoxIsScrolled,
                               backgroundColor: Colors.transparent,
-                              expandedHeight: 400 < Get.size.height * 0.5 + 20
+                              collapsedHeight: 400 < Get.size.height * 0.5 + 20
                                   ? 400
                                   : Get.size.height * 0.5 + 20,
                               shape: RoundedRectangleBorder(
