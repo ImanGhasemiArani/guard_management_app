@@ -135,13 +135,18 @@ class HomeScreenListContent extends StatelessWidget {
             child: NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) => [
                 SliverAppBar(
+                  floating: true,
                   backgroundColor: Get.theme.colorScheme.background,
                   centerTitle: true,
                   surfaceTintColor: Get.theme.colorScheme.background,
                   title: Text(Strs.workingPlanForYouStr.tr),
                 ),
               ],
-              body: PlanEventContent(events: events),
+              body: Column(
+                children: [
+                  PlanEventContent(events: events),
+                ],
+              ),
             ),
           ),
         ),
