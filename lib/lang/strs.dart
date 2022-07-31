@@ -1,6 +1,19 @@
 class Strs {
   Strs._();
 
+  /// field's name String
+  static const String bossStr = "رئیس اداره";
+  static const String employeeStr = "کارمند";
+  static const String responsibleStr = "مسئول";
+
+  /// Errors messages
+  static const String invalidPhoneNumberErrorMessage =
+      "شماره موبایل وارد شده صحیح نمی باشد";
+  static const String invalidNationalIdErrorMessage =
+      "کد ملی وارد شده صحیح نمی باشد";
+  static const String invalidEmailErrorMessage = "ایمیل وارد شده صحیح نمی باشد";
+
+  /// other strings
   static const String appNameStr = "مدیریت کشیک";
   static const String loginStr = "ورود";
   static const String supportStr = "پشتیبانی";
@@ -23,8 +36,6 @@ class Strs {
   static const String supportDescriptionStr =
       "در صورت داشتن سوال یا مشکل با شماره ۰۹۳۹۶۵۴۳۶۴۲ تماس بگیرید";
   static const String passwordIsEmptyStr = "رمز عبور خالی است";
-  static const String phoneNumberIsInvalidStr = "تلفن همراه نامعتبر است";
-  static const String emailIsInvalidStr = "ایمیل نامعتبر است";
   static const String deviceInfoSuccessfullySentStr =
       "مشخصات دستگاه با موفقیت ثبت شد";
   static const String deviceInfoFailedToSendStr = "مشخصات دستگاه ثبت نشد";

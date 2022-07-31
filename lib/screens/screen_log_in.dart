@@ -161,7 +161,7 @@ class ScreenLogin extends HookWidget {
       );
     } else {
       if (!GetUtils.isEmail(email)) {
-        _loginErrorMessage.value = Strs.emailIsInvalidStr.tr;
+        _loginErrorMessage.value = Strs.invalidEmailErrorMessage.tr;
         return;
       }
       sendResetPasswordEmail(email);
@@ -180,12 +180,12 @@ class ScreenLogin extends HookWidget {
       return;
     }
     if (!RegExp(r"^[0]{0,1}9[0-9]{9}$").hasMatch(phone)) {
-      _loginErrorMessage.value = Strs.phoneNumberIsInvalidStr.tr;
+      _loginErrorMessage.value = Strs.invalidPhoneNumberErrorMessage.tr;
       return;
     }
     if (phone.startsWith("0")) phone = phone.substring(1);
     if (email.isNotEmpty && !GetUtils.isEmail(email)) {
-      _loginErrorMessage.value = Strs.emailIsInvalidStr.tr;
+      _loginErrorMessage.value = Strs.invalidEmailErrorMessage.tr;
       return;
     }
 
