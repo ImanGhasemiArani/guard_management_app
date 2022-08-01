@@ -2,12 +2,18 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sidebarx/sidebarx.dart';
 
 import '../../widget/btn_nav_bar/button_navigation_bar.dart';
+import '../../widget/drawer/my_drawer.dart';
 import '../screen_holder.dart';
-import 'employee_screen_account.dart';
 import 'employee_screen_calender.dart';
 import 'employee_screen_home.dart';
+
+final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+SidebarXController sideBarXController = SidebarXController(selectedIndex: 0);
+RxInt selectedIndexDrawer = 0.obs;
+RxBool isSideBarExpanded = false.obs;
 
 // ignore: must_be_immutable
 class EmployeeScreenHolder extends ScreenHolder {
@@ -17,8 +23,10 @@ class EmployeeScreenHolder extends ScreenHolder {
 
   @override
   Widget build(BuildContext context) {
+    setupDrawer();
     _pageController = usePageController(initialPage: 1);
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Theme.of(context).colorScheme.background,
       extendBody: true,
       body: PageView(
@@ -27,12 +35,31 @@ class EmployeeScreenHolder extends ScreenHolder {
         children: [
           ScreenCalender(),
           const ScreenHome(),
-          ScreenAccount(),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: BtnNavBar(pageController: _pageController),
+      endDrawerEnableOpenDragGesture: false,
+      endDrawer: SafeArea(
+        child: MyDrawer(sideBarXController: sideBarXController),
+      ),
     );
+  }
+
+  void setupDrawer() {
+    sideBarXController = SidebarXController(selectedIndex: 0);
+    selectedIndexDrawer = 0.obs;
+    isSideBarExpanded = false.obs;
+    sideBarXController.addListener(() {
+      if (selectedIndexDrawer.value != sideBarXController.selectedIndex) {
+        selectedIndexDrawer.value = sideBarXController.selectedIndex;
+        scaffoldKey.currentState!.closeEndDrawer();
+      } else if (isSideBarExpanded.value != sideBarXController.extended) {
+        isSideBarExpanded.value = sideBarXController.extended;
+      } else {
+        scaffoldKey.currentState!.closeEndDrawer();
+      }
+    });
   }
 }
 
@@ -83,22 +110,6 @@ class BtnNavBar extends StatelessWidget {
                 curve: Curves.easeInOut,
               );
               selectedTab.value = 1;
-            },
-          ),
-          ButtonNavigationItem(
-            icon: Icon(
-              CupertinoIcons.person,
-              color: selectedTab.value == 2 ? selectedColor : null,
-            ),
-            color: backgroundColorItem,
-            onPressed: () {
-              FocusManager.instance.primaryFocus!.unfocus();
-              pageController.animateToPage(
-                2,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-              selectedTab.value = 2;
             },
           ),
         ],

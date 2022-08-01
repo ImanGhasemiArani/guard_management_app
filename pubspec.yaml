@@ -47,6 +47,7 @@ dependencies:
   jiffy: ^5.0.0
   shamsi_date: ^1.0.1
   http: ^0.13.4
+  sidebarx: ^0.7.0
 
 
 dev_dependencies:

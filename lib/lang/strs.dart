@@ -9,6 +9,10 @@ class Strs {
   static const String phoneNumberStr = "تلفن همراه";
   static const String emailStr = "ایمیل";
   static const String addUserStr = "اضافه کردن کاربر";
+  static const String homeStr = "خانه";
+  static const String profileStr = "پروفایل";
+  static const String logoutStr = "خروج";
+  static const String calendarStr = "تقویم";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =
@@ -51,7 +55,6 @@ class Strs {
   static const String deviceInfoFailedToSendStr = "مشخصات دستگاه ثبت نشد";
   static const String loginSuccessfullyMessageStr = "با موفقیت وارد شدید";
   static const String emptyFieldsErrorStr = "لطفا فیلدهای خالی را پر کنید";
-  static const String logoutStr = "خروج";
   static const String noDataStr = "چیزی ثبت نشده است";
   static const String phoneNumberProfileStr = "تلفن همراه: ";
   static const String editEmailTitleStr = "ویرایش ایمیل";
