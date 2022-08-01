@@ -5,11 +5,14 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:http/http.dart' as http;
 
 import '../lang/strs.dart';
+import '../model/user.dart';
+import '../screens/screen_log_in.dart';
 import '../utils/device_info.dart';
 import '../utils/show_toast.dart';
 import 'service_locator.dart';
 
-ParseUser currentUser = ParseUser.createUser();
+ParseUser currentParseUser = ParseUser.createUser();
+User currentUser = user();
 
 Future<void> sendDeviceInfo(dynamic userPointer) async {
   if (sharedPreferences.getBool('isSendDeviceInfo') ?? false) return;
@@ -28,35 +31,29 @@ Future<void> sendDeviceInfo(dynamic userPointer) async {
 Future<MapEntry<bool, String?>> loginUser({
   String? username,
   String? password,
-  String? email,
   String? sessionToken,
 }) {
   if (sessionToken != null) {
     return _loginUserWithSessionToken(sessionToken);
   } else {
-    return _loginUserWithCredentials(username!, password!, email!);
+    return _loginUserWithCredentials(username!, password!);
   }
 }
 
 Future<MapEntry<bool, String?>> _loginUserWithCredentials(
   String username,
   String password,
-  String email,
 ) async {
-  var user = ParseUser(username, password, email);
+  var user = ParseUser(username, password, null);
   final response = await user.login();
   if (response.success) {
-    if (email.isNotEmpty) {
-      user.set("email", email);
-      await user.save();
-    }
     await secureStorage.write(key: 'sessionToken', value: user.sessionToken);
     await updateCurrentUserData();
     sendDeviceInfo(user.toPointer());
 
     return const MapEntry(true, null);
   } else {
-    return MapEntry(false, "${response.statusCode}-${response.error!.message}");
+    throw Exception(Strs.incorrectUsernameOrPasswordErrorMessage.tr);
   }
 }
 
@@ -72,6 +69,17 @@ Future<MapEntry<bool, String?>> _loginUserWithSessionToken(
   }
 }
 
+Future<void> logoutUser() async {
+  await currentParseUser.logout().then((value) {
+    if (value.success) {
+      currentUser = user();
+      secureStorage.deleteAll();
+    } else {
+      throw Exception(Strs.operationFailedErrorMessage.tr);
+    }
+  });
+}
+
 Future<void> sendResetPasswordEmail(String email) async {
   await ParseUser(null, null, email).requestPasswordReset();
   showSnackbar(Strs.sentResetPasswordEmailStr.tr);
@@ -83,21 +91,47 @@ Future<void> sendVerificationEmail(String email) async {
 }
 
 Future<MapEntry<bool, String?>> updateCurrentUserData() async {
-  currentUser = ParseUser.createUser();
-  var res = await currentUser.getUpdatedUser();
+  currentParseUser = ParseUser.createUser();
+  var res = await currentParseUser.getUpdatedUser();
+  currentUser = user(parseUser: currentParseUser);
   if (res.success) return const MapEntry(true, null);
   return const MapEntry(false, null);
 }
 
-Future<void> updateEmail(String email) async {
-  currentUser.set("email", email);
-  await currentUser.save();
+Future<void> updateEmailToServer(String email) async {
+  currentParseUser.set("email", email);
+  await currentParseUser.save().then((value) {
+    if (value.success) {
+      showSnackbar(Strs.operationSuccessfulMessageStr.tr);
+    } else {
+      throw Exception(Strs.operationFailedErrorMessage.tr);
+    }
+  });
   updateCurrentUserData();
 }
 
-Future<void> updatePassword(String password) async {
-  currentUser.set("password", password);
-  await currentUser.save();
+Future<void> updatePhoneToServer(String phone) async {
+  currentParseUser.set("phone", phone);
+  await currentParseUser.save().then((value) {
+    if (value.success) {
+      showSnackbar(Strs.operationSuccessfulMessageStr.tr);
+    } else {
+      throw Exception(Strs.operationFailedErrorMessage.tr);
+    }
+  });
+  updateCurrentUserData();
+}
+
+Future<void> updatePasswordToServer(String password) async {
+  currentParseUser.set("password", password);
+  await currentParseUser.save().then((value) {
+    if (value.success) {
+      Get.off(ScreenLogin());
+      showSnackbar(Strs.operationSuccessfulMessageStr.tr);
+    } else {
+      throw Exception(Strs.operationFailedErrorMessage.tr);
+    }
+  });
   updateCurrentUserData();
 }
 

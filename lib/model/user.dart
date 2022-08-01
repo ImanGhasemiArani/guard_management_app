@@ -1,10 +1,15 @@
 import 'package:get/get.dart';
+import 'package:guard_management_app/screens/admin_screen/admin_screen_holder.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
 import '../lang/strs.dart';
+import '../screens/employee_screen/employee_screen_holder.dart';
+import '../screens/responsible_screen/responsible_screen_holder.dart';
+import '../screens/screen_holder.dart';
+import '../services/server_service.dart';
 
-// ignore: library_private_types_in_public_api, non_constant_identifier_names
-_User User({
+User user({
   String? fName,
   String? fPCode,
   String? fNationalId,
@@ -13,24 +18,38 @@ _User User({
   String? fPhone,
   String? fGrade,
   String fUserType = 'C',
+  ParseUser? parseUser,
 }) {
-  switch (UserType.valueOf(fUserType.toUpperCase())) {
-    case UserType.A:
-      return UserBoss(fName, fPCode, fNationalId, fEmail, fPassword, fPhone,
-          fGrade, fUserType);
-    case UserType.B:
-      return UserResponsible(fName, fPCode, fNationalId, fEmail, fPassword,
-          fPhone, fGrade, fUserType);
-    case UserType.C:
-      return UserEmployee(fName, fPCode, fNationalId, fEmail, fPassword, fPhone,
-          fGrade, fUserType);
-    default:
-      return UserEmployee(fName, fPCode, fNationalId, fEmail, fPassword, fPhone,
-          fGrade, fUserType);
+  if (parseUser == null) {
+    switch (UserType.valueOf(fUserType.toUpperCase())) {
+      case UserType.A:
+        return Admin(fName, fPCode, fNationalId, fEmail, fPassword, fPhone,
+            fGrade, fUserType);
+      case UserType.B:
+        return Responsible(fName, fPCode, fNationalId, fEmail, fPassword,
+            fPhone, fGrade, fUserType);
+      case UserType.C:
+        return Employee(fName, fPCode, fNationalId, fEmail, fPassword, fPhone,
+            fGrade, fUserType);
+      default:
+        return Employee(fName, fPCode, fNationalId, fEmail, fPassword, fPhone,
+            fGrade, fUserType);
+    }
+  } else {
+    switch (UserType.valueOf(parseUser['userType'].toUpperCase())) {
+      case UserType.A:
+        return Admin.fromParseUser(parseUser);
+      case UserType.B:
+        return Responsible.fromParseUser(parseUser);
+      case UserType.C:
+        return Employee.fromParseUser(parseUser);
+      default:
+        return Employee.fromParseUser(parseUser);
+    }
   }
 }
 
-abstract class _User {
+abstract class User {
   String? _name;
   String? _pCode;
   String? _nationalId;
@@ -39,6 +58,8 @@ abstract class _User {
   String? _password;
   String? _grade;
   String? _userType;
+  UserType? _userTypeEnum;
+  ScreenHolder screenHolder;
 
   String? get name => _name;
   String? get phone => _phone;
@@ -48,17 +69,18 @@ abstract class _User {
   String? get password => _password;
   String? get grade => _grade;
   String? get userType => _userType;
+    UserType? get userTypeEnum => _userTypeEnum;
 
-  _User(
-    String? fName,
-    String? fPCode,
-    String? fNationalId,
-    String? fEmail,
-    String? fPassword,
-    String? fPhone,
-    String? fGrade,
-    String? fUserType,
-  ) {
+  User(
+      String? fName,
+      String? fPCode,
+      String? fNationalId,
+      String? fEmail,
+      String? fPassword,
+      String? fPhone,
+      String? fGrade,
+      String? fUserType,
+      this.screenHolder) {
     name = fName;
     pCode = fPCode;
     nationalId = fNationalId;
@@ -67,6 +89,17 @@ abstract class _User {
     password = fPassword;
     grade = fGrade;
     userType = fUserType;
+  }
+
+  User.fromParseUser(ParseUser parseUser, this.screenHolder) {
+    name = parseUser['name'];
+    pCode = parseUser['pCode'];
+    nationalId = parseUser.username;
+    phone = parseUser['phone'];
+    email = parseUser.emailAddress;
+    password = parseUser.password;
+    grade = parseUser['grade'];
+    userType = parseUser['userType'];
   }
 
   set name(String? name) {
@@ -110,40 +143,117 @@ abstract class _User {
   set userType(String? userType) {
     if (userType == null) return;
     userType = userType.toUpperCase();
-    _userType = UserType.valueOf(userType).value.tr;
+    _userTypeEnum = UserType.valueOf(userType);
+    _userType = _userTypeEnum!.value.tr;
   }
 
-  void getUser();
-}
+  void updatePhone(String newPhone) {
+    newPhone = newPhone.trim();
+    phone = newPhone.trim();
+    updatePhoneToServer(newPhone);
+  }
 
-class UserBoss extends _User {
-  UserBoss(super.fName, super.fPCode, super.fNationalId, super.fEmail,
-      super.fPassword, super.fPhone, super.fGrade, super.fUserType);
+  void updateEmail(String newEmail) {
+    newEmail = newEmail.trim();
+    email = newEmail.trim();
+    updateEmailToServer(newEmail);
+  }
+
+  void updatePassword(String password) {
+    updatePasswordToServer(password);
+  }
 
   @override
-  void getUser() {
-    // TODO: implement getUser
+  String toString() {
+    return 'name: $name, pCode: $pCode, nationalId: $nationalId, phone: $phone, email: $email, password: $password, grade: $grade, userType: $userType';
   }
 }
 
-class UserResponsible extends _User {
-  UserResponsible(super.fName, super.fPCode, super.fNationalId, super.fEmail,
-      super.fPassword, super.fPhone, super.fGrade, super.fUserType);
+class Admin extends User {
+  Admin(
+    String? fName,
+    String? fPCode,
+    String? fNationalId,
+    String? fEmail,
+    String? fPassword,
+    String? fPhone,
+    String? fGrade,
+    String? fUserType,
+  ) : super(
+          fName,
+          fPCode,
+          fNationalId,
+          fEmail,
+          fPassword,
+          fPhone,
+          fGrade,
+          fUserType,
+          AdminScreenHolder(),
+        );
 
-  @override
-  void getUser() {
-    // TODO: implement getUser
-  }
+  Admin.fromParseUser(ParseUser parseUser)
+      : super.fromParseUser(
+          parseUser,
+          AdminScreenHolder(),
+        );
 }
 
-class UserEmployee extends _User {
-  UserEmployee(super.fName, super.fPCode, super.fNationalId, super.fEmail,
-      super.fPassword, super.fPhone, super.fGrade, super.fUserType);
+class Responsible extends User {
+  Responsible(
+    String? fName,
+    String? fPCode,
+    String? fNationalId,
+    String? fEmail,
+    String? fPassword,
+    String? fPhone,
+    String? fGrade,
+    String? fUserType,
+  ) : super(
+          fName,
+          fPCode,
+          fNationalId,
+          fEmail,
+          fPassword,
+          fPhone,
+          fGrade,
+          fUserType,
+          ResponsibleScreenHolder(),
+        );
 
-  @override
-  void getUser() {
-    // TODO: implement getUser
-  }
+  Responsible.fromParseUser(ParseUser parseUser)
+      : super.fromParseUser(
+          parseUser,
+          ResponsibleScreenHolder(),
+        );
+}
+
+class Employee extends User {
+  Employee(
+    String? fName,
+    String? fPCode,
+    String? fNationalId,
+    String? fEmail,
+    String? fPassword,
+    String? fPhone,
+    String? fGrade,
+    String? fUserType,
+  ) : super(
+          fName,
+          fPCode,
+          fNationalId,
+          fEmail,
+          fPassword,
+          fPhone,
+          fGrade,
+          fUserType,
+          EmployeeScreenHolder(),
+        );
+
+  Employee.fromParseUser(ParseUser parseUser)
+      : super.fromParseUser(
+          parseUser,
+          EmployeeScreenHolder(),
+        );
 }
 
 enum UserType {

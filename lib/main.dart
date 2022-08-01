@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:guard_management_app/services/server_service.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'init_app_start.dart';
 import 'lang/strs.dart';
-import 'screens/screen_holder.dart';
 import 'screens/screen_log_in.dart';
+import 'screens/employee_screen/employee_screen_holder.dart';
 import 'services/localization_service.dart';
 import 'services/service_locator.dart';
 import 'utils/log.dart';
@@ -74,7 +75,7 @@ class ScreenApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if ((snapshot.data as MapEntry<bool, String?>).key) {
-              return ScreenHolder();
+              return currentUser.screenHolder;
             } else {
               return ScreenLogin();
             }

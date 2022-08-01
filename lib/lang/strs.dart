@@ -4,7 +4,11 @@ class Strs {
   /// field's name String
   static const String bossStr = "رئیس اداره";
   static const String employeeStr = "کارمند";
-  static const String responsibleStr = "مسئول";
+  static const String responsibleStr = "مسئول واحد";
+  static const String nationalIdStr = "کد ملی";
+  static const String phoneNumberStr = "تلفن همراه";
+  static const String emailStr = "ایمیل";
+  static const String addUserStr = "اضافه کردن کاربر";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =
@@ -12,6 +16,14 @@ class Strs {
   static const String invalidNationalIdErrorMessage =
       "کد ملی وارد شده صحیح نمی باشد";
   static const String invalidEmailErrorMessage = "ایمیل وارد شده صحیح نمی باشد";
+  static const String incorrectUsernameOrPasswordErrorMessage =
+      "نام کاربری یا رمز عبور اشتباه است";
+  static const String operationFailedErrorMessage = "عملیات با خطا مواجه شد";
+
+  /// Notification messages
+  static const String operationSuccessfulMessageStr = "عملیات با موفقیت انجام شد";
+  static const String callSupportToResetPasswordMessage =
+      "برای بازیابی رمز عبور باید با پشتیبانی تماس بگیرید";
 
   /// other strings
   static const String appNameStr = "مدیریت کشیک";
@@ -28,9 +40,7 @@ class Strs {
   static const String tryAgainStr = "تلاش مجدد";
   static const String okStr = "باشه";
   static const String cancelStr = "لغو";
-  static const String phoneNumberStr = "تلفن همراه";
   static const String passwordStr = "رمز عبور";
-  static const String emailStr = "ایمیل (اختیاری)";
   static const String emailInputDescriptionStr =
       "ایمیل وارد شده برای بعضی اطلاع رسانی ها و بازیابی رمز عبور استفاده خواهد شد. اگر برای بار اول است که وارد میشوید، این قسمت را پر کنید";
   static const String supportDescriptionStr =
@@ -40,13 +50,10 @@ class Strs {
       "مشخصات دستگاه با موفقیت ثبت شد";
   static const String deviceInfoFailedToSendStr = "مشخصات دستگاه ثبت نشد";
   static const String loginSuccessfullyMessageStr = "با موفقیت وارد شدید";
-  static const String loginFailedMessageStr =
-      "نام کاربری یا رمز عبور اشتباه است";
   static const String emptyFieldsErrorStr = "لطفا فیلدهای خالی را پر کنید";
   static const String logoutStr = "خروج";
   static const String noDataStr = "چیزی ثبت نشده است";
   static const String phoneNumberProfileStr = "تلفن همراه: ";
-  static const String emailProfileStr = "ایمیل: ";
   static const String editEmailTitleStr = "ویرایش ایمیل";
   static const String saveStr = "ذخیره";
   static const String successfullyWorkStr = "با موفقیت انجام شد";

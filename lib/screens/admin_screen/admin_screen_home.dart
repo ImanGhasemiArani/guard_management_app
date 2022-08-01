@@ -5,8 +5,8 @@ import 'package:guard_management_app/widget/staggered_animations/flutter_stagger
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
-import '../lang/strs.dart';
-import '../widget/calendar/src/persian_date.dart';
+import '../../lang/strs.dart';
+import '../../widget/calendar/src/persian_date.dart';
 
 class ScreenHome extends StatelessWidget {
   const ScreenHome({
@@ -102,7 +102,7 @@ class ScreenHome extends StatelessWidget {
 
   Map<DateTime, List<dynamic>> _getCurrentUserEvents(
       Map<DateTime, List> allEvents) {
-    var userId = currentUser.objectId!;
+    var userId = currentParseUser.objectId!;
     var currentUserEvents = <DateTime, List<dynamic>>{};
     allEvents.forEach((dateTime, events) {
       var userEvents = events.where((event) {

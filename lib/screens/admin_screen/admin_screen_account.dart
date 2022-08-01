@@ -4,11 +4,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import '../lang/strs.dart';
-import '../services/server_service.dart';
-import '../services/service_locator.dart';
-import '../utils/show_toast.dart';
-import 'screen_log_in.dart';
+import '../../lang/strs.dart';
+import '../../services/server_service.dart';
+import '../../utils/show_toast.dart';
+import '../screen_log_in.dart';
 
 // ignore: must_be_immutable
 class ScreenAccount extends HookWidget {
@@ -16,11 +15,13 @@ class ScreenAccount extends HookWidget {
 
   late TextEditingController _passwordController;
   late TextEditingController _emailController;
+  late TextEditingController _phoneController;
 
   @override
   Widget build(BuildContext context) {
     _passwordController = useTextEditingController();
     _emailController = useTextEditingController();
+    _phoneController = useTextEditingController();
     var high = MediaQuery.of(context).size.height / 3;
     return FutureBuilder(
       future: updateCurrentUserData(),
@@ -77,8 +78,11 @@ class ScreenAccount extends HookWidget {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Column(children: [
-                                const UsernameContent(),
-                                const Divider(thickness: 2),
+                                PhoneContent(phoneController: _phoneController),
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                                  child: Divider(thickness: 2),
+                                ),
                                 EmailContent(emailController: _emailController),
                                 const Padding(
                                   padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -130,10 +134,11 @@ class ScreenAccount extends HookWidget {
   }
 
   void _onLogoutButtonPressed() {
-    currentUser.logout().then((value) {
-      secureStorage.deleteAll();
-      Get.off(ScreenLogin());
-    });
+    try {
+      logoutUser().then((value) => Get.off(ScreenLogin()));
+    } catch (e) {
+      showSnackbar("$e".replaceAll("Exception:", ""));
+    }
   }
 }
 
@@ -150,14 +155,14 @@ class NameContent extends StatelessWidget {
         direction: Axis.vertical,
         children: [
           Text(
-            currentUser.get('name') as String,
+            currentUser.name!,
             style: const TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
-            "${currentUser.get('roleRank') as String} - ${currentUser.get('rank') as String}",
+            "${currentUser.userType} - ${currentUser.grade}",
             style: const TextStyle(fontSize: 16),
           ),
         ],
@@ -260,12 +265,11 @@ class PasswordContent extends StatelessWidget {
     if (password.isEmpty) {
       return;
     }
-    updatePassword(password).then(
-      (value) {
-        showSnackbar(Strs.successfullyWorkStr.tr);
-        Get.off(ScreenLogin());
-      },
-    );
+    try {
+      currentUser.updatePassword(password);
+    } catch (e) {
+      showSnackbar("$e".replaceAll("Exception:", ""));
+    }
   }
 }
 
@@ -284,15 +288,31 @@ class EmailContent extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Wrap(
-          direction: Axis.horizontal,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        Row(
           children: [
-            Text(
-              Strs.emailProfileStr.tr,
-              style: const TextStyle(fontSize: 18),
+            Expanded(
+              child: Obx(
+                () => TextField(
+                  controller: emailController..text = currentUser.email ?? "",
+                  readOnly: !isEditable.value,
+                  decoration: InputDecoration(
+                    labelText: Strs.emailStr.tr,
+                    labelStyle: const TextStyle(fontSize: 18),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Get.theme.colorScheme.onBackground),
+                    ),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                ),
+              ),
             ),
             IconButton(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               enableFeedback: false,
               onPressed: () {
                 isEditable.value = true;
@@ -302,25 +322,6 @@ class EmailContent extends StatelessWidget {
               ),
             ),
           ],
-        ),
-        Obx(
-          () => TextField(
-            controller: emailController..text = currentUser.emailAddress ?? "",
-            readOnly: !isEditable.value,
-            decoration: InputDecoration(
-              labelText: Strs.emailStr.tr,
-              labelStyle: const TextStyle(fontSize: 18),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide:
-                    BorderSide(color: Get.theme.colorScheme.onBackground),
-              ),
-            ),
-            keyboardType: TextInputType.emailAddress,
-          ),
         ),
         Obx(
           () => Visibility(
@@ -348,46 +349,94 @@ class EmailContent extends StatelessWidget {
   void _onEditEmailSaveButtonPressed() {
     FocusManager.instance.primaryFocus!.unfocus();
     final email = emailController.text;
-    if (email.isNotEmpty && !GetUtils.isEmail(email)) {
-      emailController.text = currentUser.emailAddress ?? "";
-      return;
+    try {
+      currentUser.updateEmail(email);
+    } catch (e) {
+      showSnackbar("$e".replaceAll("Exception:", ""));
     }
-    updateEmail(email).then(
-      (value) {
-        showSnackbar(Strs.successfullyWorkStr.tr);
-      },
-    );
   }
 }
 
-class UsernameContent extends StatelessWidget {
-  const UsernameContent({
+class PhoneContent extends StatelessWidget {
+  const PhoneContent({
     Key? key,
+    required this.phoneController,
   }) : super(key: key);
+
+  final TextEditingController phoneController;
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      direction: Axis.vertical,
-      alignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
+    final RxBool isEditable = false.obs;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          Strs.phoneNumberProfileStr.tr,
-          style: const TextStyle(fontSize: 18),
-        ),
-        Tooltip(
-          message: "+98 ${currentUser.username!}",
-          child: Text(
-            "+98 ${currentUser.username!}",
-            style: const TextStyle(
-              fontSize: 20,
+        Row(
+          children: [
+            Expanded(
+              child: Obx(
+                () => TextField(
+                  controller: phoneController..text = currentUser.phone ?? "",
+                  readOnly: !isEditable.value,
+                  decoration: InputDecoration(
+                    labelText: Strs.phoneNumberStr.tr,
+                    labelStyle: const TextStyle(fontSize: 18),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Get.theme.colorScheme.onBackground),
+                    ),
+                  ),
+                  keyboardType: TextInputType.phone,
+                ),
+              ),
             ),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
+            IconButton(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              enableFeedback: false,
+              onPressed: () {
+                isEditable.value = true;
+              },
+              icon: const Icon(
+                CupertinoIcons.pencil,
+              ),
+            ),
+          ],
+        ),
+        Obx(
+          () => Visibility(
+            visible: isEditable.value,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CupertinoButton(
+                onPressed: () {
+                  _onEditPhoneSaveButtonPressed();
+                  isEditable.value = false;
+                },
+                child: Text(
+                  Strs.saveStr.tr,
+                  style: TextStyle(
+                      fontFamily: Get.theme.textTheme.button!.fontFamily),
+                ),
+              ),
+            ),
           ),
         ),
       ],
     );
+  }
+
+  void _onEditPhoneSaveButtonPressed() {
+    FocusManager.instance.primaryFocus!.unfocus();
+    final phone = phoneController.text;
+    try {
+      currentUser.updatePhone(phone);
+    } catch (e) {
+      showSnackbar("$e".replaceAll("Exception:", ""));
+    }
   }
 }

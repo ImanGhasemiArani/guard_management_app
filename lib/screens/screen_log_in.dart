@@ -5,9 +5,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 
 import '../lang/strs.dart';
+import '../model/user.dart';
 import '../services/server_service.dart';
 import '../utils/show_toast.dart';
-import 'screen_holder.dart';
 
 // ignore: must_be_immutable
 class ScreenLogin extends HookWidget {
@@ -17,13 +17,11 @@ class ScreenLogin extends HookWidget {
 
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
-  late TextEditingController _emailController;
 
   @override
   Widget build(BuildContext context) {
     _usernameController = useTextEditingController();
     _passwordController = useTextEditingController();
-    _emailController = useTextEditingController();
     return Scaffold(
       extendBody: true,
       backgroundColor: Get.theme.colorScheme.background,
@@ -55,10 +53,6 @@ class ScreenLogin extends HookWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: PasswordField(passwordController: _passwordController),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: EmailField(emailController: _emailController),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -128,44 +122,7 @@ class ScreenLogin extends HookWidget {
   void _onRestPasswordButtonPressed() {
     _loginErrorMessage.value = "";
     FocusManager.instance.primaryFocus!.unfocus();
-
-    String email = _emailController.text;
-    if (email.isEmpty) {
-      showCupertinoDialog(
-        context: Get.context!,
-        builder: (BuildContext buildContext) {
-          return CupertinoAlertDialog(
-            title: Text(
-              Strs.resetPasswordStr.tr,
-              style: TextStyle(
-                  fontFamily: Get.theme.textTheme.button!.fontFamily,
-                  fontSize: 16),
-            ),
-            content: Text(
-              Strs.resetPasswordDescriptionStr.tr,
-              style: TextStyle(
-                  fontFamily: Get.theme.textTheme.button!.fontFamily,
-                  fontSize: 14),
-            ),
-            actions: <Widget>[
-              CupertinoDialogAction(
-                isDefaultAction: true,
-                child: Text(Strs.okStr.tr),
-                onPressed: () {
-                  Get.back();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      if (!GetUtils.isEmail(email)) {
-        _loginErrorMessage.value = Strs.invalidEmailErrorMessage.tr;
-        return;
-      }
-      sendResetPasswordEmail(email);
-    }
+    showSnackbar(Strs.callSupportToResetPasswordMessage.tr);
   }
 
   Future<void> _onLoginPressed() async {
@@ -174,32 +131,17 @@ class ScreenLogin extends HookWidget {
 
     String phone = _usernameController.text;
     final password = _passwordController.text;
-    final email = _emailController.text;
-    if (phone.isEmpty || password.isEmpty) {
-      _loginErrorMessage.value = Strs.emptyFieldsErrorStr.tr;
-      return;
-    }
-    if (!RegExp(r"^[0]{0,1}9[0-9]{9}$").hasMatch(phone)) {
-      _loginErrorMessage.value = Strs.invalidPhoneNumberErrorMessage.tr;
-      return;
-    }
-    if (phone.startsWith("0")) phone = phone.substring(1);
-    if (email.isNotEmpty && !GetUtils.isEmail(email)) {
-      _loginErrorMessage.value = Strs.invalidEmailErrorMessage.tr;
-      return;
-    }
+    try {
+      user(fNationalId: phone, fPassword: password);
+      await loginUser(username: phone, password: password);
 
-    final result =
-        await loginUser(username: phone, password: password, email: email);
-    if (!result.key) {
-      _loginErrorMessage.value = Strs.loginFailedMessageStr.tr;
-      return;
+      showSnackbar(Strs.loginSuccessfullyMessageStr.tr,
+          duration: const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
+      Get.off(currentUser.screenHolder, transition: Transition.cupertino);
+    } catch (e) {
+      _loginErrorMessage.value = "$e".replaceAll("Exception:", "").trim();
     }
-
-    showSnackbar(Strs.loginSuccessfullyMessageStr.tr,
-        duration: const Duration(seconds: 1));
-    await Future.delayed(const Duration(seconds: 1));
-    Get.off(ScreenHolder(), transition: Transition.cupertino);
   }
 
   Widget _getErrorMessageBox() {
@@ -219,44 +161,6 @@ class ScreenLogin extends HookWidget {
   }
 }
 
-class EmailField extends StatelessWidget {
-  const EmailField({
-    Key? key,
-    required this.emailController,
-  }) : super(key: key);
-
-  final TextEditingController emailController;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: emailController,
-      decoration: InputDecoration(
-        labelText: Strs.emailStr.tr,
-        labelStyle: const TextStyle(fontSize: 18),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Get.theme.colorScheme.onBackground),
-        ),
-        suffixIcon: Tooltip(
-          message: Strs.emailInputDescriptionStr.tr,
-          enableFeedback: false,
-          margin: const EdgeInsets.symmetric(horizontal: 20),
-          showDuration: const Duration(seconds: 3),
-          child: Icon(
-            CupertinoIcons.info,
-            color: Get.theme.colorScheme.onBackground,
-          ),
-        ),
-      ),
-      keyboardType: TextInputType.emailAddress,
-    );
-  }
-}
-
 class UsernameField extends StatelessWidget {
   const UsernameField({
     Key? key,
@@ -270,7 +174,7 @@ class UsernameField extends StatelessWidget {
     return TextField(
       controller: usernameController,
       decoration: InputDecoration(
-        labelText: Strs.phoneNumberStr.tr,
+        labelText: Strs.nationalIdStr.tr,
         labelStyle: const TextStyle(fontSize: 18),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -279,9 +183,8 @@ class UsernameField extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: Get.theme.colorScheme.onBackground),
         ),
-        prefixText: "+98 ",
       ),
-      keyboardType: TextInputType.phone,
+      keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
     );
   }
