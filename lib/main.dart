@@ -7,7 +7,6 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'init_app_start.dart';
 import 'lang/strs.dart';
 import 'screens/screen_log_in.dart';
-import 'screens/employee_screen/employee_screen_holder.dart';
 import 'services/localization_service.dart';
 import 'services/service_locator.dart';
 import 'utils/log.dart';
@@ -45,6 +44,10 @@ class MainMaterial extends StatelessWidget {
             button: const TextStyle().copyWith(
               fontFamily: LocalizationService.fontFamily,
             ),
+          ),
+          appBarTheme: const AppBarTheme().copyWith(
+            color: Colors.transparent,
+            elevation: 0,
           ),
           brightness: Brightness.dark,
           colorScheme: const ColorScheme.dark().copyWith(

@@ -18,16 +18,41 @@ class ScreenHome extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: GetPlatform.isMobile
             ? AppBar(
-                backgroundColor: Colors.transparent,
-                actions: [
-                  GestureDetector(
-                    child: const Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Icon(CupertinoIcons.bars),
+                automaticallyImplyLeading: false,
+                title: GestureDetector(
+                  onTap: () {},
+                  child: const Card(
+                    child: Padding(
+                      padding: EdgeInsets.all(14),
+                      child: Icon(CupertinoIcons.envelope),
                     ),
-                    onTap: () {
-                      scaffoldKey.currentState!.openEndDrawer();
-                    },
+                  ),
+                ),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: GestureDetector(
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Row(
+                            children: [
+                              Text(
+                                Strs.appNameStr.tr,
+                                style: Get.theme.textTheme.headline6,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 15),
+                                child: Icon(CupertinoIcons.bars),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      onTap: () {
+                        scaffoldKey.currentState!.openEndDrawer();
+                      },
+                    ),
                   ),
                 ],
               )

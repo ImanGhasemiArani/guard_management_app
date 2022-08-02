@@ -1,6 +1,11 @@
 class Strs {
   Strs._();
 
+  /// App info
+  static const String appNameStr = "سکه";
+  static const String appFullNameStr = "سامانه کشیک هوشمند";
+  static const String appVersionStr = "نسخه ۱.۰.۰";
+
   /// field's name String
   static const String bossStr = "رئیس اداره";
   static const String employeeStr = "کارمند";
@@ -13,6 +18,11 @@ class Strs {
   static const String profileStr = "پروفایل";
   static const String logoutStr = "خروج";
   static const String calendarStr = "تقویم";
+  static const String termsAndConditionsStr = "قوانین و مقررات";
+  static const String guideStr = "راهنما";
+  static const String aboutAppStr = "درباره برنامه";
+  static const String supportStr = "پشتیبانی";
+  static const String settingsStr = "تنظیمات";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =
@@ -25,14 +35,13 @@ class Strs {
   static const String operationFailedErrorMessage = "عملیات با خطا مواجه شد";
 
   /// Notification messages
-  static const String operationSuccessfulMessageStr = "عملیات با موفقیت انجام شد";
+  static const String operationSuccessfulMessageStr =
+      "عملیات با موفقیت انجام شد";
   static const String callSupportToResetPasswordMessage =
       "برای بازیابی رمز عبور باید با پشتیبانی تماس بگیرید";
 
   /// other strings
-  static const String appNameStr = "مدیریت کشیک";
   static const String loginStr = "ورود";
-  static const String supportStr = "پشتیبانی";
   static const String resetPasswordStr = "بازیابی رمز عبور";
   static const String resetPasswordDescriptionStr =
       "ایمیلی که قبلا در اکانت خود وارد کردید را در قسمت ایمیل وارد کنید و سپس روی دکمه بازیابی رمز عبور کلیک کنید. سپس لینک بازیابی به ایمیل شما ارسال میشود";

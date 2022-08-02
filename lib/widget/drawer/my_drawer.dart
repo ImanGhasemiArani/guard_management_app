@@ -99,6 +99,53 @@ class MyDrawer extends StatelessWidget {
                   ),
                 ),
               ),
+        footerBuilder: (context, extended) {
+          return extended
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    children: [
+                      Text(
+                        Strs.appNameStr.tr,
+                        style: Get.theme.textTheme.headline6,
+                      ),
+                      Text(Strs.appFullNameStr.tr),
+                      Text(Strs.appVersionStr.tr),
+                    ],
+                  ),
+                )
+              : const SizedBox();
+        },
+        toggleButtonBuilder: (context, extended) {
+          return InkWell(
+            key: const Key('sidebarx_toggle_button'),
+            splashColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            onTap: () {
+              _sideBarXController.toggleExtended();
+            },
+            enableFeedback: false,
+            child: Row(
+              mainAxisAlignment: _sideBarXController.extended
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(14.0),
+                  child: Icon(
+                    _sideBarXController.extended
+                        ? CupertinoIcons.chevron_forward
+                        : CupertinoIcons.chevron_back,
+                    color: Get.theme.colorScheme.onSurface.withOpacity(0.7),
+                    size: 20,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
         items: [
           SidebarXItem(
             icon: CupertinoIcons.home,
@@ -111,7 +158,32 @@ class MyDrawer extends StatelessWidget {
             onTap: () {},
           ),
           SidebarXItem(
-            icon: Icons.logout_rounded,
+            icon: CupertinoIcons.gear_big,
+            label: Strs.settingsStr.tr,
+            onTap: () {},
+          ),
+          SidebarXItem(
+            icon: CupertinoIcons.question,
+            label: Strs.guideStr.tr,
+            onTap: () {},
+          ),
+          SidebarXItem(
+            icon: CupertinoIcons.person_2,
+            label: Strs.supportStr.tr,
+            onTap: () {},
+          ),
+          SidebarXItem(
+            icon: CupertinoIcons.lock_shield,
+            label: Strs.termsAndConditionsStr.tr,
+            onTap: () {},
+          ),
+          SidebarXItem(
+            icon: CupertinoIcons.info_circle,
+            label: Strs.aboutAppStr.tr,
+            onTap: () {},
+          ),
+          SidebarXItem(
+            icon: CupertinoIcons.square_arrow_left,
             label: Strs.logoutStr.tr,
             onTap: () {},
           ),
