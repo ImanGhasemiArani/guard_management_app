@@ -25,6 +25,8 @@ class Strs {
   static const String settingsStr = "تنظیمات";
   static const String exchangeRequestStr = "درخواست تعویض";
   static const String leaveRequestStr = "درخواست مرخصی";
+  static const String formsStr = "فرم ها";
+  static const String historyStr = "تاریخچه";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =

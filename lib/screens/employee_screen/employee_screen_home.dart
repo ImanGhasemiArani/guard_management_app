@@ -31,7 +31,7 @@ class ScreenHome extends StatelessWidget {
           MyDrawer(sideBarXController: sideBarXController),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(30),
             child: Directionality(
               textDirection: TextDirection.rtl,
               child: AnimationLimiter(
@@ -43,17 +43,21 @@ class ScreenHome extends StatelessWidget {
                       index: 0,
                       label: Strs.exchangeRequestStr.tr,
                       icon: CupertinoIcons.doc_text,
-                      onTap: () {
-                        print('exchange request');
-                      },
                     ),
                     HomeGridChild(
                       index: 1,
                       label: Strs.leaveRequestStr.tr,
                       icon: CupertinoIcons.doc_person,
-                      onTap: () {
-                        print("leave request");
-                      },
+                    ),
+                    HomeGridChild(
+                      index: 2,
+                      label: Strs.formsStr.tr,
+                      icon: CupertinoIcons.doc_plaintext,
+                    ),
+                    HomeGridChild(
+                      index: 3,
+                      label: Strs.historyStr.tr,
+                      icon: CupertinoIcons.time,
                     ),
                   ],
                 ),
@@ -130,7 +134,7 @@ class HomeGridChild extends StatelessWidget {
         verticalOffset: 50,
         child: FadeInAnimation(
           child: Card(
-            elevation: 8,
+            elevation: 10,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
@@ -138,15 +142,22 @@ class HomeGridChild extends StatelessWidget {
               enableFeedback: false,
               highlightColor: Colors.transparent,
               borderRadius: BorderRadius.circular(20),
-              onTap: onTap,
-              child: Column(
-                textDirection: TextDirection.rtl,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(icon, size: 50),
-                  Text(label),
-                ],
+              onTap: onTap ?? () {},
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    textDirection: TextDirection.rtl,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(icon, size: 45),
+                      const SizedBox(height: 10),
+                      Text(label),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
