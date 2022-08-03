@@ -23,6 +23,8 @@ class Strs {
   static const String aboutAppStr = "درباره برنامه";
   static const String supportStr = "پشتیبانی";
   static const String settingsStr = "تنظیمات";
+  static const String exchangeRequestStr = "درخواست تعویض";
+  static const String leaveRequestStr = "درخواست مرخصی";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =
@@ -71,7 +73,6 @@ class Strs {
   static const String successfullyWorkStr = "با موفقیت انجام شد";
   static const String editPasswordStr = "تغییر رمز عبور";
   static const String sentVerificationEmailStr = "ایمیل تایید ارسال شد";
-  static const String requestExChangePlanStr = "درخواست تعویض";
   static const String eventDayContentTitleStr = "مناسبت های روز";
   static const String workingPlanTitleStr = "شیفت ها";
   static const String workingPlanStr = "برنامه کاری";
