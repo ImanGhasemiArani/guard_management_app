@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:guard_management_app/services/server_service.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'init_app_start.dart';
 import 'lang/strs.dart';
 import 'screens/screen_log_in.dart';
 import 'services/localization_service.dart';
+import 'services/server_service.dart';
 import 'services/service_locator.dart';
 import 'utils/log.dart';
+import 'widget/loading_widget/loading_widget.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +50,7 @@ class MainMaterial extends StatelessWidget {
             elevation: 0,
           ),
           brightness: Brightness.dark,
+          scaffoldBackgroundColor: const Color(0xff001021),
           colorScheme: const ColorScheme.dark().copyWith(
             background: const Color(0xff001021),
             onBackground: const Color(0xffefedff),
@@ -72,7 +73,6 @@ class ScreenApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Get.theme.colorScheme.background,
       body: FutureBuilder(
         future: setupServices(),
         builder: (context, snapshot) {
@@ -96,15 +96,10 @@ class ScreenSplash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return const SizedBox(
       width: double.infinity,
       height: double.infinity,
-      child: Center(
-        child: LoadingAnimationWidget.dotsTriangle(
-          color: const Color(0xfff5d042),
-          size: 40,
-        ),
-      ),
+      child: LoadingWidget(),
     );
   }
 }

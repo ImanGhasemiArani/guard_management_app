@@ -27,7 +27,6 @@ class EmployeeScreenHolder extends ScreenHolder {
     _pageController = usePageController(initialPage: 1);
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Theme.of(context).colorScheme.background,
       extendBody: true,
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),

@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../lang/strs.dart';
 import '../../services/server_service.dart';
 import '../../utils/show_toast.dart';
+import '../../widget/loading_widget/loading_widget.dart';
 import '../screen_log_in.dart';
 
 // ignore: must_be_immutable
@@ -109,12 +109,7 @@ class ScreenAccount extends HookWidget {
             }
           }
         } else {
-          return Center(
-            child: LoadingAnimationWidget.dotsTriangle(
-              color: const Color(0xfff5d042),
-              size: 40,
-            ),
-          );
+          return const LoadingWidget();
         }
       },
     );

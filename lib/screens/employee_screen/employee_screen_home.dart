@@ -16,7 +16,6 @@ class ScreenHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: GetPlatform.isMobile ? getAppBar() : null,
         body: getBody(),
       ),

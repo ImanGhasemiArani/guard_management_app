@@ -24,7 +24,6 @@ class ScreenLogin extends HookWidget {
     _passwordController = useTextEditingController();
     return Scaffold(
       extendBody: true,
-      backgroundColor: Get.theme.colorScheme.background,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
