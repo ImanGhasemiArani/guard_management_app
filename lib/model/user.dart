@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:guard_management_app/screens/admin_screen/admin_screen_holder.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
 import '../lang/strs.dart';
+import '../screens/admin_screen/admin_screen_holder.dart';
 import '../screens/employee_screen/employee_screen_holder.dart';
 import '../screens/responsible_screen/responsible_screen_holder.dart';
 import '../screens/screen_holder.dart';
@@ -11,29 +11,29 @@ import '../services/server_service.dart';
 
 User user({
   String? fName,
-  String? fPCode,
   String? fNationalId,
   String? fEmail,
   String? fPassword,
   String? fPhone,
-  String? fGrade,
+  String? fPost,
+  String? fOrganPos,
   String fUserType = 'C',
   ParseUser? parseUser,
 }) {
   if (parseUser == null) {
     switch (UserType.valueOf(fUserType.toUpperCase())) {
       case UserType.A:
-        return Admin(fName, fPCode, fNationalId, fEmail, fPassword, fPhone,
-            fGrade, fUserType);
+        return Admin(fName, fNationalId, fEmail, fPassword, fPhone, fPost,
+            fOrganPos, fUserType);
       case UserType.B:
-        return Responsible(fName, fPCode, fNationalId, fEmail, fPassword,
-            fPhone, fGrade, fUserType);
+        return Responsible(fName, fNationalId, fEmail, fPassword, fPhone, fPost,
+            fOrganPos, fUserType);
       case UserType.C:
-        return Employee(fName, fPCode, fNationalId, fEmail, fPassword, fPhone,
-            fGrade, fUserType);
+        return Employee(fName, fNationalId, fEmail, fPassword, fPhone, fPost,
+            fOrganPos, fUserType);
       default:
-        return Employee(fName, fPCode, fNationalId, fEmail, fPassword, fPhone,
-            fGrade, fUserType);
+        return Employee(fName, fNationalId, fEmail, fPassword, fPhone, fPost,
+            fOrganPos, fUserType);
     }
   } else {
     switch (UserType.valueOf(parseUser['userType'].toUpperCase())) {
@@ -51,54 +51,54 @@ User user({
 
 abstract class User {
   String? _name;
-  String? _pCode;
   String? _nationalId;
   String? _phone;
   String? _email;
   String? _password;
-  String? _grade;
+  String? _post;
+  String? _organPos;
   String? _userType;
   UserType? _userTypeEnum;
   ScreenHolder screenHolder;
 
   String? get name => _name;
   String? get phone => _phone;
-  String? get pCode => _pCode;
   String? get nationalId => _nationalId;
   String? get email => _email;
   String? get password => _password;
-  String? get grade => _grade;
+  String? get post => _post;
+  String? get organPos => _organPos;
   String? get userType => _userType;
-    UserType? get userTypeEnum => _userTypeEnum;
+  UserType? get userTypeEnum => _userTypeEnum;
 
   User(
       String? fName,
-      String? fPCode,
       String? fNationalId,
       String? fEmail,
       String? fPassword,
       String? fPhone,
-      String? fGrade,
+      String? fPost,
+      String? fOrganPos,
       String? fUserType,
       this.screenHolder) {
     name = fName;
-    pCode = fPCode;
     nationalId = fNationalId;
     phone = fPhone;
     email = fEmail;
     password = fPassword;
-    grade = fGrade;
+    post = fPost;
+    organPos = fOrganPos;
     userType = fUserType;
   }
 
   User.fromParseUser(ParseUser parseUser, this.screenHolder) {
     name = parseUser['name'];
-    pCode = parseUser['pCode'];
     nationalId = parseUser.username;
     phone = parseUser['phone'];
     email = parseUser.emailAddress;
     password = parseUser.password;
-    grade = parseUser['grade'];
+    post = parseUser['post'];
+    organPos = parseUser['organPos'];
     userType = parseUser['userType'];
   }
 
@@ -107,25 +107,24 @@ abstract class User {
   }
 
   set phone(String? phone) {
-    if (phone == null) return;
+    phone = phone?.trim();
+    if (phone == null || phone.isEmpty) return;
     phone.isValidIranianMobileNumber()
         ? _phone = phone
         : throw Exception(Strs.invalidPhoneNumberErrorMessage.tr);
   }
 
-  set pCode(String? value) {
-    _pCode = value;
-  }
-
   set nationalId(String? id) {
-    if (id == null) return;
+    id = id?.trim();
+    if (id == null || id.isEmpty) return;
     id.isValidIranianNationalCode()
         ? _nationalId = id
         : throw Exception(Strs.invalidNationalIdErrorMessage.tr);
   }
 
   set email(String? email) {
-    if (email == null) return;
+    email = email?.trim();
+    if (email == null || email.isEmpty) return;
     email.isEmail
         ? _email = email
         : throw Exception(Strs.invalidEmailErrorMessage.tr);
@@ -135,13 +134,21 @@ abstract class User {
     _password = value;
   }
 
-  set grade(String? grade) {
-    if (grade == null) return;
-    _grade = grade.toUpperCase().trim();
+  set post(String? post) {
+    post = post?.trim();
+    if (post == null || post.isEmpty) return;
+    _post = post.toUpperCase().trim();
+  }
+
+  set organPos(String? organPos) {
+    organPos = organPos?.trim();
+    if (organPos == null || organPos.isEmpty) return;
+    _organPos = organPos;
   }
 
   set userType(String? userType) {
-    if (userType == null) return;
+    userType = userType?.trim();
+    if (userType == null || userType.isEmpty) return;
     userType = userType.toUpperCase();
     _userTypeEnum = UserType.valueOf(userType);
     _userType = _userTypeEnum!.value.tr;
@@ -165,28 +172,28 @@ abstract class User {
 
   @override
   String toString() {
-    return 'name: $name, pCode: $pCode, nationalId: $nationalId, phone: $phone, email: $email, password: $password, grade: $grade, userType: $userType';
+    return 'name: $_name, nationalId: $_nationalId, phone: $_phone, email: $_email, password: $_password, post: $_post, organPos: $_organPos, userType: $_userType';
   }
 }
 
 class Admin extends User {
   Admin(
     String? fName,
-    String? fPCode,
     String? fNationalId,
     String? fEmail,
     String? fPassword,
     String? fPhone,
-    String? fGrade,
+    String? fPost,
+    String? fOrganPos,
     String? fUserType,
   ) : super(
           fName,
-          fPCode,
           fNationalId,
           fEmail,
           fPassword,
           fPhone,
-          fGrade,
+          fPost,
+          fOrganPos,
           fUserType,
           AdminScreenHolder(),
         );
@@ -201,21 +208,21 @@ class Admin extends User {
 class Responsible extends User {
   Responsible(
     String? fName,
-    String? fPCode,
     String? fNationalId,
     String? fEmail,
     String? fPassword,
     String? fPhone,
-    String? fGrade,
+    String? fPost,
+    String? fOrganPos,
     String? fUserType,
   ) : super(
           fName,
-          fPCode,
           fNationalId,
           fEmail,
           fPassword,
           fPhone,
-          fGrade,
+          fPost,
+          fOrganPos,
           fUserType,
           ResponsibleScreenHolder(),
         );
@@ -230,21 +237,21 @@ class Responsible extends User {
 class Employee extends User {
   Employee(
     String? fName,
-    String? fPCode,
     String? fNationalId,
     String? fEmail,
     String? fPassword,
     String? fPhone,
-    String? fGrade,
+    String? fPost,
+    String? fOrganPos,
     String? fUserType,
   ) : super(
           fName,
-          fPCode,
           fNationalId,
           fEmail,
           fPassword,
           fPhone,
-          fGrade,
+          fPost,
+          fOrganPos,
           fUserType,
           EmployeeScreenHolder(),
         );

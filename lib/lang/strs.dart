@@ -23,10 +23,15 @@ class Strs {
   static const String aboutAppStr = "درباره برنامه";
   static const String supportStr = "پشتیبانی";
   static const String settingsStr = "تنظیمات";
-  static const String exchangeRequestStr = "درخواست تعویض";
+  static const String exchangeReqStr = "درخواست تعویض";
   static const String leaveRequestStr = "درخواست مرخصی";
   static const String formsStr = "فرم ها";
   static const String historyStr = "تاریخچه";
+  static const String exchangeReqFormStr = "فرم درخواست تعویض";
+  static const String changerReqStr = "تعویض کننده";
+  static const String supplierReqStr = "تامیین کننده";
+  static const String changerShiftStr = "شیفت تعویض کننده";
+  static const String selectStr = "انتخاب";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =
@@ -37,6 +42,8 @@ class Strs {
   static const String incorrectUsernameOrPasswordErrorMessage =
       "نام کاربری یا رمز عبور اشتباه است";
   static const String operationFailedErrorMessage = "عملیات با خطا مواجه شد";
+
+  /// Warning messages
 
   /// Notification messages
   static const String operationSuccessfulMessageStr =

@@ -162,7 +162,7 @@ class NameContent extends StatelessWidget {
             ),
           ),
           Text(
-            "${currentUser.userType} - ${currentUser.grade}",
+            "${currentUser.userType} - ${currentUser.post}",
             style: const TextStyle(fontSize: 16),
           ),
         ],

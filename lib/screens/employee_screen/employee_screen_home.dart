@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,6 +6,7 @@ import 'package:get/get.dart';
 import '../../lang/strs.dart';
 import '../../widget/drawer/my_drawer.dart';
 import '../../widget/staggered_animations/flutter_staggered_animations.dart';
+import 'employee_screen_exchange_req.dart';
 import 'employee_screen_holder.dart';
 
 class ScreenHome extends StatelessWidget {
@@ -40,23 +42,27 @@ class ScreenHome extends StatelessWidget {
                   children: [
                     HomeGridChild(
                       index: 0,
-                      label: Strs.exchangeRequestStr.tr,
+                      label: Strs.exchangeReqStr.tr,
                       icon: CupertinoIcons.doc_text,
+                      openWidget: const ScreenExchangeReq(),
                     ),
                     HomeGridChild(
                       index: 1,
                       label: Strs.leaveRequestStr.tr,
                       icon: CupertinoIcons.doc_person,
+                      openWidget: const ScreenExchangeReq(),
                     ),
                     HomeGridChild(
                       index: 2,
                       label: Strs.formsStr.tr,
                       icon: CupertinoIcons.doc_plaintext,
+                      openWidget: const ScreenExchangeReq(),
                     ),
                     HomeGridChild(
                       index: 3,
                       label: Strs.historyStr.tr,
                       icon: CupertinoIcons.time,
+                      openWidget: const ScreenExchangeReq(),
                     ),
                   ],
                 ),
@@ -115,13 +121,13 @@ class HomeGridChild extends StatelessWidget {
     required this.index,
     required this.label,
     required this.icon,
-    this.onTap,
+    required this.openWidget,
   }) : super(key: key);
 
   final int index;
   final String label;
   final IconData icon;
-  final VoidCallback? onTap;
+  final Widget openWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -132,29 +138,37 @@ class HomeGridChild extends StatelessWidget {
       child: SlideAnimation(
         verticalOffset: 50,
         child: FadeInAnimation(
-          child: Card(
-            elevation: 10,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: InkWell(
-              enableFeedback: false,
-              highlightColor: Colors.transparent,
-              borderRadius: BorderRadius.circular(20),
-              onTap: onTap ?? () {},
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    textDirection: TextDirection.rtl,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(icon, size: 45),
-                      const SizedBox(height: 10),
-                      Text(label),
-                    ],
+          child: OpenContainer(
+            closedElevation: 0,
+            openElevation: 0,
+            closedColor: Colors.transparent,
+            openColor: Colors.transparent,
+            middleColor: Colors.transparent,
+            openBuilder: ((context, action) => openWidget),
+            closedBuilder: (context, action) => Card(
+              elevation: 10,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: InkWell(
+                enableFeedback: false,
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+                onTap: action,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      textDirection: TextDirection.rtl,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(icon, size: 45),
+                        const SizedBox(height: 10),
+                        Text(label),
+                      ],
+                    ),
                   ),
                 ),
               ),

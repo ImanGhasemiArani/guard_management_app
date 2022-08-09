@@ -385,7 +385,7 @@ class PlanEventListChild extends StatelessWidget {
           CupertinoButton(
             onPressed: () {},
             padding: EdgeInsets.zero,
-            child: Text(Strs.exchangeRequestStr.tr,
+            child: Text(Strs.exchangeReqStr.tr,
                 style: Get.theme.textTheme.subtitle2!.copyWith(
                   color: Get.theme.colorScheme.primary,
                 )),

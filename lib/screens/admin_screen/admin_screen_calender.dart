@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
-import 'package:guard_management_app/widget/staggered_animations/flutter_staggered_animations.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
@@ -10,6 +9,7 @@ import '../../lang/strs.dart';
 import '../../services/server_service.dart';
 import '../../widget/calendar/calendar.dart';
 import '../../widget/calendar/src/persian_date.dart';
+import '../../widget/staggered_animations/flutter_staggered_animations.dart';
 
 Rx<DateTime> currentSelectedDate =
     DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).obs;
@@ -397,7 +397,7 @@ class PlanEventListChild extends StatelessWidget {
           CupertinoButton(
             onPressed: () {},
             padding: EdgeInsets.zero,
-            child: Text(Strs.exchangeRequestStr.tr,
+            child: Text(Strs.exchangeReqStr.tr,
                 style: Get.theme.textTheme.subtitle2!.copyWith(
                   color: Get.theme.colorScheme.primary,
                 )),
