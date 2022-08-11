@@ -50,19 +50,22 @@ class ScreenHome extends StatelessWidget {
                       index: 1,
                       label: Strs.leaveRequestStr.tr,
                       icon: CupertinoIcons.doc_person,
-                      openWidget: const ScreenExchangeReq(),
+                      openWidget: const Scaffold(
+                          body: Center(child: Text('leave request'))),
                     ),
                     HomeGridChild(
                       index: 2,
                       label: Strs.formsStr.tr,
                       icon: CupertinoIcons.doc_plaintext,
-                      openWidget: const ScreenExchangeReq(),
+                      openWidget:
+                          const Scaffold(body: Center(child: Text('forms'))),
                     ),
                     HomeGridChild(
                       index: 3,
                       label: Strs.historyStr.tr,
                       icon: CupertinoIcons.time,
-                      openWidget: const ScreenExchangeReq(),
+                      openWidget:
+                          const Scaffold(body: Center(child: Text('History'))),
                     ),
                   ],
                 ),

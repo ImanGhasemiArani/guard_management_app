@@ -1,16 +1,23 @@
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shamsi_date/shamsi_date.dart';
+import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 import '../../lang/strs.dart';
 import '../../model/exchange_request.dart';
 import '../../services/server_service.dart';
+import '../../widget/signature/signature.dart';
 import 'employee_shift_picker.dart';
 import 'employee_user_picker.dart';
+import '../../widget/bottom_sheet_modal/floating_modal.dart';
 
-ExchangeRequest exchangeRequest = ExchangeRequest(ServerService.currentUser.nationalId!);
+ExchangeRequest exchangeRequest =
+    ExchangeRequest(ServerService.currentUser.nationalId!);
 
 class ScreenExchangeReq extends StatelessWidget {
   const ScreenExchangeReq({Key? key}) : super(key: key);
@@ -38,6 +45,8 @@ class ScreenExchangeReq extends StatelessWidget {
                 getChangerReqWidget(),
                 const SizedBox(height: 30),
                 getSupplierReqWidget(),
+                const SizedBox(height: 30),
+                getChangerSignatureWidget(),
               ],
             ),
           ),
@@ -48,7 +57,10 @@ class ScreenExchangeReq extends StatelessWidget {
 
   AppBar getAppBar() {
     return AppBar(
-      title: Text(Strs.exchangeReqFormStr.tr),
+      title: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(Strs.exchangeReqFormStr.tr),
+      ),
       centerTitle: true,
       automaticallyImplyLeading: false,
       leading: GestureDetector(
@@ -61,6 +73,24 @@ class ScreenExchangeReq extends StatelessWidget {
           ),
         ),
       ),
+      actions: [
+        Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: CupertinoButton.filled(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 14.0,
+                    horizontal: 30.0,
+                  ),
+                  child: Text(
+                    Strs.sendStr.tr,
+                    style: TextStyle(
+                        fontFamily: Get.theme.textTheme.button!.fontFamily),
+                  ),
+                  onPressed: () {}),
+            )),
+      ],
     );
   }
 
@@ -81,7 +111,7 @@ class ScreenExchangeReq extends StatelessWidget {
             Text("${Strs.changerShiftStr.tr}: "),
             CupertinoButton(
               child: Text(
-                Strs.selectStr.tr,
+                Strs.selectPleaseStr.tr,
                 style: TextStyle(
                     fontFamily: Get.theme.textTheme.button!.fontFamily),
               ),
@@ -151,7 +181,7 @@ class ScreenExchangeReq extends StatelessWidget {
             Text("${Strs.supplierReqStr.tr}: "),
             CupertinoButton(
               child: Text(
-                Strs.selectStr.tr,
+                Strs.selectPleaseStr.tr,
                 style: TextStyle(
                     fontFamily: Get.theme.textTheme.button!.fontFamily),
               ),
@@ -159,7 +189,6 @@ class ScreenExchangeReq extends StatelessWidget {
                 showBarModalBottomSheet(
                     context: Get.context!,
                     builder: (context) {
-                      ServerService.getUserMapUsernameToName();
                       return UserPicker(
                         onUserPicked: (user) {
                           exchangeRequest.supplierNationalId = user.key;
@@ -200,6 +229,74 @@ class ScreenExchangeReq extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget getChangerSignatureWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          direction: Axis.horizontal,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text("${Strs.changerSignatureStr.tr}: "),
+            CupertinoButton(
+              child: Text(
+                Strs.signStr.tr,
+                style: TextStyle(
+                    fontFamily: Get.theme.textTheme.button!.fontFamily),
+              ),
+              onPressed: () {
+                final GlobalKey<SfSignaturePadState> signatureKey = GlobalKey();
+                showFloatingModalBottomSheet(
+                  context: Get.context!,
+                  builder: (context) {
+                    return Signature(
+                      signatureKey: signatureKey,
+                      onSavePressed: () async {
+                        if (signatureKey.currentState!.toPathList().isEmpty) {
+                          exchangeRequest.changerSignature = null;
+                          Get.back();
+                          return;
+                        }
+                        final image = await signatureKey.currentState!
+                            .toImage(pixelRatio: 3.0);
+                        final data =
+                            await image.toByteData(format: ImageByteFormat.png);
+                        final pngBytes = data?.buffer.asUint8List();
+                        exchangeRequest.changerSignature = pngBytes;
+                        Get.back();
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+        Obx(
+          () {
+            return Visibility(
+              visible: exchangeRequest.changerSignature != null,
+              child: getSignatureContent(exchangeRequest.changerSignature),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget getSignatureContent(Uint8List? pngBytes) {
+    if (pngBytes == null) return Container();
+    return Center(
+      child: Image.memory(
+        pngBytes,
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.center,
+        height: 150,
+        width: 150,
       ),
     );
   }

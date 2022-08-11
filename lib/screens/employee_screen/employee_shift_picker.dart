@@ -63,7 +63,8 @@ class ScaffoldBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ServerService.getShifts(username: ServerService.currentUser.nationalId),
+      future: ServerService.getShifts(
+          username: ServerService.currentUser.nationalId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           try {
@@ -93,10 +94,10 @@ class ScaffoldBody extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         flexibleSpace: SingleChildScrollView(
-                          physics: const NeverScrollableScrollPhysics(),
+                          //   physics: const NeverScrollableScrollPhysics(),
                           child: Container(
-                            constraints: BoxConstraints(
-                                maxHeight: Get.size.height * 0.5 + 20,
+                            constraints: const BoxConstraints(
+                                // maxHeight: Get.size.height * 0.5 + 20,
                                 maxWidth: 600),
                             child: CalendarContent(
                               events: events,

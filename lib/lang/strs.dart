@@ -32,6 +32,13 @@ class Strs {
   static const String supplierReqStr = "تامیین کننده";
   static const String changerShiftStr = "شیفت تعویض کننده";
   static const String selectStr = "انتخاب";
+  static const String selectPleaseStr = "انتخاب کنید";
+  static const String changerSignatureStr = "امضای تعویض کننده";
+  static const String supplierSignatureStr = "امضای تامین کننده";
+  static const String signStr = "امضا کنید";
+  static const String saveStr = "ذخیره";
+  static const String cancelStr = "لغو";
+  static const String sendStr = "ارسال";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =
@@ -68,7 +75,6 @@ class Strs {
       "لطفا اتصال به اینترنت خود را بررسی نمایید";
   static const String tryAgainStr = "تلاش مجدد";
   static const String okStr = "باشه";
-  static const String cancelStr = "لغو";
   static const String passwordStr = "رمز عبور";
   static const String emailInputDescriptionStr =
       "ایمیل وارد شده برای بعضی اطلاع رسانی ها و بازیابی رمز عبور استفاده خواهد شد. اگر برای بار اول است که وارد میشوید، این قسمت را پر کنید";
@@ -83,7 +89,6 @@ class Strs {
   static const String noDataStr = "چیزی ثبت نشده است";
   static const String phoneNumberProfileStr = "تلفن همراه: ";
   static const String editEmailTitleStr = "ویرایش ایمیل";
-  static const String saveStr = "ذخیره";
   static const String successfullyWorkStr = "با موفقیت انجام شد";
   static const String editPasswordStr = "تغییر رمز عبور";
   static const String sentVerificationEmailStr = "ایمیل تایید ارسال شد";
