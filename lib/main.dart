@@ -48,6 +48,7 @@ class MainMaterial extends StatelessWidget {
           appBarTheme: const AppBarTheme().copyWith(
             color: Colors.transparent,
             elevation: 0,
+            scrolledUnderElevation: 0,
           ),
           brightness: Brightness.dark,
           scaffoldBackgroundColor: const Color(0xff001021),

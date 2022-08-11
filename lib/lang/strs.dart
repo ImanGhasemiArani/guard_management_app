@@ -42,6 +42,9 @@ class Strs {
   static const String incorrectUsernameOrPasswordErrorMessage =
       "نام کاربری یا رمز عبور اشتباه است";
   static const String operationFailedErrorMessage = "عملیات با خطا مواجه شد";
+  static const String failedToLoadDataFromServerErrorMessage =
+      "خطا در بارگذاری اطلاعات از سرور";
+  static const String tryAgainErrorMessage = "لطفا دوباره تلاش کنید";
 
   /// Warning messages
 

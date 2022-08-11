@@ -157,3 +157,23 @@ Future<Map<String, dynamic>> getDayEvents(DateTime date) async {
 
   return json.decode(utf8.decode(response.bodyBytes));
 }
+
+Future<List<Map<String, dynamic>>> getCurrentUserShifts() async {
+  final func = ParseCloudFunction("specificUserShifts");
+//   final response = await ParseObject('Plan').getAll();
+
+  final response =
+      await func.execute(parameters: {"username": currentUser.nationalId});
+  if (response.success) {
+    final result = (response.result as List<dynamic>)
+        .map((e) => {
+              "username": e['username'],
+              "name": e['name'],
+              "plan": e['plan'],
+            })
+        .toList();
+    return result;
+  } else {
+    throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
+  }
+}
