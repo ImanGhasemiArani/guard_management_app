@@ -146,7 +146,6 @@ class HomeGridChild extends StatelessWidget {
             middleColor: Colors.transparent,
             openBuilder: ((context, action) => openWidget),
             closedBuilder: (context, action) => Card(
-              elevation: 10,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),

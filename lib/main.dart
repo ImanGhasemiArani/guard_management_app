@@ -50,6 +50,9 @@ class MainMaterial extends StatelessWidget {
             elevation: 0,
             scrolledUnderElevation: 0,
           ),
+          cardTheme: const CardTheme(
+            elevation: 8,
+          ),
           brightness: Brightness.dark,
           scaffoldBackgroundColor: const Color(0xff001021),
           colorScheme: const ColorScheme.dark().copyWith(

@@ -158,12 +158,14 @@ Future<Map<String, dynamic>> getDayEvents(DateTime date) async {
   return json.decode(utf8.decode(response.bodyBytes));
 }
 
-Future<List<Map<String, dynamic>>> getCurrentUserShifts() async {
-  final func = ParseCloudFunction("specificUserShifts");
-//   final response = await ParseObject('Plan').getAll();
-
-  final response =
-      await func.execute(parameters: {"username": currentUser.nationalId});
+Future<List<Map<String, dynamic>>> getShifts({String? username}) async {
+  late final ParseResponse response;
+  if (username == null) {
+    response = await ParseObject('Plan').getAll();
+  } else {
+    final func = ParseCloudFunction("specificUserShifts");
+    response = await func.execute(parameters: {"username": username});
+  }
   if (response.success) {
     final result = (response.result as List<dynamic>)
         .map((e) => {
@@ -173,6 +175,29 @@ Future<List<Map<String, dynamic>>> getCurrentUserShifts() async {
             })
         .toList();
     return result;
+  } else {
+    throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
+  }
+}
+
+Future<String?> getNameByNationalId(String nationalId) async {
+  final func = ParseCloudFunction("getNameByUsername");
+  final response = await func.execute(parameters: {"username": nationalId});
+  if (response.success) {
+    return response.result as String?;
+  } else {
+    throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
+  }
+}
+
+Future<Map<String, String>> getUserMapUsernameToName() async {
+  final func = ParseCloudFunction("getUsersMapUsernameToName");
+  final response = await func.execute();
+  if (response.success) {
+    final resultList = response.result as List<dynamic>;
+    final resultMap = <String, String>{};
+    resultList.forEach((e) => resultMap[e[0]] = e[1]);
+    return resultMap;
   } else {
     throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
   }

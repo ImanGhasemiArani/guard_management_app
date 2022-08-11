@@ -53,6 +53,8 @@ class Strs {
       "عملیات با موفقیت انجام شد";
   static const String callSupportToResetPasswordMessage =
       "برای بازیابی رمز عبور باید با پشتیبانی تماس بگیرید";
+  static const String selectShiftStr = "شیفت تعویض کننده را انتخاب کنید";
+  static const String selectSupplierStr = "تامین کننده را انتخاب کنید";
 
   /// other strings
   static const String loginStr = "ورود";

@@ -1,11 +1,15 @@
 import 'package:shamsi_date/shamsi_date.dart';
 
-class DCUtils {
-  DCUtils._();
+import '../services/server_service.dart';
 
-  /// Converter: List<Map<String, dynamic>> => Map<DateTime, List<dynamic>>
+class DataUtils {
+  DataUtils._();
+
+  /// Converter:
   ///
-  /// database Plan objects => calendar events
+  ///       List<Map<String, dynamic>> => Map<DateTime, List<dynamic>>
+  ///
+  ///       database Plan objects => calendar events
   ///
   /// this method convert the map that we get from the server to
   ///  a map that we can use in events of calendar.
@@ -34,5 +38,16 @@ class DCUtils {
       });
     }
     return events;
+  }
+
+  /// Filter:
+  ///
+  ///      Map<String, String> => remove all data about currentUser
+  static Map<String, String> filterCurrentUserFromUsersMap(
+    Map<String, String> map,
+  ) {
+    var result = {...map};
+    result.removeWhere((key, value) => key == currentUser.nationalId);
+    return result;
   }
 }

@@ -6,7 +6,7 @@ import 'package:shamsi_date/shamsi_date.dart';
 
 import '../../lang/strs.dart';
 import '../../services/server_service.dart';
-import '../../utils/data_converter_utils.dart';
+import '../../utils/data_utils.dart';
 import '../../widget/calendar/calendar.dart';
 import '../../widget/calendar/src/persian_date.dart';
 import '../../widget/loading_widget/loading_widget.dart';
@@ -34,28 +34,17 @@ class ShiftPicker extends HookWidget {
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     _scrollController = useScrollController();
     return Scaffold(
-      appBar: getAppBar(),
+      appBar: AppBar(
+        title: Text(
+          Strs.selectShiftStr.tr,
+          style: Get.theme.textTheme.bodyLarge,
+        ),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+      ),
       body: ScaffoldBody(
         scrollController: _scrollController,
         onShiftPicked: onShiftPicked,
-      ),
-    );
-  }
-
-  AppBar getAppBar() {
-    return AppBar(
-      title: Text(Strs.changerShiftStr.tr),
-      centerTitle: true,
-      automaticallyImplyLeading: false,
-      leading: GestureDetector(
-        onTap: Get.back,
-        child: Container(
-          color: Colors.transparent,
-          padding: const EdgeInsets.all(15),
-          child: const Icon(
-            CupertinoIcons.chevron_back,
-          ),
-        ),
       ),
     );
   }
@@ -74,12 +63,12 @@ class ScaffoldBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getCurrentUserShifts(),
+      future: getShifts(username: currentUser.nationalId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           try {
             if (!snapshot.hasData || snapshot.data == null) throw Exception();
-            var events = DCUtils.convertPlanToEvents(
+            var events = DataUtils.convertPlanToEvents(
                 snapshot.data as List<Map<String, dynamic>>);
             RxInt segmentController = 0.obs;
             return SafeArea(

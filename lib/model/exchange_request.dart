@@ -2,7 +2,9 @@ import 'package:get/get.dart';
 
 class ExchangeRequest {
   String? changerNationalId;
+  String? changerName;
   late final Rx<String?> _supplierNationalId;
+  String? supplierName;
   late final Rx<String?> _changerShiftDate;
   late final Rx<String?> _changerShiftDescription;
 
