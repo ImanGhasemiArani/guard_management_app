@@ -94,5 +94,5 @@ Future<void> _showConnectionError() async {
 Future<MapEntry<bool, String?>> _hasLoginUser() async {
   var sessionToken = await secureStorage.read(key: 'sessionToken');
   if (sessionToken == null) return const MapEntry(false, null);
-  return loginUser(sessionToken: sessionToken);
+  return ServerService.loginUser(sessionToken: sessionToken);
 }

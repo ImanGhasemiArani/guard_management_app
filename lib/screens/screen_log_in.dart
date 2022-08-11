@@ -132,12 +132,12 @@ class ScreenLogin extends HookWidget {
     final password = _passwordController.text;
     try {
       user(fNationalId: phone, fPassword: password);
-      await loginUser(username: phone, password: password);
+      await ServerService.loginUser(username: phone, password: password);
 
       showSnackbar(Strs.loginSuccessfullyMessageStr.tr,
           duration: const Duration(seconds: 1));
       await Future.delayed(const Duration(seconds: 1));
-      Get.off(currentUser.screenHolder, transition: Transition.cupertino);
+      Get.off(ServerService.currentUser.screenHolder, transition: Transition.cupertino);
     } catch (e) {
       _loginErrorMessage.value = "$e".replaceAll("Exception:", "").trim();
     }

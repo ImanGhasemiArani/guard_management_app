@@ -47,7 +47,7 @@ class DataUtils {
     Map<String, String> map,
   ) {
     var result = {...map};
-    result.removeWhere((key, value) => key == currentUser.nationalId);
+    result.removeWhere((key, value) => key == ServerService.currentUser.nationalId);
     return result;
   }
 }

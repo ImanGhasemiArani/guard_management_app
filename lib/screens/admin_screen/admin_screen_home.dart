@@ -74,7 +74,7 @@ class ScreenHome extends StatelessWidget {
   }
 
   Future<List<MapEntry<DateTime, List<dynamic>>>> _getEvents() async {
-    var rawData = await getAllPlanFromServer();
+    var rawData = await ServerService.getAllPlanFromServer();
     var events = <DateTime, List<dynamic>>{};
     for (var row in rawData) {
       var plans = row["plan"] as List<dynamic>;
@@ -102,7 +102,7 @@ class ScreenHome extends StatelessWidget {
 
   Map<DateTime, List<dynamic>> _getCurrentUserEvents(
       Map<DateTime, List> allEvents) {
-    var userId = currentParseUser.objectId!;
+    var userId = ServerService.currentParseUser.objectId!;
     var currentUserEvents = <DateTime, List<dynamic>>{};
     allEvents.forEach((dateTime, events) {
       var userEvents = events.where((event) {

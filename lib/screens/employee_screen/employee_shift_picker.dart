@@ -63,7 +63,7 @@ class ScaffoldBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getShifts(username: currentUser.nationalId),
+      future: ServerService.getShifts(username: ServerService.currentUser.nationalId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           try {
@@ -184,7 +184,7 @@ class DayEventsListView extends StatelessWidget {
     return Obx(
       () {
         return FutureBuilder(
-          future: getDayEvents(currentSelectedDate.value),
+          future: ServerService.getDayEvents(currentSelectedDate.value),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.data == null || !snapshot.hasData) {

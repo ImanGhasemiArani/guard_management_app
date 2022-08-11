@@ -144,7 +144,7 @@ class ScreenCalender extends HookWidget {
   Future<Map<DateTime, List<dynamic>>> getEvents() async {
     currentSelectedDate.value =
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    var rawData = await getAllPlanFromServer();
+    var rawData = await ServerService.getAllPlanFromServer();
     var events = <DateTime, List<dynamic>>{};
     for (var row in rawData) {
       var plans = row["plan"] as List<dynamic>;
@@ -171,7 +171,7 @@ class ScreenCalender extends HookWidget {
 
   Map<DateTime, List<dynamic>> _getCurrentUserEvents(
       Map<DateTime, List> allEvents) {
-    var userId = currentParseUser.objectId!;
+    var userId = ServerService.currentParseUser.objectId!;
     var currentUserEvents = <DateTime, List<dynamic>>{};
     allEvents.forEach((dateTime, events) {
       var userEvents = events.where((event) {
@@ -195,7 +195,7 @@ class DayEventContent extends StatelessWidget {
     return Obx(
       () {
         return FutureBuilder(
-          future: getDayEvents(currentSelectedDate.value),
+          future: ServerService.getDayEvents(currentSelectedDate.value),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.data == null || !snapshot.hasData) {
@@ -348,7 +348,7 @@ class PlanEventContent extends StatelessWidget {
   }
 
   List<dynamic> _getSortedEvents(List<dynamic> allEvents) {
-    var userId = currentParseUser.objectId!;
+    var userId = ServerService.currentParseUser.objectId!;
     var currentUserEvents = List<dynamic>.from(allEvents);
     currentUserEvents.sort((a, b) {
       if (a["userId"] == userId) {

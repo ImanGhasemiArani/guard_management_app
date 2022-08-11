@@ -10,14 +10,14 @@ import '../../services/server_service.dart';
 import 'employee_shift_picker.dart';
 import 'employee_user_picker.dart';
 
-ExchangeRequest exchangeRequest = ExchangeRequest(currentUser.nationalId!);
+ExchangeRequest exchangeRequest = ExchangeRequest(ServerService.currentUser.nationalId!);
 
 class ScreenExchangeReq extends StatelessWidget {
   const ScreenExchangeReq({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    exchangeRequest = ExchangeRequest(currentUser.nationalId!);
+    exchangeRequest = ExchangeRequest(ServerService.currentUser.nationalId!);
     return Scaffold(
       appBar: getAppBar(),
       body: getBody(),
@@ -71,7 +71,7 @@ class ScreenExchangeReq extends StatelessWidget {
         Text("${Strs.changerReqStr.tr}: "),
         const SizedBox(height: 10),
         Text(
-          currentUser.name!,
+          ServerService.currentUser.name!,
           style: Get.theme.textTheme.bodyLarge,
         ),
         Wrap(
@@ -159,7 +159,7 @@ class ScreenExchangeReq extends StatelessWidget {
                 showBarModalBottomSheet(
                     context: Get.context!,
                     builder: (context) {
-                      getUserMapUsernameToName();
+                      ServerService.getUserMapUsernameToName();
                       return UserPicker(
                         onUserPicked: (user) {
                           exchangeRequest.supplierNationalId = user.key;

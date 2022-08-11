@@ -82,7 +82,7 @@ class ScreenApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if ((snapshot.data as MapEntry<bool, String?>).key) {
-              return currentUser.screenHolder;
+              return ServerService.currentUser.screenHolder;
             } else {
               return ScreenLogin();
             }

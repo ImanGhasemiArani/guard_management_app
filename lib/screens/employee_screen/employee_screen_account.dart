@@ -24,7 +24,7 @@ class ScreenAccount extends HookWidget {
     _phoneController = useTextEditingController();
     var high = MediaQuery.of(context).size.height / 3;
     return FutureBuilder(
-      future: updateCurrentUserData(),
+      future: ServerService.updateCurrentUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data == null ||
@@ -130,7 +130,7 @@ class ScreenAccount extends HookWidget {
 
   void _onLogoutButtonPressed() {
     try {
-      logoutUser().then((value) => Get.off(ScreenLogin()));
+      ServerService.logoutUser().then((value) => Get.off(ScreenLogin()));
     } catch (e) {
       showSnackbar("$e".replaceAll("Exception:", ""));
     }
@@ -150,14 +150,14 @@ class NameContent extends StatelessWidget {
         direction: Axis.vertical,
         children: [
           Text(
-            currentUser.name!,
+            ServerService.currentUser.name!,
             style: const TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
-            "${currentUser.userType} - ${currentUser.post}",
+            "${ServerService.currentUser.userType} - ${ServerService.currentUser.post}",
             style: const TextStyle(fontSize: 16),
           ),
         ],
@@ -261,7 +261,7 @@ class PasswordContent extends StatelessWidget {
       return;
     }
     try {
-      currentUser.updatePassword(password);
+      ServerService.currentUser.updatePassword(password);
     } catch (e) {
       showSnackbar("$e".replaceAll("Exception:", ""));
     }
@@ -288,7 +288,7 @@ class EmailContent extends StatelessWidget {
             Expanded(
               child: Obx(
                 () => TextField(
-                  controller: emailController..text = currentUser.email ?? "",
+                  controller: emailController..text = ServerService.currentUser.email ?? "",
                   readOnly: !isEditable.value,
                   decoration: InputDecoration(
                     labelText: Strs.emailStr.tr,
@@ -345,7 +345,7 @@ class EmailContent extends StatelessWidget {
     FocusManager.instance.primaryFocus!.unfocus();
     final email = emailController.text;
     try {
-      currentUser.updateEmail(email);
+      ServerService.currentUser.updateEmail(email);
     } catch (e) {
       showSnackbar("$e".replaceAll("Exception:", ""));
     }
@@ -372,7 +372,7 @@ class PhoneContent extends StatelessWidget {
             Expanded(
               child: Obx(
                 () => TextField(
-                  controller: phoneController..text = currentUser.phone ?? "",
+                  controller: phoneController..text = ServerService.currentUser.phone ?? "",
                   readOnly: !isEditable.value,
                   decoration: InputDecoration(
                     labelText: Strs.phoneNumberStr.tr,
@@ -429,7 +429,7 @@ class PhoneContent extends StatelessWidget {
     FocusManager.instance.primaryFocus!.unfocus();
     final phone = phoneController.text;
     try {
-      currentUser.updatePhone(phone);
+      ServerService.currentUser.updatePhone(phone);
     } catch (e) {
       showSnackbar("$e".replaceAll("Exception:", ""));
     }

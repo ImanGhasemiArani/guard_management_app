@@ -157,17 +157,17 @@ abstract class User {
   void updatePhone(String newPhone) {
     newPhone = newPhone.trim();
     phone = newPhone.trim();
-    updatePhoneToServer(newPhone);
+    ServerService.updatePhoneToServer(newPhone);
   }
 
   void updateEmail(String newEmail) {
     newEmail = newEmail.trim();
     email = newEmail.trim();
-    updateEmailToServer(newEmail);
+    ServerService.updateEmailToServer(newEmail);
   }
 
   void updatePassword(String password) {
-    updatePasswordToServer(password);
+    ServerService.updatePasswordToServer(password);
   }
 
   @override

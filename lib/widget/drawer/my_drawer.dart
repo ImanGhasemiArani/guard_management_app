@@ -84,8 +84,8 @@ class MyDrawer extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text("${currentUser.name}"),
-                    Text("${currentUser.nationalId}"),
+                    Text("${ServerService.currentUser.name}"),
+                    Text("${ServerService.currentUser.nationalId}"),
                   ],
                 ),
               )
