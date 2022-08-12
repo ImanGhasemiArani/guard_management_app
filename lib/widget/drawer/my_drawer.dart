@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 import '../../lang/strs.dart';
+import '../../screens/screen_log_in.dart';
 import '../../services/server_service.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -185,7 +186,10 @@ class MyDrawer extends StatelessWidget {
           SidebarXItem(
             icon: CupertinoIcons.square_arrow_left,
             label: Strs.logoutStr.tr,
-            onTap: () {},
+            onTap: () {
+              ServerService.logoutUser()
+                  .then((value) => Get.off(ScreenLogin()));
+            },
           ),
         ],
       ),

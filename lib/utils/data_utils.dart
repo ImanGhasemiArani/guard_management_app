@@ -1,5 +1,7 @@
+import 'package:get/get.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
+import '../model/user.dart';
 import '../services/server_service.dart';
 
 class DataUtils {
@@ -16,27 +18,34 @@ class DataUtils {
   static Map<DateTime, List<dynamic>> convertPlanToEvents(
     List<Map<String, dynamic>> planObj,
   ) {
-    final events = <DateTime, List<dynamic>>{};
-    for (var row in planObj) {
-      var plans = row['plan'] as List<dynamic>;
-      var username = row['username'] as String;
-      var name = row['name'] as String;
-      plans.map((e) {
-        var me = (e as Map<String, dynamic>).entries.first;
-        final jalaliStr =
-            me.key.split('-').map((str) => int.parse(str)).toList();
-        var dateTime =
+    final Map<DateTime, List<dynamic>> events = {};
+    planObj.forEach((row) {
+      final shifts = row['shifts'] as Map<String, dynamic>;
+      final username = row['username'] as String;
+      final name = row['name'] as String;
+
+      shifts.entries.map((e) {
+        final key = e.key;
+        final value = e.value as String;
+        final jalaliStr = key.split('-').map((str) => int.parse(str)).toList();
+        final dateTime =
             Jalali(jalaliStr[0], jalaliStr[1], jalaliStr[2]).toDateTime();
-        return MapEntry(
-            dateTime, {'username': username, 'name': name, 'shift': me.value});
+        final values = value.toUpperCase().split('').map((char) {
+          return {
+            'username': username,
+            'name': name,
+            'shift': ShiftType.valueOf(char).value.tr
+          };
+        }).toList();
+        return MapEntry(dateTime, values);
       }).forEach((element) {
         if (events.containsKey(element.key)) {
-          events[element.key]!.add(element.value);
+          events[element.key]!.addAll(element.value);
         } else {
-          events[element.key] = [element.value];
+          events[element.key] = element.value;
         }
       });
-    }
+    });
     return events;
   }
 
@@ -47,7 +56,8 @@ class DataUtils {
     Map<String, String> map,
   ) {
     var result = {...map};
-    result.removeWhere((key, value) => key == ServerService.currentUser.nationalId);
+    result.removeWhere(
+        (key, value) => key == ServerService.currentUser.nationalId);
     return result;
   }
 }

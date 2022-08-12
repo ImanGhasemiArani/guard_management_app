@@ -63,14 +63,16 @@ class ScaffoldBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ServerService.getShifts(
-          username: ServerService.currentUser.nationalId),
+      future: ServerService.getSpecificUserPlan(
+        username: ServerService.currentUser.nationalId!,
+        isFilterMPlans: true,
+      ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           try {
             if (!snapshot.hasData || snapshot.data == null) throw Exception();
             var events = DataUtils.convertPlanToEvents(
-                snapshot.data as List<Map<String, dynamic>>);
+                [snapshot.data as Map<String, dynamic>]);
             RxInt segmentController = 0.obs;
             return SafeArea(
               child: Center(

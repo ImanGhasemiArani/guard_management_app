@@ -275,3 +275,16 @@ enum UserType {
     return UserType.values.firstWhere((type) => type.name == value);
   }
 }
+
+enum ShiftType {
+  N(Strs.nightShiftStr),
+  D(Strs.dayShiftStr),
+  M(Strs.morningShiftStr);
+
+  const ShiftType(this.value);
+  final String value;
+
+  static ShiftType valueOf(String value) {
+    return ShiftType.values.firstWhere((type) => type.name == value);
+  }
+}

@@ -39,6 +39,9 @@ class Strs {
   static const String saveStr = "ذخیره";
   static const String cancelStr = "لغو";
   static const String sendStr = "ارسال";
+  static const String nightShiftStr = "شیفت شب";
+  static const String morningShiftStr = "صبح کار";
+  static const String dayShiftStr = "شیفت روز";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =

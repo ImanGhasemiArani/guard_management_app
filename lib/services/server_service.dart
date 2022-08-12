@@ -160,23 +160,21 @@ class ServerService {
     return json.decode(utf8.decode(response.bodyBytes));
   }
 
-  static Future<List<Map<String, dynamic>>> getShifts(
-      {String? username}) async {
+  static Future<Map<String, dynamic>> getSpecificUserPlan({
+    required String username,
+    isFilterMPlans = false,
+  }) async {
+    // response = await ParseObject('Plan').getAll();
     late final ParseResponse response;
-    if (username == null) {
-      response = await ParseObject('Plan').getAll();
+    if (isFilterMPlans) {
+      final func = ParseCloudFunction("specificUserPlanWithFilterM");
+      response = await func.execute(parameters: {"username": username});
     } else {
-      final func = ParseCloudFunction("specificUserShifts");
+      final func = ParseCloudFunction("specificUserPlan");
       response = await func.execute(parameters: {"username": username});
     }
     if (response.success) {
-      final result = (response.result as List<dynamic>)
-          .map((e) => {
-                "username": e['username'],
-                "name": e['name'],
-                "plan": e['plan'],
-              })
-          .toList();
+      final result = (response.result as Map<String, dynamic>);
       return result;
     } else {
       throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
@@ -193,14 +191,20 @@ class ServerService {
     }
   }
 
-  static Future<Map<String, String>> getUserMapUsernameToName() async {
-    final func = ParseCloudFunction("getUsersMapUsernameToName");
-    final response = await func.execute();
+  static Future<Map<String, String>> getUserMapUsernameToName({
+    isFilterDPlans = false,
+  }) async {
+    late final ParseResponse response;
+    if (isFilterDPlans) {
+      final func = ParseCloudFunction("getUsersMapUsernameToNameWithFilterM");
+      response = await func.execute();
+    } else {
+      final func = ParseCloudFunction("getUsersMapUsernameToName");
+      response = await func.execute();
+    }
     if (response.success) {
-      final resultList = response.result as List<dynamic>;
-      final resultMap = <String, String>{};
-      resultList.forEach((e) => resultMap[e[0]] = e[1]);
-      return resultMap;
+      final resultList = response.result as Map<String, dynamic>;
+      return resultList.map((key, value) => MapEntry(key, value as String));
     } else {
       throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
     }

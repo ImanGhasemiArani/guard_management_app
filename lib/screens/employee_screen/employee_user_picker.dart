@@ -54,7 +54,7 @@ class ScaffoldBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ServerService.getUserMapUsernameToName(),
+      future: ServerService.getUserMapUsernameToName(isFilterDPlans: true),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           try {
