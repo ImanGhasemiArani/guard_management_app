@@ -15,6 +15,7 @@ class ExchangeRequest {
 
   ExchangeRequest(
     this.changerNationalId,
+    this.changerName,
   ) {
     _init();
   }

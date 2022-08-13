@@ -57,6 +57,8 @@ class Strs {
   static const String tryAgainErrorMessage = "لطفا دوباره تلاش کنید";
 
   /// Warning messages
+  static const String fillExchangeReqFormWarningMessage =
+      "لطفا فرم درخواست تعویض را تکمیل کنید";
 
   /// Notification messages
   static const String operationSuccessfulMessageStr =

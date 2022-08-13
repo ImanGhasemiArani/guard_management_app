@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void showSnackbar(String message,
-    {Duration duration = (const Duration(seconds: 2))}) {
+void showSnackbar(
+  String message, {
+  Duration duration = (const Duration(seconds: 2)),
+  Color color = Colors.transparent,
+  SnackPosition position = SnackPosition.TOP,
+}) {
   Get.showSnackbar(
     GetSnackBar(
-      snackPosition: SnackPosition.TOP,
+      snackPosition: position,
       isDismissible: false,
       messageText: Text(
         message,
@@ -13,7 +17,8 @@ void showSnackbar(String message,
         textAlign: TextAlign.center,
       ),
       duration: duration,
-      backgroundColor: Colors.transparent,
+      backgroundColor: color,
+      borderRadius: 20,
     ),
   );
 }

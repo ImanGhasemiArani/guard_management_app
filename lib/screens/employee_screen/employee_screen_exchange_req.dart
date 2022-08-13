@@ -11,20 +11,26 @@ import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 import '../../lang/strs.dart';
 import '../../model/exchange_request.dart';
 import '../../services/server_service.dart';
+import '../../utils/show_toast.dart';
 import '../../widget/signature/signature.dart';
 import 'employee_shift_picker.dart';
 import 'employee_user_picker.dart';
 import '../../widget/bottom_sheet_modal/floating_modal.dart';
 
-ExchangeRequest exchangeRequest =
-    ExchangeRequest(ServerService.currentUser.nationalId!);
+ExchangeRequest exchangeRequest = ExchangeRequest(
+  ServerService.currentUser.nationalId!,
+  ServerService.currentUser.name,
+);
 
 class ScreenExchangeReq extends StatelessWidget {
   const ScreenExchangeReq({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    exchangeRequest = ExchangeRequest(ServerService.currentUser.nationalId!);
+    exchangeRequest = ExchangeRequest(
+      ServerService.currentUser.nationalId!,
+      ServerService.currentUser.name,
+    );
     return Scaffold(
       appBar: getAppBar(),
       body: getBody(),
@@ -79,16 +85,17 @@ class ScreenExchangeReq extends StatelessWidget {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: CupertinoButton.filled(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 14.0,
-                    horizontal: 30.0,
-                  ),
-                  child: Text(
-                    Strs.sendStr.tr,
-                    style: TextStyle(
-                        fontFamily: Get.theme.textTheme.button!.fontFamily),
-                  ),
-                  onPressed: () {}),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 14.0,
+                  horizontal: 30.0,
+                ),
+                onPressed: _onSendButtonPressed,
+                child: Text(
+                  Strs.sendStr.tr,
+                  style: TextStyle(
+                      fontFamily: Get.theme.textTheme.button!.fontFamily),
+                ),
+              ),
             )),
       ],
     );
@@ -299,5 +306,18 @@ class ScreenExchangeReq extends StatelessWidget {
         width: 150,
       ),
     );
+  }
+
+  void _onSendButtonPressed() {
+    if (exchangeRequest.changerNationalId == null ||
+        exchangeRequest.changerName == null ||
+        exchangeRequest.changerShiftDate == null ||
+        exchangeRequest.changerShiftDescription == null ||
+        exchangeRequest.supplierNationalId == null ||
+        exchangeRequest.supplierName == null ||
+        exchangeRequest.changerSignature == null) {
+      showSnackbar(Strs.fillExchangeReqFormWarningMessage.tr,
+          color: Colors.black.withOpacity(0.8));
+    }
   }
 }
