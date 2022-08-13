@@ -157,7 +157,7 @@ class NameContent extends StatelessWidget {
             ),
           ),
           Text(
-            "${ServerService.currentUser.userType} - ${ServerService.currentUser.post}",
+            "${ServerService.currentUser.userType} - ${ServerService.currentUser.rank}",
             style: const TextStyle(fontSize: 16),
           ),
         ],
@@ -288,7 +288,8 @@ class EmailContent extends StatelessWidget {
             Expanded(
               child: Obx(
                 () => TextField(
-                  controller: emailController..text = ServerService.currentUser.email ?? "",
+                  controller: emailController
+                    ..text = ServerService.currentUser.email ?? "",
                   readOnly: !isEditable.value,
                   decoration: InputDecoration(
                     labelText: Strs.emailStr.tr,
@@ -372,7 +373,8 @@ class PhoneContent extends StatelessWidget {
             Expanded(
               child: Obx(
                 () => TextField(
-                  controller: phoneController..text = ServerService.currentUser.phone ?? "",
+                  controller: phoneController
+                    ..text = ServerService.currentUser.phone ?? "",
                   readOnly: !isEditable.value,
                   decoration: InputDecoration(
                     labelText: Strs.phoneNumberStr.tr,

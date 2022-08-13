@@ -64,7 +64,7 @@ class ScaffoldBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: ServerService.getSpecificUserPlan(
-        username: ServerService.currentUser.nationalId!,
+        username: ServerService.currentUser.username!,
         isFilterMPlans: true,
       ),
       builder: (context, snapshot) {

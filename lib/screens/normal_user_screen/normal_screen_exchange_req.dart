@@ -14,12 +14,12 @@ import '../../services/pdf_service.dart';
 import '../../services/server_service.dart';
 import '../../utils/show_toast.dart';
 import '../../widget/signature/signature.dart';
-import 'employee_shift_picker.dart';
-import 'employee_user_picker.dart';
+import 'normal_shift_picker.dart';
+import 'normal_user_picker.dart';
 import '../../widget/bottom_sheet_modal/floating_modal.dart';
 
 ExchangeRequest exchangeRequest = ExchangeRequest(
-  ServerService.currentUser.nationalId!,
+  ServerService.currentUser.username!,
   ServerService.currentUser.name,
 );
 
@@ -29,7 +29,7 @@ class ScreenExchangeReq extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     exchangeRequest = ExchangeRequest(
-      ServerService.currentUser.nationalId!,
+      ServerService.currentUser.username!,
       ServerService.currentUser.name,
     );
     return Scaffold(

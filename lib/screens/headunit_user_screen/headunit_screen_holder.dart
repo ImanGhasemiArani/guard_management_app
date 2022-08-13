@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 
 import '../../widget/btn_nav_bar/button_navigation_bar.dart';
 import '../screen_holder.dart';
-import 'responsible_screen_account.dart';
-import 'responsible_screen_calender.dart';
-import 'responsible_screen_home.dart';
+import 'headunit_screen_account.dart';
+import 'headunit_screen_calender.dart';
+import 'headunit_screen_home.dart';
 
 
 
 // ignore: must_be_immutable
-class ResponsibleScreenHolder extends ScreenHolder {
-  ResponsibleScreenHolder({Key? key}) : super(key: key);
+class HeadUnitScreenHolder extends ScreenHolder {
+  HeadUnitScreenHolder({Key? key}) : super(key: key);
 
   late PageController _pageController;
 

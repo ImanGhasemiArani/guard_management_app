@@ -3,123 +3,110 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
 import '../lang/strs.dart';
-import '../screens/admin_screen/admin_screen_holder.dart';
-import '../screens/employee_screen/employee_screen_holder.dart';
-import '../screens/responsible_screen/responsible_screen_holder.dart';
+import '../screens/admin_user_screen/admin_screen_holder.dart';
+import '../screens/headunit_user_screen/headunit_screen_holder.dart';
+import '../screens/normal_user_screen/normal_screen_holder.dart';
 import '../screens/screen_holder.dart';
 import '../services/server_service.dart';
 
 User user({
+  String? fUsername,
   String? fName,
-  String? fNationalId,
   String? fEmail,
-  String? fPassword,
   String? fPhone,
-  String? fPost,
+  String? fRank,
   String? fOrganPos,
-  String fUserType = 'C',
+  String fUserType = 'N',
   ParseUser? parseUser,
 }) {
   if (parseUser == null) {
     switch (UserType.valueOf(fUserType.toUpperCase())) {
       case UserType.A:
-        return Admin(fName, fNationalId, fEmail, fPassword, fPhone, fPost,
-            fOrganPos, fUserType);
-      case UserType.B:
-        return Responsible(fName, fNationalId, fEmail, fPassword, fPhone, fPost,
-            fOrganPos, fUserType);
-      case UserType.C:
-        return Employee(fName, fNationalId, fEmail, fPassword, fPhone, fPost,
-            fOrganPos, fUserType);
+        return AdminUser(
+            fUsername, fName, fEmail, fPhone, fRank, fOrganPos, fUserType);
+      case UserType.H:
+        return HeadUnitUser(
+            fUsername, fName, fEmail, fPhone, fRank, fOrganPos, fUserType);
+      case UserType.N:
+        return NormalUser(
+            fUsername, fName, fEmail, fPhone, fRank, fOrganPos, fUserType);
       default:
-        return Employee(fName, fNationalId, fEmail, fPassword, fPhone, fPost,
-            fOrganPos, fUserType);
+        return NormalUser(
+            fUsername, fName, fEmail, fPhone, fRank, fOrganPos, fUserType);
     }
   } else {
     switch (UserType.valueOf(parseUser['userType'].toUpperCase())) {
       case UserType.A:
-        return Admin.fromParseUser(parseUser);
-      case UserType.B:
-        return Responsible.fromParseUser(parseUser);
-      case UserType.C:
-        return Employee.fromParseUser(parseUser);
+        return AdminUser.fromParseUser(parseUser);
+      case UserType.H:
+        return HeadUnitUser.fromParseUser(parseUser);
+      case UserType.N:
+        return NormalUser.fromParseUser(parseUser);
       default:
-        return Employee.fromParseUser(parseUser);
+        return NormalUser.fromParseUser(parseUser);
     }
   }
 }
 
 abstract class User {
+  String? _username;
   String? _name;
-  String? _nationalId;
-  String? _phone;
   String? _email;
-  String? _password;
-  String? _post;
+  String? _phone;
+  String? _rank;
   String? _organPos;
   String? _userType;
   UserType? _userTypeEnum;
   ScreenHolder screenHolder;
 
+  String? get username => _username;
   String? get name => _name;
-  String? get phone => _phone;
-  String? get nationalId => _nationalId;
   String? get email => _email;
-  String? get password => _password;
-  String? get post => _post;
+  String? get phone => _phone;
+  String? get rank => _rank;
   String? get organPos => _organPos;
   String? get userType => _userType;
   UserType? get userTypeEnum => _userTypeEnum;
 
   User(
-      String? fName,
-      String? fNationalId,
-      String? fEmail,
-      String? fPassword,
-      String? fPhone,
-      String? fPost,
-      String? fOrganPos,
-      String? fUserType,
-      this.screenHolder) {
+    String? fUsername,
+    String? fName,
+    String? fEmail,
+    String? fPhone,
+    String? fRank,
+    String? fOrganPos,
+    String? fUserType,
+    this.screenHolder,
+  ) {
+    username = fUsername;
     name = fName;
-    nationalId = fNationalId;
-    phone = fPhone;
     email = fEmail;
-    password = fPassword;
-    post = fPost;
+    phone = fPhone;
+    rank = fRank;
     organPos = fOrganPos;
     userType = fUserType;
   }
 
   User.fromParseUser(ParseUser parseUser, this.screenHolder) {
+    username = parseUser.username;
     name = parseUser['name'];
-    nationalId = parseUser.username;
-    phone = parseUser['phone'];
     email = parseUser.emailAddress;
-    password = parseUser.password;
-    post = parseUser['post'];
+    phone = parseUser['phone'];
+    rank = parseUser['rank'];
     organPos = parseUser['organPos'];
     userType = parseUser['userType'];
   }
 
-  set name(String? name) {
-    _name = name?.trim();
-  }
-
-  set phone(String? phone) {
-    phone = phone?.trim();
-    if (phone == null || phone.isEmpty) return;
-    phone.isValidIranianMobileNumber()
-        ? _phone = phone
-        : throw Exception(Strs.invalidPhoneNumberErrorMessage.tr);
-  }
-
-  set nationalId(String? id) {
+  set username(String? id) {
     id = id?.trim();
     if (id == null || id.isEmpty) return;
     id.isValidIranianNationalCode()
-        ? _nationalId = id
+        ? _username = id
         : throw Exception(Strs.invalidNationalIdErrorMessage.tr);
+  }
+
+  set name(String? name) {
+    _name = name?.trim();
   }
 
   set email(String? email) {
@@ -130,14 +117,18 @@ abstract class User {
         : throw Exception(Strs.invalidEmailErrorMessage.tr);
   }
 
-  set password(String? value) {
-    _password = value;
+  set phone(String? phone) {
+    phone = phone?.trim();
+    if (phone == null || phone.isEmpty) return;
+    phone.isValidIranianMobileNumber()
+        ? _phone = phone
+        : throw Exception(Strs.invalidPhoneNumberErrorMessage.tr);
   }
 
-  set post(String? post) {
-    post = post?.trim();
-    if (post == null || post.isEmpty) return;
-    _post = post.toUpperCase().trim();
+  set rank(String? rank) {
+    rank = rank?.trim();
+    if (rank == null || rank.isEmpty) return;
+    _rank = rank.toUpperCase().trim();
   }
 
   set organPos(String? organPos) {
@@ -172,101 +163,95 @@ abstract class User {
 
   @override
   String toString() {
-    return 'name: $_name, nationalId: $_nationalId, phone: $_phone, email: $_email, password: $_password, post: $_post, organPos: $_organPos, userType: $_userType';
+    return 'username: $_username, name: $_name, email: $_email, phone: $_phone, rank: $_rank, organPos: $_organPos, userType: $_userType';
   }
 }
 
-class Admin extends User {
-  Admin(
+class AdminUser extends User {
+  AdminUser(
+    String? fUsername,
     String? fName,
-    String? fNationalId,
     String? fEmail,
-    String? fPassword,
     String? fPhone,
-    String? fPost,
+    String? fRank,
     String? fOrganPos,
     String? fUserType,
   ) : super(
+          fUsername,
           fName,
-          fNationalId,
           fEmail,
-          fPassword,
           fPhone,
-          fPost,
+          fRank,
           fOrganPos,
           fUserType,
           AdminScreenHolder(),
         );
 
-  Admin.fromParseUser(ParseUser parseUser)
+  AdminUser.fromParseUser(ParseUser parseUser)
       : super.fromParseUser(
           parseUser,
           AdminScreenHolder(),
         );
 }
 
-class Responsible extends User {
-  Responsible(
+class HeadUnitUser extends User {
+  HeadUnitUser(
+    String? fUsername,
     String? fName,
-    String? fNationalId,
     String? fEmail,
-    String? fPassword,
     String? fPhone,
-    String? fPost,
+    String? fRank,
     String? fOrganPos,
     String? fUserType,
   ) : super(
+          fUsername,
           fName,
-          fNationalId,
           fEmail,
-          fPassword,
           fPhone,
-          fPost,
+          fRank,
           fOrganPos,
           fUserType,
-          ResponsibleScreenHolder(),
+          HeadUnitScreenHolder(),
         );
 
-  Responsible.fromParseUser(ParseUser parseUser)
+  HeadUnitUser.fromParseUser(ParseUser parseUser)
       : super.fromParseUser(
           parseUser,
-          ResponsibleScreenHolder(),
+          HeadUnitScreenHolder(),
         );
 }
 
-class Employee extends User {
-  Employee(
+class NormalUser extends User {
+  NormalUser(
+    String? fUsername,
     String? fName,
-    String? fNationalId,
     String? fEmail,
-    String? fPassword,
     String? fPhone,
-    String? fPost,
+    String? fRank,
     String? fOrganPos,
     String? fUserType,
   ) : super(
+          fUsername,
           fName,
-          fNationalId,
           fEmail,
-          fPassword,
           fPhone,
-          fPost,
+          fRank,
           fOrganPos,
           fUserType,
-          EmployeeScreenHolder(),
+          NormalScreenHolder(),
         );
 
-  Employee.fromParseUser(ParseUser parseUser)
+  NormalUser.fromParseUser(ParseUser parseUser)
       : super.fromParseUser(
           parseUser,
-          EmployeeScreenHolder(),
+          NormalScreenHolder(),
         );
 }
 
 enum UserType {
-  A(Strs.bossStr),
-  B(Strs.responsibleStr),
-  C(Strs.employeeStr);
+  A(Strs.adminUserStr),
+  H(Strs.headUnitUserStr),
+  N(Strs.normalUserStr);
 
   const UserType(this.value);
   final String value;

@@ -7,9 +7,9 @@ class Strs {
   static const String appVersionStr = "نسخه ۱.۰.۰";
 
   /// field's name String
-  static const String bossStr = "رئیس اداره";
-  static const String employeeStr = "کارمند";
-  static const String responsibleStr = "مسئول واحد";
+  static const String adminUserStr = "رئیس اداره";
+  static const String normalUserStr = "کارمند";
+  static const String headUnitUserStr = "مسئول واحد";
   static const String nationalIdStr = "کد ملی";
   static const String phoneNumberStr = "تلفن همراه";
   static const String emailStr = "ایمیل";
@@ -121,5 +121,6 @@ class Strs {
   static const String adminUserSignStr = "تایید مدیر اداره:";
   static const String inTheNameOfGodStr = "باسمه تعالی";
   static const String titleP1Str = "شرکت فرودگاه های کشور";
-  static const String titleP2Str = "ریاست محترم اداره مهندسی تجهیزات راداری و اتوماسیون هوانوردی";
+  static const String titleP2Str =
+      "ریاست محترم اداره مهندسی تجهیزات راداری و اتوماسیون هوانوردی";
 }

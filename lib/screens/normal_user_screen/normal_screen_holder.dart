@@ -7,8 +7,8 @@ import 'package:sidebarx/sidebarx.dart';
 import '../../widget/btn_nav_bar/button_navigation_bar.dart';
 import '../../widget/drawer/my_drawer.dart';
 import '../screen_holder.dart';
-import 'employee_screen_calender.dart';
-import 'employee_screen_home.dart';
+import 'normal_screen_calender.dart';
+import 'normal_screen_home.dart';
 
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 SidebarXController sideBarXController = SidebarXController(selectedIndex: 0);
@@ -16,8 +16,8 @@ RxInt selectedIndexDrawer = 0.obs;
 RxBool isSideBarExpanded = false.obs;
 
 // ignore: must_be_immutable
-class EmployeeScreenHolder extends ScreenHolder {
-  EmployeeScreenHolder({Key? key}) : super(key: key);
+class NormalScreenHolder extends ScreenHolder {
+  NormalScreenHolder({Key? key}) : super(key: key);
 
   late PageController _pageController;
 

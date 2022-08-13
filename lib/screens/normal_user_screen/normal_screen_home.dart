@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import '../../lang/strs.dart';
 import '../../widget/drawer/my_drawer.dart';
 import '../../widget/staggered_animations/flutter_staggered_animations.dart';
-import 'employee_screen_exchange_req.dart';
-import 'employee_screen_holder.dart';
+import 'normal_screen_exchange_req.dart';
+import 'normal_screen_holder.dart';
 
 class ScreenHome extends StatelessWidget {
   const ScreenHome({
