@@ -10,6 +10,7 @@ import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 import '../../lang/strs.dart';
 import '../../model/exchange_request.dart';
+import '../../services/pdf_service.dart';
 import '../../services/server_service.dart';
 import '../../utils/show_toast.dart';
 import '../../widget/signature/signature.dart';
@@ -268,12 +269,13 @@ class ScreenExchangeReq extends StatelessWidget {
                           Get.back();
                           return;
                         }
-                        final image = await signatureKey.currentState!
-                            .toImage(pixelRatio: 3.0);
-                        final data =
-                            await image.toByteData(format: ImageByteFormat.png);
-                        final pngBytes = data?.buffer.asUint8List();
-                        exchangeRequest.changerSignature = pngBytes;
+                        final signatureUint8List = (await (await signatureKey
+                                    .currentState!
+                                    .toImage(pixelRatio: 3.0))
+                                .toByteData(format: ImageByteFormat.png))
+                            ?.buffer
+                            .asUint8List();
+                        exchangeRequest.changerSignature = signatureUint8List;
                         Get.back();
                       },
                     );
@@ -318,6 +320,8 @@ class ScreenExchangeReq extends StatelessWidget {
         exchangeRequest.changerSignature == null) {
       showSnackbar(Strs.fillExchangeReqFormWarningMessage.tr,
           color: Colors.black.withOpacity(0.8));
+    } else {
+      PdfService.createExchangeReqPdf(exchangeRequest);
     }
   }
 }

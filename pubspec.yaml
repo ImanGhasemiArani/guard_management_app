@@ -37,7 +37,7 @@ dependencies:
   get: ^4.6.5
   shared_preferences: ^2.0.15
   connectivity_plus: ^2.3.6
-  device_info_plus: ^4.0.1
+  # device_info_plus: ^4.0.1
   flutter_secure_storage: ^5.0.2
   flutter_native_splash: ^2.2.6
   loading_animation_widget: ^1.2.0+2
@@ -52,6 +52,11 @@ dependencies:
   animations: ^2.0.3
   modal_bottom_sheet: ^2.1.0
   syncfusion_flutter_signaturepad: ^20.2.43
+  open_file: ^3.2.1
+  path_provider: ^2.0.11
+  pdf: ^3.8.2
+  image: ^3.2.0
+  # google_fonts: ^3.0.1
 
 
 dev_dependencies:

@@ -106,4 +106,20 @@ class Strs {
   static const String failedToLoadErrorStr =
       "متاسفانه خطایی رخ داده است. دوباره تلاش کنید";
   static const String workingPlanForYouStr = "برنامه کاری شما در چند روز آتی";
+
+  /// ExChange Request Form strings
+  static const String wHelloStr = "با سلام";
+  static const String bodyP1Str = "احتراما اینجانب )تامین کننده(";
+  static const String bodyP2Str = "عنوان پست سازمانی";
+  static const String bodyP3Str = "بدینوسیله کشیک";
+  static const String bodyP4Str = "مورخ";
+  static const String bodyP5Str = "آقای/خانم";
+  static const String bodyP6Str = ")تعویض کننده( را عهده دار خواهم بود.";
+  static const String changerSignStr = "امضای تعویض کننده:";
+  static const String supplierSignStr = "امضای تامین کننده:";
+  static const String headerUserSignStr = "تایید مسئول واحد:";
+  static const String adminUserSignStr = "تایید مدیر اداره:";
+  static const String inTheNameOfGodStr = "باسمه تعالی";
+  static const String titleP1Str = "شرکت فرودگاه های کشور";
+  static const String titleP2Str = "ریاست محترم اداره مهندسی تجهیزات راداری و اتوماسیون هوانوردی";
 }
