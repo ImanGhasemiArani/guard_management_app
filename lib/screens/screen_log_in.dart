@@ -75,14 +75,25 @@ class ScreenLogin extends HookWidget {
   }
 
   Widget _getLoginButton() {
+    final isShowButtonIndicator = false.obs;
     return SizedBox(
       width: double.infinity,
+      height: 52,
       child: CupertinoButton.filled(
         borderRadius: BorderRadius.circular(10),
-        onPressed: _onLoginPressed,
-        child: Text(
-          Strs.loginStr.tr,
-          style: TextStyle(fontFamily: Get.theme.textTheme.button!.fontFamily),
+        onPressed: () => _onLoginPressed(isShowButtonIndicator),
+        child: Obx(
+          () => !isShowButtonIndicator.value
+              ? Text(
+                  Strs.loginStr.tr,
+                  style: TextStyle(
+                      fontFamily: Get.theme.textTheme.button!.fontFamily),
+                )
+              : FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: CircularProgressIndicator(
+                      color: Get.theme.colorScheme.onPrimary),
+                ),
         ),
       ),
     );
@@ -124,7 +135,10 @@ class ScreenLogin extends HookWidget {
     showSnackbar(Strs.callSupportToResetPasswordMessage.tr);
   }
 
-  Future<void> _onLoginPressed() async {
+  Future<void> _onLoginPressed(RxBool isShowButtonIndicator) async {
+    if (isShowButtonIndicator.value) return;
+    isShowButtonIndicator.value = true;
+
     _loginErrorMessage.value = "";
     FocusManager.instance.primaryFocus!.unfocus();
 
@@ -137,10 +151,14 @@ class ScreenLogin extends HookWidget {
       showSnackbar(Strs.loginSuccessfullyMessageStr.tr,
           duration: const Duration(seconds: 1));
       await Future.delayed(const Duration(seconds: 1));
+
+      isShowButtonIndicator.value = false;
+
       Get.off(ServerService.currentUser.screenHolder,
           transition: Transition.cupertino);
     } catch (e) {
       _loginErrorMessage.value = "$e".replaceAll("Exception:", "").trim();
+      isShowButtonIndicator.value = false;
     }
   }
 

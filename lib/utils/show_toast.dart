@@ -4,9 +4,10 @@ import 'package:get/get.dart';
 void showSnackbar(
   String message, {
   Duration duration = (const Duration(seconds: 2)),
-  Color color = Colors.transparent,
+  Color? color,
   SnackPosition position = SnackPosition.TOP,
 }) {
+  color = color ?? Colors.black.withOpacity(0.8);
   Get.showSnackbar(
     GetSnackBar(
       snackPosition: position,

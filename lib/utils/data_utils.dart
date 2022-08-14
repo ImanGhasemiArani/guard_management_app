@@ -26,7 +26,9 @@ class DataUtils {
 
       shifts.entries.map((e) {
         final key = e.key;
-        final value = e.value as String;
+        final value = (e.value as Map<String, dynamic>)["des"];
+        final isExchangeable =
+            (e.value as Map<String, dynamic>)["isExchangeable"];
         final jalaliStr = key.split('-').map((str) => int.parse(str)).toList();
         final dateTime =
             Jalali(jalaliStr[0], jalaliStr[1], jalaliStr[2]).toDateTime();
@@ -34,7 +36,10 @@ class DataUtils {
           return {
             'username': username,
             'name': name,
-            'shift': ShiftType.valueOf(char).value.tr
+            'shift': {
+              "des": ShiftType.valueOf(char).value.tr,
+              "isExchangeable": isExchangeable
+            }
           };
         }).toList();
         return MapEntry(dateTime, values);

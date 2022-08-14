@@ -34,7 +34,12 @@ class ScreenExchangeReq extends StatelessWidget {
     );
     return Scaffold(
       appBar: getAppBar(),
-      body: getBody(),
+      body: Column(
+        children: [
+          Expanded(child: getBody()),
+          getSendButton(),
+        ],
+      ),
     );
   }
 
@@ -80,25 +85,6 @@ class ScreenExchangeReq extends StatelessWidget {
           ),
         ),
       ),
-      actions: [
-        Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: CupertinoButton.filled(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14.0,
-                  horizontal: 30.0,
-                ),
-                onPressed: _onSendButtonPressed,
-                child: Text(
-                  Strs.sendStr.tr,
-                  style: TextStyle(
-                      fontFamily: Get.theme.textTheme.button!.fontFamily),
-                ),
-              ),
-            )),
-      ],
     );
   }
 
@@ -125,6 +111,10 @@ class ScreenExchangeReq extends StatelessWidget {
               ),
               onPressed: () {
                 showBarModalBottomSheet(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
                     context: Get.context!,
                     builder: (context) {
                       return ShiftPicker(
@@ -133,7 +123,7 @@ class ScreenExchangeReq extends StatelessWidget {
                           exchangeRequest.changerShiftDate =
                               "${f.d}  ${f.mN}  ${f.y}";
                           exchangeRequest.changerShiftDescription =
-                              shift.value['shift'];
+                              shift.value['shift']['des'];
                           Get.back();
                         },
                       );
@@ -195,12 +185,16 @@ class ScreenExchangeReq extends StatelessWidget {
               ),
               onPressed: () {
                 showBarModalBottomSheet(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
                     context: Get.context!,
                     builder: (context) {
                       return UserPicker(
                         onUserPicked: (user) {
                           exchangeRequest.supplierNationalId = user.key;
-                          exchangeRequest.supplierName = user.value;
+                          exchangeRequest.supplierName = (user.value)["name"];
                           Get.back();
                         },
                       );
@@ -310,7 +304,9 @@ class ScreenExchangeReq extends StatelessWidget {
     );
   }
 
-  void _onSendButtonPressed() {
+  void _onSendButtonPressed(RxBool isShowButtonIndicator) {
+    if (isShowButtonIndicator.value) return;
+    isShowButtonIndicator.value = true;
     if (exchangeRequest.changerNationalId == null ||
         exchangeRequest.changerName == null ||
         exchangeRequest.changerShiftDate == null ||
@@ -318,10 +314,40 @@ class ScreenExchangeReq extends StatelessWidget {
         exchangeRequest.supplierNationalId == null ||
         exchangeRequest.supplierName == null ||
         exchangeRequest.changerSignature == null) {
-      showSnackbar(Strs.fillExchangeReqFormWarningMessage.tr,
-          color: Colors.black.withOpacity(0.8));
+      showSnackbar(Strs.fillExchangeReqFormWarningMessage.tr);
+      isShowButtonIndicator.value = false;
     } else {
-      PdfService.createExchangeReqPdf(exchangeRequest);
+      PdfService.createExchangeReqPdf(exchangeRequest)
+          .then((value) => isShowButtonIndicator.value = false);
     }
+  }
+
+  Widget getSendButton() {
+    final isShowButtonIndicator = false.obs;
+    final key = GlobalKey();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: SizedBox(
+        width: double.infinity,
+        height: 52,
+        child: CupertinoButton.filled(
+          onPressed: () => _onSendButtonPressed(isShowButtonIndicator),
+          child: Obx(
+            () => !isShowButtonIndicator.value
+                ? Text(
+                    Strs.sendStr.tr,
+                    style: TextStyle(
+                        fontFamily: Get.theme.textTheme.button!.fontFamily),
+                    key: key,
+                  )
+                : FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: CircularProgressIndicator(
+                        color: Get.theme.colorScheme.onPrimary),
+                  ),
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -5,11 +5,10 @@ import 'package:get/get.dart';
 
 import '../../lang/strs.dart';
 import '../../services/server_service.dart';
-import '../../utils/data_utils.dart';
 import '../../widget/loading_widget/loading_widget.dart';
 import '../../widget/staggered_animations/flutter_staggered_animations.dart';
 
-typedef OnUserPicked = void Function(MapEntry<String, String> user);
+typedef OnUserPicked = void Function(MapEntry<String, dynamic> user);
 
 // ignore: must_be_immutable
 class UserPicker extends HookWidget {
@@ -54,13 +53,12 @@ class ScaffoldBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ServerService.getUserMapUsernameToName(isFilterDPlans: true),
+      future: ServerService.getUsersAvailableForExchange(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           try {
             if (!snapshot.hasData || snapshot.data == null) throw Exception();
-            var usersMap = DataUtils.filterCurrentUserFromUsersMap(
-                snapshot.data as Map<String, String>);
+            var usersMap = snapshot.data as Map<String, dynamic>;
             return SafeArea(
               child: Center(
                 child: Container(
@@ -98,7 +96,7 @@ class ShiftsListView extends StatelessWidget {
     this.onUserPicked,
   }) : super(key: key);
 
-  final Map<String, String> users;
+  final Map<String, dynamic> users;
   final OnUserPicked? onUserPicked;
 
   @override
@@ -134,7 +132,7 @@ class ShiftsListTile extends StatelessWidget {
     this.onUserPicked,
   }) : super(key: key);
 
-  final MapEntry<String, String> user;
+  final MapEntry<String, dynamic> user;
   final OnUserPicked? onUserPicked;
 
   @override
@@ -156,9 +154,20 @@ class ShiftsListTile extends StatelessWidget {
                   color: Get.theme.colorScheme.primary,
                 )),
           ),
-          Text(
-            user.value,
-            style: Get.theme.textTheme.subtitle1,
+          Column(
+            textDirection: TextDirection.rtl,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                (user.value)["name"],
+                style: Get.theme.textTheme.subtitle1,
+              ),
+              Text(
+                "${Strs.teamStr.tr} ${(user.value)["teamName"]} - ${Strs.postStr.tr} ${(user.value)["post"]}",
+                style: Get.theme.textTheme.subtitle2,
+                textDirection: TextDirection.rtl,
+              ),
+            ],
           ),
         ],
       ),

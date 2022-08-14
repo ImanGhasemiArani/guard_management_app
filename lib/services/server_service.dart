@@ -160,19 +160,18 @@ class ServerService {
     return json.decode(utf8.decode(response.bodyBytes));
   }
 
-  static Future<Map<String, dynamic>> getSpecificUserPlan({
-    required String username,
-    isFilterMPlans = false,
-  }) async {
-    // response = await ParseObject('Plan').getAll();
-    late final ParseResponse response;
-    if (isFilterMPlans) {
-      final func = ParseCloudFunction("specificUserPlanWithFilterM");
-      response = await func.execute(parameters: {"username": username});
-    } else {
-      final func = ParseCloudFunction("specificUserPlan");
-      response = await func.execute(parameters: {"username": username});
-    }
+  static Future<Map<String, dynamic>> getSpecificUserSchedule(
+      {required String username,
+      bool isOnlyGuard = false,
+      bool isFilterDate = false,
+      String? afterDate}) async {
+    final func = ParseCloudFunction("specificUserSchedule");
+    final response = await func.execute(parameters: {
+      "username": username,
+      "isOnlyGuard": isOnlyGuard,
+      "isFilterDate": isFilterDate,
+      "afterDate": afterDate
+    });
     if (response.success) {
       final result = (response.result as Map<String, dynamic>);
       return result;
@@ -191,17 +190,24 @@ class ServerService {
     }
   }
 
-  static Future<Map<String, String>> getUserMapUsernameToName({
-    isFilterDPlans = false,
-  }) async {
-    late final ParseResponse response;
-    if (isFilterDPlans) {
-      final func = ParseCloudFunction("getUsersMapUsernameToNameWithFilterM");
-      response = await func.execute();
+  static Future<Map<String, dynamic>> getUsersAvailableForExchange() async {
+    final func = ParseCloudFunction("getUsersAvailableForExchange");
+    final response =
+        await func.execute(parameters: {"username": currentUser.username});
+    if (response.success) {
+      final resultList = response.result as Map<String, dynamic>;
+      return resultList;
     } else {
-      final func = ParseCloudFunction("getUsersMapUsernameToName");
-      response = await func.execute();
+      throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
     }
+  }
+
+  static Future<Map<String, String>> getUsersMapUsernameToName({
+    bool isOnlyGuard = false,
+  }) async {
+    final func = ParseCloudFunction("getUsersMapUsernameToName");
+    final response =
+        await func.execute(parameters: {"isOnlyGuard": isOnlyGuard});
     if (response.success) {
       final resultList = response.result as Map<String, dynamic>;
       return resultList.map((key, value) => MapEntry(key, value as String));

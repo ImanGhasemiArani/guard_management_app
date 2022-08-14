@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 import '../../lang/strs.dart';
+import '../../model/user.dart';
 import '../../services/server_service.dart';
 import '../../utils/data_utils.dart';
 import '../../widget/calendar/calendar.dart';
@@ -60,13 +61,20 @@ class ScaffoldBody extends StatelessWidget {
   final ScrollController scrollController;
   final OnShiftPicked? onShiftPicked;
 
+  Future<Map<String, dynamic>> getData() async {
+    final f = currentSelectedDate.value.toJalali().formatter;
+    return await ServerService.getSpecificUserSchedule(
+      username: ServerService.currentUser.username!,
+      isOnlyGuard: true,
+      isFilterDate: true,
+      afterDate: "${f.y}-${f.m}-${f.d}",
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ServerService.getSpecificUserPlan(
-        username: ServerService.currentUser.username!,
-        isFilterMPlans: true,
-      ),
+      future: getData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           try {
@@ -307,8 +315,7 @@ class ShiftsListView extends StatelessWidget {
                       child: index == 0
                           ? _getFirstContent()
                           : ShiftsListTile(
-                              newEvents: newEvents,
-                              index: index - 1,
+                              event: newEvents[index - 1],
                               onShiftPicked: onShiftPicked,
                             ),
                     ),
@@ -347,13 +354,11 @@ class ShiftsListView extends StatelessWidget {
 class ShiftsListTile extends StatelessWidget {
   const ShiftsListTile({
     Key? key,
-    required this.newEvents,
-    required this.index,
+    required this.event,
     this.onShiftPicked,
   }) : super(key: key);
 
-  final List newEvents;
-  final int index;
+  final Map<String, dynamic> event;
   final OnShiftPicked? onShiftPicked;
 
   @override
@@ -364,32 +369,38 @@ class ShiftsListTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        textDirection: TextDirection.rtl,
         children: [
-          CupertinoButton(
-            onPressed: () {
-              onShiftPicked
-                  ?.call(MapEntry(currentSelectedDate.value, newEvents[index]));
-            },
-            padding: EdgeInsets.zero,
-            child: Text(Strs.selectStr.tr,
-                style: Get.theme.textTheme.subtitle2!.copyWith(
-                  color: Get.theme.colorScheme.primary,
-                )),
-          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                newEvents[index]["name"],
+                event["name"],
                 style: Get.theme.textTheme.subtitle1,
               ),
               Text(
-                newEvents[index]["shift"],
+                event["shift"]["des"],
                 style: Get.theme.textTheme.bodyText2,
               ),
             ],
           ),
+          if (!event["shift"]["isExchangeable"])
+            Text(Strs.isNotExchangeableStr.tr,
+                style: Get.theme.textTheme.subtitle2!.copyWith(
+                  color: Get.theme.colorScheme.primary,
+                )),
+          if (event["shift"]["isExchangeable"])
+            CupertinoButton(
+              onPressed: () {
+                onShiftPicked?.call(MapEntry(currentSelectedDate.value, event));
+              },
+              padding: EdgeInsets.zero,
+              child: Text(Strs.selectStr.tr,
+                  style: Get.theme.textTheme.subtitle2!.copyWith(
+                    color: Get.theme.colorScheme.primary,
+                  )),
+            ),
         ],
       ),
     );
@@ -426,17 +437,63 @@ class CalendarContent extends StatelessWidget {
           currentSelectedDate.value = day;
         },
         marker: (date, events) {
-          return Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Get.theme.colorScheme.primary.withOpacity(0.5),
+          if (events == null || events.isEmpty) return const SizedBox();
+          if (events.length > 1) {
+            return Stack(
+              children: [
+                Positioned(
+                  top: -4,
+                  left: 4,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(6.0),
+                    child: const Text(""),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.purple,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(6.0),
+                    child: const Text(""),
+                  ),
+                ),
+              ],
+            );
+          } else if ((events.first)['shift']['des'] == ShiftType.N.value) {
+            return Positioned(
+              top: -4,
+              left: 0,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.purple,
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(6.0),
+                child: const Text(""),
               ),
-              shape: BoxShape.circle,
-            ),
-            padding: const EdgeInsets.all(6.0),
-          );
+            );
+          } else {
+            return Positioned(
+              top: -4,
+              left: 0,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(6.0),
+                child: const Text(""),
+              ),
+            );
+          }
         },
       ),
     );

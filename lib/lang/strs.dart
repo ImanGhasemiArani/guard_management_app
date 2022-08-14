@@ -42,6 +42,9 @@ class Strs {
   static const String nightShiftStr = "شیفت شب";
   static const String morningShiftStr = "صبح کار";
   static const String dayShiftStr = "شیفت روز";
+  static const String isNotExchangeableStr = "غیر قابل تعویض";
+  static const String teamStr = "تیم";
+  static const String postStr = "پست";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =
