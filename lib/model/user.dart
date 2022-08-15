@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:get/get.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
@@ -58,6 +60,7 @@ abstract class User {
   String? _userType;
   UserType? _userTypeEnum;
   ScreenHolder screenHolder;
+  Uint8List? _profileImage;
 
   String? get username => _username;
   String? get name => _name;
@@ -67,6 +70,7 @@ abstract class User {
   String? get organPos => _organPos;
   String? get userType => _userType;
   UserType? get userTypeEnum => _userTypeEnum;
+  Uint8List? get profileImage => _profileImage;
 
   User(
     String? fUsername,
@@ -143,6 +147,10 @@ abstract class User {
     userType = userType.toUpperCase();
     _userTypeEnum = UserType.valueOf(userType);
     _userType = _userTypeEnum!.value.tr;
+  }
+
+  set profileImage(Uint8List? profileImage) {
+    _profileImage = profileImage;
   }
 
   void updatePhone(String newPhone) {

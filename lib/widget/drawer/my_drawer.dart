@@ -29,13 +29,19 @@ class MyDrawer extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           textStyle: TextStyle(color: Get.theme.colorScheme.onSurface),
+          //   selectedTextStyle: TextStyle(color: Get.theme.colorScheme.onSurface),
           selectedTextStyle: TextStyle(color: Get.theme.colorScheme.primary),
           itemTextPadding: const EdgeInsets.only(right: 30),
+          //   selectedItemTextPadding: const EdgeInsets.only(right: 30),
           selectedItemTextPadding: const EdgeInsets.only(right: 30),
           itemDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: Get.theme.colorScheme.surface),
           ),
+          //   selectedItemDecoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(10),
+          //     border: Border.all(color: Get.theme.colorScheme.surface),
+          //   ),
           selectedItemDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
@@ -55,6 +61,10 @@ class MyDrawer extends StatelessWidget {
             color: Get.theme.colorScheme.onSurface.withOpacity(0.7),
             size: 20,
           ),
+          //   selectedIconTheme: IconThemeData(
+          //     color: Get.theme.colorScheme.onSurface.withOpacity(0.7),
+          //     size: 20,
+          //   ),
           selectedIconTheme: IconThemeData(
             color: Get.theme.colorScheme.primary,
             size: 20,

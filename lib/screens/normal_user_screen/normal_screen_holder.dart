@@ -7,6 +7,7 @@ import 'package:sidebarx/sidebarx.dart';
 import '../../widget/btn_nav_bar/button_navigation_bar.dart';
 import '../../widget/drawer/my_drawer.dart';
 import '../screen_holder.dart';
+import 'normal_screen_account.dart';
 import 'normal_screen_calender.dart';
 import 'normal_screen_home.dart';
 
@@ -36,8 +37,8 @@ class NormalScreenHolder extends ScreenHolder {
           const ScreenHome(),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: BtnNavBar(pageController: _pageController),
+      //   floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      //   floatingActionButton: BtnNavBar(pageController: _pageController),
       endDrawerEnableOpenDragGesture: false,
       endDrawer: SafeArea(
         child: MyDrawer(sideBarXController: sideBarXController),
@@ -52,6 +53,14 @@ class NormalScreenHolder extends ScreenHolder {
     sideBarXController.addListener(() {
       if (selectedIndexDrawer.value != sideBarXController.selectedIndex) {
         selectedIndexDrawer.value = sideBarXController.selectedIndex;
+        final value = sideBarXController.selectedIndex;
+        sideBarXController.selectIndex(0);
+        if (value == 1) {
+          Get.to(ScreenAccount());
+        } else if (value == 0) {
+        } else {
+          Get.to(const Scaffold());
+        }
         scaffoldKey.currentState!.closeEndDrawer();
       } else if (isSideBarExpanded.value != sideBarXController.extended) {
         isSideBarExpanded.value = sideBarXController.extended;
