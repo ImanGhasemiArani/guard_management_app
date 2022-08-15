@@ -23,32 +23,30 @@ class ScreenUserProfile extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             try {
-              return AnimationLimiter(
-                key: UniqueKey(),
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: [
-                    AnimationConfiguration.staggeredList(
-                      position: 0,
-                      duration: const Duration(milliseconds: 500),
-                      child: SlideAnimation(
-                        verticalOffset: 50,
-                        child: FadeInAnimation(
-                          child: _buildTop(),
+              return Directionality(
+                textDirection: TextDirection.rtl,
+                child: SingleChildScrollView(
+                  child: AnimationLimiter(
+                    child: Column(
+                      children: AnimationConfiguration.toStaggeredList(
+                        duration: const Duration(milliseconds: 500),
+                        childAnimationBuilder: (widget) => SlideAnimation(
+                          horizontalOffset: 50,
+                          child: FadeInAnimation(
+                            child: widget,
+                          ),
                         ),
+                        children: [
+                          _buildTop(),
+                          _buildNameContent(),
+                          _buildDataContent(),
+                          _buildTeamContent(),
+                          _buildContactContent(),
+                          _buildChangePasswordContent(),
+                        ],
                       ),
                     ),
-                    AnimationConfiguration.staggeredList(
-                      position: 2,
-                      duration: const Duration(milliseconds: 500),
-                      child: SlideAnimation(
-                        verticalOffset: 50,
-                        child: FadeInAnimation(
-                          child: _buildContent(),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               );
             } catch (e) {
@@ -68,6 +66,35 @@ class ScreenUserProfile extends StatelessWidget {
       ),
     );
   }
+
+//   return AnimationLimiter(
+//                 key: UniqueKey(),
+//                 child: ListView(
+//                   padding: EdgeInsets.zero,
+//                   children: [
+//                     AnimationConfiguration.staggeredList(
+//                       position: 0,
+//                       duration: const Duration(milliseconds: 500),
+//                       child: SlideAnimation(
+//                         verticalOffset: 50,
+//                         child: FadeInAnimation(
+//                           child: _buildTop(),
+//                         ),
+//                       ),
+//                     ),
+//                     AnimationConfiguration.staggeredList(
+//                       position: 2,
+//                       duration: const Duration(milliseconds: 500),
+//                       child: SlideAnimation(
+//                         verticalOffset: 50,
+//                         child: FadeInAnimation(
+//                           child: _buildContent(),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               );
 
   AppBar _buildAppBar() => AppBar(
         automaticallyImplyLeading: false,
@@ -177,30 +204,33 @@ class ScreenUserProfile extends StatelessWidget {
         ],
       );
 
-  Widget _buildContent() {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildNameContent(),
-            _buildDataContent(),
-            _buildTeamContent(),
-            _buildContactContent(),
-            _buildChangePasswordContent(),
-          ],
-        ),
-      ),
-    );
-  }
+//   Widget _buildContent() {
+//     return Directionality(
+//       textDirection: TextDirection.rtl,
+//       child: Padding(
+//         padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.center,
+//           children: [
+//             _buildNameContent(),
+//             _buildDataContent(),
+//             _buildTeamContent(),
+//             _buildContactContent(),
+//             _buildChangePasswordContent(),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
 
-  Widget _buildNameContent() => Text(
-        ServerService.currentUser.name ?? "",
-        textAlign: TextAlign.center,
-        style: Get.theme.textTheme.headlineMedium!
-            .copyWith(color: Get.theme.colorScheme.onBackground),
+  Widget _buildNameContent() => Padding(
+        padding: const EdgeInsets.only(top: 30),
+        child: Text(
+          ServerService.currentUser.name ?? "",
+          textAlign: TextAlign.center,
+          style: Get.theme.textTheme.headlineMedium!
+              .copyWith(color: Get.theme.colorScheme.onBackground),
+        ),
       );
 
   void _onCameraButtonPressed() {}
@@ -210,7 +240,7 @@ class ScreenUserProfile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 10 + 20),
       child: SizedBox(
         width: double.infinity,
         child: Padding(
@@ -294,7 +324,7 @@ class ScreenUserProfile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      margin: const EdgeInsets.fromLTRB(10, 0, 10, 40),
+      margin: const EdgeInsets.fromLTRB(10 + 20, 0, 10 + 20, 40),
       child: SizedBox(
         width: double.infinity,
         child: Padding(
@@ -364,7 +394,7 @@ class ScreenUserProfile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 10 + 20),
       child: SizedBox(
         width: double.infinity,
         child: Padding(
@@ -438,7 +468,7 @@ class ScreenUserProfile extends StatelessWidget {
 
   Widget _buildChangePasswordContent() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: CupertinoButton(
         child: Text(
           Strs.editPasswordStr.tr,
