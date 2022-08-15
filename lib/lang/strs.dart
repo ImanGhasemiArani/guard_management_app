@@ -45,6 +45,10 @@ class Strs {
   static const String isNotExchangeableStr = "غیر قابل تعویض";
   static const String teamStr = "تیم";
   static const String postStr = "پست";
+  static const String rankingStr = "رتبه";
+  static const String organPosStr = "پست سازمانی";
+  static const String userContactInfoStr = "اطلاعات تماس";
+  static const String teamNameStr = "نام تیم";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =

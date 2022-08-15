@@ -7,7 +7,7 @@ import 'package:sidebarx/sidebarx.dart';
 import '../../widget/btn_nav_bar/button_navigation_bar.dart';
 import '../../widget/drawer/my_drawer.dart';
 import '../screen_holder.dart';
-import 'normal_screen_account.dart';
+import 'normal_screen_user_profile.dart';
 import 'normal_screen_calender.dart';
 import 'normal_screen_home.dart';
 
@@ -56,7 +56,7 @@ class NormalScreenHolder extends ScreenHolder {
         final value = sideBarXController.selectedIndex;
         sideBarXController.selectIndex(0);
         if (value == 1) {
-          Get.to(ScreenAccount());
+          Get.to(ScreenUserProfile());
         } else if (value == 0) {
         } else {
           Get.to(const Scaffold());

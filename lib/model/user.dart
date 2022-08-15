@@ -61,6 +61,7 @@ abstract class User {
   UserType? _userTypeEnum;
   ScreenHolder screenHolder;
   Uint8List? _profileImage;
+  Map<String, dynamic>? teamData;
 
   String? get username => _username;
   String? get name => _name;

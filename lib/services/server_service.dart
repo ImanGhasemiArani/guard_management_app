@@ -96,6 +96,12 @@ class ServerService {
     currentParseUser = ParseUser.createUser();
     var res = await currentParseUser.getUpdatedUser();
     currentUser = user(parseUser: currentParseUser);
+    try {
+      currentUser.teamData =
+          await getSpecificUserTeamInfo(username: currentUser.username!);
+    } catch (e) {
+      return const MapEntry(false, null);
+    }
     if (res.success) return const MapEntry(true, null);
     return const MapEntry(false, null);
   }
@@ -211,6 +217,18 @@ class ServerService {
     if (response.success) {
       final resultList = response.result as Map<String, dynamic>;
       return resultList.map((key, value) => MapEntry(key, value as String));
+    } else {
+      throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
+    }
+  }
+
+  static Future<Map<String, dynamic>> getSpecificUserTeamInfo(
+      {required String username}) async {
+    final func = ParseCloudFunction("getSpecificUserTeamInfo");
+    final response = await func.execute(parameters: {"username": username});
+    if (response.success) {
+      final resultList = response.result as Map<String, dynamic>;
+      return resultList;
     } else {
       throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
     }
