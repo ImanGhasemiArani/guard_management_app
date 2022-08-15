@@ -56,8 +56,8 @@ class NormalScreenHolder extends ScreenHolder {
         final value = sideBarXController.selectedIndex;
         sideBarXController.selectIndex(0);
         if (value == 1) {
-          Get.to(ScreenUserProfile());
-        } else if (value == 0) {
+          Get.to(const ScreenUserProfile(), transition: Transition.cupertino);
+        } else if ([0, 7].contains(value)) {
         } else {
           Get.to(const Scaffold());
         }

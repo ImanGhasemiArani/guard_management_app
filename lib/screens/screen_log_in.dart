@@ -154,8 +154,10 @@ class ScreenLogin extends HookWidget {
 
       isShowButtonIndicator.value = false;
 
-      Get.off(ServerService.currentUser.screenHolder,
-          transition: Transition.cupertino);
+      Get.off(
+        ServerService.currentUser.screenHolder,
+        transition: Transition.cupertino,
+      );
     } catch (e) {
       _loginErrorMessage.value = "$e".replaceAll("Exception:", "").trim();
       isShowButtonIndicator.value = false;
