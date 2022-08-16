@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +16,6 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
   ));
   await initAppStart();
   runApp(const MainMaterial());
@@ -48,6 +46,7 @@ class MainMaterial extends StatelessWidget {
             ),
           ),
           appBarTheme: const AppBarTheme().copyWith(
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
             color: Colors.transparent,
             elevation: 0,
             scrolledUnderElevation: 0,
@@ -82,6 +81,7 @@ class MainMaterial extends StatelessWidget {
             ),
           ),
           appBarTheme: const AppBarTheme().copyWith(
+            systemOverlayStyle: SystemUiOverlayStyle.light,
             color: Colors.transparent,
             elevation: 0,
             scrolledUnderElevation: 0,
@@ -156,42 +156,16 @@ class ThemeController {
 
   ThemeController(ThemeMode mode) {
     _mode = mode;
-    _setStatusBarBrightness(mode);
   }
 
   ThemeMode get mode => _mode;
 
   set mode(ThemeMode themeMode) {
     _mode = themeMode;
-    _setStatusBarBrightness(mode);
     Get.changeThemeMode(mode);
 
     // Future.delayed(
     //     const Duration(milliseconds: 500), (() => Get.changeThemeMode(mode)));
     sharedPreferences.setString("themeMode", _mode.name);
-  }
-
-  void _setStatusBarBrightness(ThemeMode themeMode) {
-    late final Brightness brightness;
-    print("@$themeMode");
-    switch (themeMode) {
-      case ThemeMode.system:
-        brightness = SchedulerBinding.instance.window.platformBrightness ==
-                Brightness.dark
-            ? Brightness.light
-            : Brightness.dark;
-        break;
-      case ThemeMode.light:
-        brightness = Brightness.dark;
-        break;
-      case ThemeMode.dark:
-        brightness = Brightness.light;
-        break;
-    }
-    print("#$brightness");
-    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    //   statusBarColor: Colors.transparent,
-    //   statusBarIconBrightness: brightness,
-    // ));
   }
 }
