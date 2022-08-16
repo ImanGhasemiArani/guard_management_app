@@ -44,18 +44,21 @@ class MyDrawer extends StatelessWidget {
           //   ),
           selectedItemDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: const Color(0xFF5F5FA7).withOpacity(0.6).withOpacity(0.37),
-            ),
-            gradient: LinearGradient(
-              colors: [const Color(0xFF3E3E61), Get.theme.colorScheme.surface],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.28),
-                blurRadius: 30,
-              )
-            ],
+            border:
+                Border.all(color: Get.theme.colorScheme.secondary, width: 1.5),
+            color: Get.theme.colorScheme.secondary.withOpacity(0.1),
+            // gradient: LinearGradient(
+            //   colors: [
+            //     const Color(0xFF3E3E61),
+            //     Get.theme.colorScheme.surface,
+            //   ],
+            // ),
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Colors.black.withOpacity(0.28),
+            //     blurRadius: 30,
+            //   )
+            // ],
           ),
           iconTheme: IconThemeData(
             color: Get.theme.colorScheme.onSurface.withOpacity(0.7),

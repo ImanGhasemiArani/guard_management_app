@@ -38,11 +38,17 @@ class ScreenUserProfile extends StatelessWidget {
                         ),
                         children: [
                           _buildTop(),
+                          const SizedBox(height: 30),
                           _buildNameContent(),
+                          const SizedBox(height: 35),
                           _buildDataContent(),
+                          const SizedBox(height: 35),
                           _buildTeamContent(),
+                          const SizedBox(height: 35),
                           _buildContactContent(),
+                          const SizedBox(height: 20),
                           _buildChangePasswordContent(),
+                          const SizedBox(height: 20),
                         ],
                       ),
                     ),
@@ -183,6 +189,12 @@ class ScreenUserProfile extends StatelessWidget {
               )),
               shape: BoxShape.circle,
             ),
+            // shape: CircleBorder(
+            //   side: BorderSide(
+            //     color: Get.theme.colorScheme.background,
+            //     width: 10,
+            //   ),
+            // ),
             child: CircleAvatar(
               radius: profileHight * 0.5,
               backgroundImage: const AssetImage(
@@ -223,24 +235,18 @@ class ScreenUserProfile extends StatelessWidget {
 //     );
 //   }
 
-  Widget _buildNameContent() => Padding(
-        padding: const EdgeInsets.only(top: 30),
-        child: Text(
-          ServerService.currentUser.name ?? "",
-          textAlign: TextAlign.center,
-          style: Get.theme.textTheme.headlineMedium!
-              .copyWith(color: Get.theme.colorScheme.onBackground),
-        ),
+  Widget _buildNameContent() => Text(
+        ServerService.currentUser.name ?? "",
+        textAlign: TextAlign.center,
+        style: Get.theme.textTheme.headlineMedium!
+            .copyWith(color: Get.theme.colorScheme.onBackground),
       );
 
   void _onCameraButtonPressed() {}
 
   Widget _buildDataContent() {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 10 + 20),
+      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 30),
       child: SizedBox(
         width: double.infinity,
         child: Padding(
@@ -321,10 +327,7 @@ class ScreenUserProfile extends StatelessWidget {
 
   Widget _buildTeamContent() {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      margin: const EdgeInsets.fromLTRB(10 + 20, 0, 10 + 20, 40),
+      margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
       child: SizedBox(
         width: double.infinity,
         child: Padding(
@@ -391,10 +394,7 @@ class ScreenUserProfile extends StatelessWidget {
 
   Widget _buildContactContent() {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 10 + 20),
+      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 30),
       child: SizedBox(
         width: double.infinity,
         child: Padding(
@@ -468,7 +468,7 @@ class ScreenUserProfile extends StatelessWidget {
 
   Widget _buildChangePasswordContent() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 30),
       child: CupertinoButton(
         child: Text(
           Strs.editPasswordStr.tr,

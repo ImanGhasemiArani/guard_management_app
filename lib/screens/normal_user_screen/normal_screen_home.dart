@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../lang/strs.dart';
+import '../../main.dart';
+import '../../widget/appbar/my_appbar.dart';
 import '../../widget/drawer/my_drawer.dart';
 import '../../widget/staggered_animations/flutter_staggered_animations.dart';
 import 'normal_screen_exchange_req.dart';
@@ -39,6 +41,8 @@ class ScreenHome extends StatelessWidget {
                 key: UniqueKey(),
                 child: GridView.count(
                   crossAxisCount: 3,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
                   children: [
                     HomeGridChild(
                       index: 0,
@@ -77,41 +81,65 @@ class ScreenHome extends StatelessWidget {
     );
   }
 
-  AppBar getAppBar() => AppBar(
+  PreferredSizeWidget getAppBar() => MyAppBar(
         automaticallyImplyLeading: false,
-        title: GestureDetector(
-          onTap: () {},
-          child: const Card(
+        title: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {},
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Padding(
-              padding: EdgeInsets.all(14),
-              child: Icon(CupertinoIcons.envelope),
+              padding: const EdgeInsets.all(14),
+              child: Icon(
+                CupertinoIcons.envelope,
+                color: Get.theme.colorScheme.primary,
+              ),
             ),
           ),
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: GestureDetector(
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    children: [
-                      Text(
-                        Strs.appNameStr.tr,
-                        style: Get.theme.textTheme.headline6,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 15),
-                        child: Icon(CupertinoIcons.bars),
-                      ),
-                    ],
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: scaffoldKey.currentState!.openEndDrawer,
+              child: SizedBox(
+                height: double.infinity,
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      children: [
+                        Text(
+                          Strs.appNameStr.tr,
+                          key: UniqueKey(),
+                          style: TextStyle(
+                            fontSize: Get.theme.textTheme.headline6!.fontSize,
+                            height: Get.theme.textTheme.headline6!.height,
+                            fontStyle: Get.theme.textTheme.headline6!.fontStyle,
+                            fontWeight:
+                                Get.theme.textTheme.headline6!.fontWeight,
+                            letterSpacing:
+                                Get.theme.textTheme.headline6!.letterSpacing,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Icon(
+                            CupertinoIcons.bars,
+                            color: Get.theme.colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              onTap: () {
-                scaffoldKey.currentState!.openEndDrawer();
-              },
             ),
           ),
         ],
@@ -144,32 +172,36 @@ class HomeGridChild extends StatelessWidget {
           child: OpenContainer(
             closedElevation: 0,
             openElevation: 0,
+            clipBehavior: Clip.none,
             closedColor: Colors.transparent,
             openColor: Colors.transparent,
             middleColor: Colors.transparent,
             openBuilder: ((context, action) => openWidget),
-            closedBuilder: (context, action) => Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: InkWell(
-                enableFeedback: false,
-                highlightColor: Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-                onTap: action,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      textDirection: TextDirection.rtl,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(icon, size: 45),
-                        const SizedBox(height: 10),
-                        Text(label),
-                      ],
+            closedBuilder: (context, action) => CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: action,
+              child: SizedBox(
+                height: double.infinity,
+                width: double.infinity,
+                child: Card(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        textDirection: TextDirection.rtl,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            icon,
+                            size: 45,
+                            color: Get.theme.colorScheme.secondary,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(label),
+                        ],
+                      ),
                     ),
                   ),
                 ),

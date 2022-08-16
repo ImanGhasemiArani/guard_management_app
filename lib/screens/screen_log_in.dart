@@ -27,46 +27,53 @@ class ScreenLogin extends HookWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 400),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.4),
+          child: Card(
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Text(
-                    Strs.loginStr.tr,
-                    style: const TextStyle(fontSize: 40),
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 400),
+              //   decoration: BoxDecoration(
+              //     color: Colors.black.withOpacity(0.4),
+              //     borderRadius: BorderRadius.circular(20),
+              //   ),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Text(
+                      Strs.loginStr.tr,
+                      style: const TextStyle(fontSize: 40),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: UsernameField(usernameController: _usernameController),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: PasswordField(passwordController: _passwordController),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: _getLoginButton(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0),
-                  child: _getSupportButton(),
-                ),
-                // create error massage box
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0),
-                  child: _getErrorMessageBox(),
-                )
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child:
+                        UsernameField(usernameController: _usernameController),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child:
+                        PasswordField(passwordController: _passwordController),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: _getLoginButton(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 0),
+                    child: _getSupportButton(),
+                  ),
+                  // create error massage box
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 0),
+                    child: _getErrorMessageBox(),
+                  )
+                ],
+              ),
             ),
           ),
         ),

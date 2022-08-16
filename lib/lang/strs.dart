@@ -49,6 +49,9 @@ class Strs {
   static const String organPosStr = "پست سازمانی";
   static const String userContactInfoStr = "اطلاعات تماس";
   static const String teamNameStr = "نام تیم";
+  static const String themeStr = "پوسته";
+  static const String automaticStr = "اتوماتیک";
+  static const String darkThemeStr = "حالت تیره";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =

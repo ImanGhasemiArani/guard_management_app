@@ -305,7 +305,8 @@ class CalendarDayPicker extends StatelessWidget {
           itemStyle = themeData.textTheme.bodyText2
               ?.copyWith(color: themeData.colorScheme.onBackground);
           decoration = BoxDecoration(
-              color: themeData.colorScheme.surface, shape: BoxShape.circle);
+              color: themeData.colorScheme.tertiary.withOpacity(0.2),
+              shape: BoxShape.circle);
         } else if (disabled) {
           itemStyle = themeData.textTheme.bodyText2!
               .copyWith(color: themeData.disabledColor);
@@ -314,7 +315,7 @@ class CalendarDayPicker extends StatelessWidget {
             currentPDate.day == day) {
           // The current day gets a different text color.
           itemStyle = themeData.textTheme.bodyText2!
-              .copyWith(color: themeData.colorScheme.primary);
+              .copyWith(color: themeData.colorScheme.tertiary);
         } else if (getHoliday.isHoliday) {
           // The current day gets a different text color.
           itemStyle =
@@ -368,7 +369,7 @@ class CalendarDayPicker extends StatelessWidget {
       }
     }
 
-        return Padding(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Column(
         children: [

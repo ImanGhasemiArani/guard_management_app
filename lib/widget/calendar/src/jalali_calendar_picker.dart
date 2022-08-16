@@ -690,8 +690,9 @@ class _MonthPickerState extends State<MonthPicker>
       SemanticsService.announce(
           localizations.formatMonthYear(_nextMonthDate), textDirection);
       _dayPickerController!.nextPage(
-          duration:
-              initialized ? _kMonthScrollDuration : const Duration(milliseconds: 1),
+          duration: initialized
+              ? _kMonthScrollDuration
+              : const Duration(milliseconds: 1),
           curve: Curves.ease);
     }
   }

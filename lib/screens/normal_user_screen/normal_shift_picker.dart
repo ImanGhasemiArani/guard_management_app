@@ -88,6 +88,7 @@ class ScaffoldBody extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(horizontal: 25),
                   constraints: const BoxConstraints(maxWidth: 600),
                   child: NestedScrollView(
+                    clipBehavior: Clip.none,
                     controller: scrollController,
                     headerSliverBuilder: (context, innerBoxIsScrolled) => [
                       SliverAppBar(
@@ -104,6 +105,7 @@ class ScaffoldBody extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         flexibleSpace: SingleChildScrollView(
+                          clipBehavior: Clip.none,
                           //   physics: const NeverScrollableScrollPhysics(),
                           child: Container(
                             constraints: const BoxConstraints(
@@ -125,28 +127,31 @@ class ScaffoldBody extends StatelessWidget {
                         scrolledUnderElevation: 0,
                         elevation: 0,
                         backgroundColor: Get.theme.colorScheme.background,
-                        title: Obx(
-                          () => CupertinoSlidingSegmentedControl<int>(
-                            groupValue: segmentController.value,
-                            children: {
-                              1: Padding(
-                                padding: const EdgeInsets.all(5),
-                                child: Text(
-                                  Strs.eventDayContentTitleStr.tr,
-                                  style: Get.theme.textTheme.subtitle2,
+                        title: Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Obx(
+                            () => CupertinoSlidingSegmentedControl<int>(
+                              groupValue: segmentController.value,
+                              children: {
+                                1: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Text(
+                                    Strs.eventDayContentTitleStr.tr,
+                                    style: Get.theme.textTheme.subtitle2,
+                                  ),
                                 ),
-                              ),
-                              0: Padding(
-                                padding: const EdgeInsets.all(5),
-                                child: Text(
-                                  Strs.workingPlanTitleStr.tr,
-                                  style: Get.theme.textTheme.subtitle2,
+                                0: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Text(
+                                    Strs.workingPlanTitleStr.tr,
+                                    style: Get.theme.textTheme.subtitle2,
+                                  ),
                                 ),
-                              ),
-                            },
-                            onValueChanged: (index) {
-                              segmentController.value = index ?? 0;
-                            },
+                              },
+                              onValueChanged: (index) {
+                                segmentController.value = index ?? 0;
+                              },
+                            ),
                           ),
                         ),
                       )
@@ -421,9 +426,8 @@ class CalendarContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.4),
+    return Card(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
       child: JalaliTableCalendar(
@@ -445,8 +449,8 @@ class CalendarContent extends StatelessWidget {
                   top: -4,
                   left: 4,
                   child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.blue,
+                    decoration: BoxDecoration(
+                      color: Get.theme.colorScheme.primary,
                       shape: BoxShape.circle,
                     ),
                     padding: const EdgeInsets.all(6.0),
@@ -457,8 +461,8 @@ class CalendarContent extends StatelessWidget {
                   top: 0,
                   left: 0,
                   child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.purple,
+                    decoration: BoxDecoration(
+                      color: Get.theme.colorScheme.secondary,
                       shape: BoxShape.circle,
                     ),
                     padding: const EdgeInsets.all(6.0),
@@ -472,8 +476,8 @@ class CalendarContent extends StatelessWidget {
               top: -4,
               left: 0,
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.purple,
+                decoration: BoxDecoration(
+                  color: Get.theme.colorScheme.secondary,
                   shape: BoxShape.circle,
                 ),
                 padding: const EdgeInsets.all(6.0),
@@ -485,8 +489,8 @@ class CalendarContent extends StatelessWidget {
               top: -4,
               left: 0,
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
+                decoration: BoxDecoration(
+                  color: Get.theme.colorScheme.primary,
                   shape: BoxShape.circle,
                 ),
                 padding: const EdgeInsets.all(6.0),

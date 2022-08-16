@@ -2,8 +2,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:guard_management_app/screens/normal_user_screen/normal_screen_settings.dart';
 import 'package:sidebarx/sidebarx.dart';
 
+import '../../main.dart';
 import '../../widget/btn_nav_bar/button_navigation_bar.dart';
 import '../../widget/drawer/my_drawer.dart';
 import '../screen_holder.dart';
@@ -57,6 +59,8 @@ class NormalScreenHolder extends ScreenHolder {
         sideBarXController.selectIndex(0);
         if (value == 1) {
           Get.to(const ScreenUserProfile(), transition: Transition.cupertino);
+        } else if (value == 2) {
+          Get.to(const ScreenSettings(), transition: Transition.cupertino);
         } else if ([0, 7].contains(value)) {
         } else {
           Get.to(const Scaffold());
