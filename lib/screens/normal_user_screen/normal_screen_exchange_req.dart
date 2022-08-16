@@ -248,6 +248,7 @@ class ScreenExchangeReq extends StatelessWidget {
                 final GlobalKey<SfSignaturePadState> signatureKey = GlobalKey();
                 showFloatingModalBottomSheet(
                   context: Get.context!,
+                  
                   builder: (context) {
                     return Signature(
                       signatureKey: signatureKey,
@@ -308,7 +309,10 @@ class ScreenExchangeReq extends StatelessWidget {
         exchangeRequest.supplierNationalId == null ||
         exchangeRequest.supplierName == null ||
         exchangeRequest.changerSignature == null) {
-      showSnackbar(Strs.fillExchangeReqFormWarningMessage.tr);
+      showSnackbar(
+        Strs.fillExchangeReqFormWarningMessage.tr,
+        messageType: MessageType.error,
+      );
       isShowButtonIndicator.value = false;
     } else {
       PdfService.createExchangeReqPdf(exchangeRequest)

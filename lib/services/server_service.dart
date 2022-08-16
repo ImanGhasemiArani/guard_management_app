@@ -23,9 +23,15 @@ class ServerService {
     final response = await objRef.save();
     if (response.success) {
       sharedPreferences.setBool('isSendDeviceInfo', true);
-      showSnackbar(Strs.deviceInfoSuccessfullySentStr.tr);
+      showSnackbar(
+        Strs.deviceInfoSuccessfullySentStr.tr,
+        messageType: MessageType.success,
+      );
     } else {
-      showSnackbar(Strs.deviceInfoFailedToSendStr.tr);
+      showSnackbar(
+        Strs.deviceInfoFailedToSendStr.tr,
+        messageType: MessageType.error,
+      );
     }
   }
 
@@ -84,12 +90,18 @@ class ServerService {
 
   static Future<void> sendResetPasswordEmail(String email) async {
     await ParseUser(null, null, email).requestPasswordReset();
-    showSnackbar(Strs.sentResetPasswordEmailStr.tr);
+    showSnackbar(
+      Strs.sentResetPasswordEmailStr.tr,
+      messageType: MessageType.warning,
+    );
   }
 
   static Future<void> sendVerificationEmail(String email) async {
     await ParseUser(null, null, email).verificationEmailRequest();
-    showSnackbar(Strs.sentVerificationEmailStr.tr);
+    showSnackbar(
+      Strs.sentVerificationEmailStr.tr,
+      messageType: MessageType.warning,
+    );
   }
 
   static Future<MapEntry<bool, String?>> updateCurrentUserData() async {
@@ -110,7 +122,10 @@ class ServerService {
     currentParseUser.set("email", email);
     await currentParseUser.save().then((value) {
       if (value.success) {
-        showSnackbar(Strs.operationSuccessfulMessageStr.tr);
+        showSnackbar(
+          Strs.operationSuccessfulMessageStr.tr,
+          messageType: MessageType.success,
+        );
       } else {
         throw Exception(Strs.operationFailedErrorMessage.tr);
       }
@@ -122,7 +137,10 @@ class ServerService {
     currentParseUser.set("phone", phone);
     await currentParseUser.save().then((value) {
       if (value.success) {
-        showSnackbar(Strs.operationSuccessfulMessageStr.tr);
+        showSnackbar(
+          Strs.operationSuccessfulMessageStr.tr,
+          messageType: MessageType.success,
+        );
       } else {
         throw Exception(Strs.operationFailedErrorMessage.tr);
       }
@@ -135,7 +153,10 @@ class ServerService {
     await currentParseUser.save().then((value) {
       if (value.success) {
         Get.off(ScreenLogin());
-        showSnackbar(Strs.operationSuccessfulMessageStr.tr);
+        showSnackbar(
+          Strs.operationSuccessfulMessageStr.tr,
+          messageType: MessageType.success,
+        );
       } else {
         throw Exception(Strs.operationFailedErrorMessage.tr);
       }

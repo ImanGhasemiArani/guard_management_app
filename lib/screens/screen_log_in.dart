@@ -139,7 +139,10 @@ class ScreenLogin extends HookWidget {
   void _onRestPasswordButtonPressed() {
     _loginErrorMessage.value = "";
     FocusManager.instance.primaryFocus!.unfocus();
-    showSnackbar(Strs.callSupportToResetPasswordMessage.tr);
+    showSnackbar(
+      Strs.callSupportToResetPasswordMessage.tr,
+      messageType: MessageType.warning,
+    );
   }
 
   Future<void> _onLoginPressed(RxBool isShowButtonIndicator) async {
@@ -156,6 +159,7 @@ class ScreenLogin extends HookWidget {
       await ServerService.loginUser(username: username, password: password);
 
       showSnackbar(Strs.loginSuccessfullyMessageStr.tr,
+          messageType: MessageType.success,
           duration: const Duration(seconds: 1));
       await Future.delayed(const Duration(seconds: 1));
 

@@ -17,86 +17,91 @@ class Signature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
+    return Card(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        color: Colors.black.withOpacity(0.8),
       ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 20,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: SizedBox(
-              width: Get.width,
-              child: Text(
-                Strs.signStr.tr,
-                style: Get.theme.textTheme.headline6,
-                textAlign: TextAlign.center,
+      //   decoration: BoxDecoration(
+      //     borderRadius: BorderRadius.circular(20),
+      //     color: Colors.black.withOpacity(0.8),
+      //   ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 20,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: SizedBox(
+                width: Get.width,
+                child: Text(
+                  Strs.signStr.tr,
+                  style: Get.theme.textTheme.headline6,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 20),
-            height: Get.width - 80,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Get.theme.colorScheme.primary),
-              color: Get.theme.colorScheme.background,
-            ),
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: SfSignaturePad(
-                    key: signatureKey,
-                    backgroundColor: Colors.transparent,
-                    strokeColor: Get.theme.colorScheme.onBackground,
-                    minimumStrokeWidth: 1,
-                    maximumStrokeWidth: 4,
-                  ),
-                ),
-                CupertinoButton(
-                  onPressed: () => signatureKey.currentState!.clear(),
-                  child: const Icon(CupertinoIcons.pencil_slash),
-                )
-              ],
-            ),
-          ),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: SizedBox(
-              width: Get.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 20),
+              height: Get.width - 80,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Get.theme.colorScheme.primary),
+                color: Get.theme.colorScheme.background,
+              ),
+              child: Stack(
                 children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: SfSignaturePad(
+                      key: signatureKey,
+                      backgroundColor: Colors.transparent,
+                      strokeColor: Get.theme.colorScheme.onBackground,
+                      minimumStrokeWidth: 1,
+                      maximumStrokeWidth: 4,
+                    ),
+                  ),
                   CupertinoButton(
-                    onPressed: Get.back,
-                    child: Text(
-                      Strs.cancelStr.tr,
-                      style: TextStyle(
-                        fontFamily: Get.theme.textTheme.button!.fontFamily,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                  CupertinoButton.filled(
-                    onPressed: onSavePressed ?? () {},
-                    child: Text(
-                      Strs.saveStr.tr,
-                      style: TextStyle(
-                          fontFamily: Get.theme.textTheme.button!.fontFamily),
-                    ),
-                  ),
+                    onPressed: () => signatureKey.currentState!.clear(),
+                    child: const Icon(CupertinoIcons.pencil_slash),
+                  )
                 ],
               ),
             ),
-          )
-        ],
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: SizedBox(
+                width: Get.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CupertinoButton(
+                      onPressed: Get.back,
+                      child: Text(
+                        Strs.cancelStr.tr,
+                        style: TextStyle(
+                          fontFamily: Get.theme.textTheme.button!.fontFamily,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                    CupertinoButton.filled(
+                      onPressed: onSavePressed ?? () {},
+                      child: Text(
+                        Strs.saveStr.tr,
+                        style: TextStyle(
+                            fontFamily: Get.theme.textTheme.button!.fontFamily),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

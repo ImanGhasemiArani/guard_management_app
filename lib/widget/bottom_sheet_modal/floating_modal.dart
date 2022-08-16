@@ -15,7 +15,7 @@ class FloatingModal extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Material(
           color: Colors.transparent,
-          clipBehavior: Clip.antiAlias,
+          clipBehavior: Clip.none,
           borderRadius: BorderRadius.circular(20),
           child: child,
         ),
