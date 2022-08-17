@@ -112,9 +112,13 @@ class ScreenExchangeReq extends StatelessWidget {
               ),
               onPressed: () {
                 showBarModalBottomSheet(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(20)),
+                    shape: const SmoothRectangleBorder(
+                      borderRadius: SmoothBorderRadius.vertical(
+                        top: SmoothRadius(
+                          cornerRadius: 40,
+                          cornerSmoothing: 1,
+                        ),
+                      ),
                     ),
                     context: Get.context!,
                     builder: (context) {
@@ -183,9 +187,13 @@ class ScreenExchangeReq extends StatelessWidget {
               ),
               onPressed: () {
                 showBarModalBottomSheet(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(20)),
+                    shape: const SmoothRectangleBorder(
+                      borderRadius: SmoothBorderRadius.vertical(
+                        top: SmoothRadius(
+                          cornerRadius: 40,
+                          cornerSmoothing: 1,
+                        ),
+                      ),
                     ),
                     context: Get.context!,
                     builder: (context) {
