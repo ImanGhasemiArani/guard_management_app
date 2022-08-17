@@ -90,12 +90,19 @@ class Signature extends StatelessWidget {
                         ),
                       ),
                     ),
-                    CupertinoButton.filled(
-                      onPressed: onSavePressed ?? () {},
-                      child: Text(
-                        Strs.saveStr.tr,
-                        style: TextStyle(
-                            fontFamily: Get.theme.textTheme.button!.fontFamily),
+                    ClipSmoothRect(
+                      radius: SmoothBorderRadius(
+                        cornerRadius: 10,
+                        cornerSmoothing: 1,
+                      ),
+                      child: CupertinoButton.filled(
+                        onPressed: onSavePressed ?? () {},
+                        child: Text(
+                          Strs.saveStr.tr,
+                          style: TextStyle(
+                              fontFamily:
+                                  Get.theme.textTheme.button!.fontFamily),
+                        ),
                       ),
                     ),
                   ],

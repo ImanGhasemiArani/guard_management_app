@@ -77,27 +77,29 @@ class ScreenLogin extends HookWidget {
 
   Widget _getLoginButton() {
     final isShowButtonIndicator = false.obs;
-    return SizedBox(
-      width: double.infinity,
-      height: 52,
-      child: CupertinoButton.filled(
-        borderRadius: SmoothBorderRadius(
-          cornerRadius: 15,
-          cornerSmoothing: 1,
-        ),
-        onPressed: () => _onLoginPressed(isShowButtonIndicator),
-        child: Obx(
-          () => !isShowButtonIndicator.value
-              ? Text(
-                  Strs.loginStr.tr,
-                  style: TextStyle(
-                      fontFamily: Get.theme.textTheme.button!.fontFamily),
-                )
-              : FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: CircularProgressIndicator(
-                      color: Get.theme.colorScheme.onPrimary),
-                ),
+    return ClipSmoothRect(
+      radius: SmoothBorderRadius(
+        cornerRadius: 15,
+        cornerSmoothing: 1,
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        height: 52,
+        child: CupertinoButton.filled(
+          onPressed: () => _onLoginPressed(isShowButtonIndicator),
+          child: Obx(
+            () => !isShowButtonIndicator.value
+                ? Text(
+                    Strs.loginStr.tr,
+                    style: TextStyle(
+                        fontFamily: Get.theme.textTheme.button!.fontFamily),
+                  )
+                : FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: CircularProgressIndicator(
+                        color: Get.theme.colorScheme.onPrimary),
+                  ),
+          ),
         ),
       ),
     );
@@ -205,16 +207,10 @@ class UsernameField extends StatelessWidget {
         labelText: Strs.nationalIdStr.tr,
         labelStyle: const TextStyle(fontSize: 18),
         border: OutlineInputBorder(
-          borderRadius: SmoothBorderRadius(
-            cornerRadius: 15,
-            cornerSmoothing: 1,
-          ),
+          borderRadius: BorderRadius.circular(15),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: SmoothBorderRadius(
-            cornerRadius: 15,
-            cornerSmoothing: 1,
-          ),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(color: Get.theme.colorScheme.onBackground),
         ),
       ),
@@ -243,16 +239,10 @@ class PasswordField extends StatelessWidget {
           labelText: Strs.passwordStr.tr,
           labelStyle: const TextStyle(fontSize: 18),
           border: OutlineInputBorder(
-            borderRadius: SmoothBorderRadius(
-              cornerRadius: 15,
-              cornerSmoothing: 1,
-            ),
+            borderRadius: BorderRadius.circular(15),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: SmoothBorderRadius(
-              cornerRadius: 15,
-              cornerSmoothing: 1,
-            ),
+            borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide(color: Get.theme.colorScheme.onBackground),
           ),
           suffixIcon: InkWell(

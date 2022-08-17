@@ -325,28 +325,30 @@ class ScreenExchangeReq extends StatelessWidget {
     final key = GlobalKey();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: SizedBox(
-        width: double.infinity,
-        height: 52,
-        child: CupertinoButton.filled(
-          borderRadius: SmoothBorderRadius(
-            cornerRadius: 15,
-            cornerSmoothing: 1,
-          ),
-          onPressed: () => _onSendButtonPressed(isShowButtonIndicator),
-          child: Obx(
-            () => !isShowButtonIndicator.value
-                ? Text(
-                    Strs.sendStr.tr,
-                    style: TextStyle(
-                        fontFamily: Get.theme.textTheme.button!.fontFamily),
-                    key: key,
-                  )
-                : FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: CircularProgressIndicator(
-                        color: Get.theme.colorScheme.onPrimary),
-                  ),
+      child: ClipSmoothRect(
+        radius: SmoothBorderRadius(
+          cornerRadius: 15,
+          cornerSmoothing: 1,
+        ),
+        child: SizedBox(
+          width: double.infinity,
+          height: 52,
+          child: CupertinoButton.filled(
+            onPressed: () => _onSendButtonPressed(isShowButtonIndicator),
+            child: Obx(
+              () => !isShowButtonIndicator.value
+                  ? Text(
+                      Strs.sendStr.tr,
+                      style: TextStyle(
+                          fontFamily: Get.theme.textTheme.button!.fontFamily),
+                      key: key,
+                    )
+                  : FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: CircularProgressIndicator(
+                          color: Get.theme.colorScheme.onPrimary),
+                    ),
+            ),
           ),
         ),
       ),
