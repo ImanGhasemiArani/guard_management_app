@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../lang/strs.dart';
-import '../../main.dart';
 import '../../widget/appbar/my_appbar.dart';
 import '../../widget/drawer/my_drawer.dart';
 import '../../widget/staggered_animations/flutter_staggered_animations.dart';
@@ -18,11 +17,9 @@ class ScreenHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: GetPlatform.isMobile ? getAppBar() : null,
-        body: getBody(),
-      ),
+    return Scaffold(
+      appBar: GetPlatform.isMobile ? getAppBar() : null,
+      body: getBody(),
     );
   }
 

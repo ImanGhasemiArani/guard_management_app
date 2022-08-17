@@ -52,6 +52,7 @@ class ScreenSettings extends StatelessWidget {
 
   Widget _buildThemeSetting() {
     final ThemeController themeController = Get.find();
+    var isSelectedAutomatic = (themeController.mode == ThemeMode.system).obs;
     var isSelectedDarkMode = themeController.mode == ThemeMode.dark;
     return SizedBox(
       width: double.infinity,
@@ -74,6 +75,48 @@ class ScreenSettings extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
+                Strs.automaticStr.tr,
+                style: TextStyle(
+                  fontSize: Get.theme.textTheme.headline6!.fontSize,
+                  height: Get.theme.textTheme.headline6!.height,
+                  fontStyle: Get.theme.textTheme.headline6!.fontStyle,
+                  fontWeight: Get.theme.textTheme.headline6!.fontWeight,
+                  letterSpacing: Get.theme.textTheme.headline6!.letterSpacing,
+                ),
+              ),
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Transform.scale(
+                  scale: 0.8,
+                  child: Builder(builder: (context) {
+                    return StatefulBuilder(
+                      builder: (context, setState) {
+                        return CupertinoSwitch(
+                          activeColor: Get.theme.colorScheme.primary,
+                          value: isSelectedAutomatic.value,
+                          onChanged: (value) {
+                            setState(() {
+                              isSelectedAutomatic.value = value;
+                            });
+                            themeController.mode = value
+                                ? ThemeMode.system
+                                : isSelectedDarkMode
+                                    ? ThemeMode.dark
+                                    : ThemeMode.light;
+                          },
+                        );
+                      },
+                    );
+                  }),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
                 Strs.darkThemeStr.tr,
                 style: TextStyle(
                   fontSize: Get.theme.textTheme.headline6!.fontSize,
@@ -88,17 +131,21 @@ class ScreenSettings extends StatelessWidget {
                 child: Transform.scale(
                   scale: 0.8,
                   child: StatefulBuilder(
-                    builder: (context, setState) {
-                      return CupertinoSwitch(
+                    builder: (context, setState) => Obx(
+                      () => CupertinoSwitch(
                         activeColor: Get.theme.colorScheme.primary,
-                        value: isSelectedDarkMode,
-                        onChanged: (value) {
-                          setState(() => isSelectedDarkMode = value);
-                          themeController.mode =
-                              value ? ThemeMode.dark : ThemeMode.light;
-                        },
-                      );
-                    },
+                        value: isSelectedAutomatic.value
+                            ? false
+                            : isSelectedDarkMode,
+                        onChanged: isSelectedAutomatic.value
+                            ? null
+                            : (value) {
+                                setState(() => isSelectedDarkMode = value);
+                                themeController.mode =
+                                    value ? ThemeMode.dark : ThemeMode.light;
+                              },
+                      ),
+                    ),
                   ),
                 ),
               ),
