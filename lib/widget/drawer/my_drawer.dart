@@ -1,3 +1,4 @@
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,7 +44,10 @@ class MyDrawer extends StatelessWidget {
           //     border: Border.all(color: Get.theme.colorScheme.surface),
           //   ),
           selectedItemDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: SmoothBorderRadius(
+              cornerRadius: 15,
+              cornerSmoothing: 1,
+            ),
             border:
                 Border.all(color: Get.theme.colorScheme.secondary, width: 1.5),
             color: Get.theme.colorScheme.secondary.withOpacity(0.1),

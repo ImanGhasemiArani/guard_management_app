@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -120,7 +121,7 @@ class ScreenUserProfile extends StatelessWidget {
     final imgUint8List = ServerService.currentUser.profileImage;
 
     final coverHight = Get.height * 0.25;
-    const profileHight = 120.0;
+    const profileHight = 116.0;
     final profileTop = coverHight - profileHight * 0.5;
     const coverBottom = profileHight * 0.5;
 
@@ -180,37 +181,53 @@ class ScreenUserProfile extends StatelessWidget {
 
   Widget _buildProfileImg(double profileHight, Uint8List? imgUint8List) =>
       Stack(
+        clipBehavior: Clip.none,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border.fromBorderSide(BorderSide(
-                color: Get.theme.colorScheme.background,
-                width: 10,
-              )),
-              shape: BoxShape.circle,
-            ),
-            // shape: CircleBorder(
-            //   side: BorderSide(
-            //     color: Get.theme.colorScheme.background,
-            //     width: 10,
-            //   ),
-            // ),
-            child: CircleAvatar(
-              radius: profileHight * 0.5,
-              backgroundImage: const AssetImage(
-                'assets/user_avatar.png',
+          Card(
+            margin: EdgeInsets.zero,
+            child: Container(
+              height: profileHight - 16,
+              width: profileHight - 16,
+              margin: const EdgeInsets.all(8),
+              decoration: ShapeDecoration(
+                color: Colors.grey,
+                image: const DecorationImage(
+                  image: AssetImage(
+                    'assets/user_avatar.png',
+                  ),
+                ),
+                shape: SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 1,
+                  ),
+                ),
               ),
-              backgroundColor: Colors.grey,
               child: imgUint8List != null ? Image.memory(imgUint8List) : null,
             ),
           ),
           Positioned(
-            right: 0,
-            bottom: 0,
+            right: -5,
+            bottom: -5,
             child: CupertinoButton(
               padding: EdgeInsets.zero,
-              onPressed: _onCameraButtonPressed,
-              child: const Icon(CupertinoIcons.camera),
+              onPressed: () {},
+              child: Card(
+                color: Get.theme.colorScheme.background,
+                shape: SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 10,
+                    cornerSmoothing: 1,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Icon(
+                    CupertinoIcons.camera,
+                    color: Get.theme.colorScheme.secondary,
+                  ),
+                ),
+              ),
             ),
           ),
         ],

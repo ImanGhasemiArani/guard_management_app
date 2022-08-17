@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -248,7 +249,6 @@ class ScreenExchangeReq extends StatelessWidget {
                 final GlobalKey<SfSignaturePadState> signatureKey = GlobalKey();
                 showFloatingModalBottomSheet(
                   context: Get.context!,
-                  
                   builder: (context) {
                     return Signature(
                       signatureKey: signatureKey,
@@ -329,6 +329,10 @@ class ScreenExchangeReq extends StatelessWidget {
         width: double.infinity,
         height: 52,
         child: CupertinoButton.filled(
+          borderRadius: SmoothBorderRadius(
+            cornerRadius: 15,
+            cornerSmoothing: 1,
+          ),
           onPressed: () => _onSendButtonPressed(isShowButtonIndicator),
           child: Obx(
             () => !isShowButtonIndicator.value

@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -84,8 +85,11 @@ class ScreenHome extends StatelessWidget {
           padding: EdgeInsets.zero,
           onPressed: () {},
           child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+            shape: SmoothRectangleBorder(
+              borderRadius: SmoothBorderRadius(
+                cornerRadius: 15,
+                cornerSmoothing: 1,
+              ),
             ),
             child: Padding(
               padding: const EdgeInsets.all(14),
@@ -105,8 +109,11 @@ class ScreenHome extends StatelessWidget {
               child: SizedBox(
                 height: double.infinity,
                 child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  shape: SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius(
+                      cornerRadius: 15,
+                      cornerSmoothing: 1,
+                    ),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),

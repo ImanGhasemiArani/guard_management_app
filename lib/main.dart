@@ -1,3 +1,4 @@
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -52,10 +53,16 @@ class MainMaterial extends StatelessWidget {
             elevation: 0,
             scrolledUnderElevation: 0,
           ),
-          cardTheme: const CardTheme(
+          cardTheme: CardTheme(
             elevation: 8,
-            color: Color(0xffFFFFFF),
-            surfaceTintColor: Color(0xffFFFFFF),
+            color: const Color(0xffFFFFFF),
+            surfaceTintColor: const Color(0xffFFFFFF),
+            shape: SmoothRectangleBorder(
+              borderRadius: SmoothBorderRadius(
+                cornerRadius: 20,
+                cornerSmoothing: 1,
+              ),
+            ),
           ),
           iconTheme: const IconThemeData(
             color: Color(0xff00AFCE),
@@ -87,10 +94,16 @@ class MainMaterial extends StatelessWidget {
             elevation: 0,
             scrolledUnderElevation: 0,
           ),
-          cardTheme: const CardTheme(
+          cardTheme: CardTheme(
             elevation: 8,
-            color: Color(0xff16202A),
-            surfaceTintColor: Color(0xff16202A),
+            color: const Color(0xff16202A),
+            surfaceTintColor: const Color(0xff16202A),
+            shape: SmoothRectangleBorder(
+              borderRadius: SmoothBorderRadius(
+                cornerRadius: 20,
+                cornerSmoothing: 1,
+              ),
+            ),
           ),
           iconTheme: const IconThemeData(
             color: Color(0xff00AFCE),

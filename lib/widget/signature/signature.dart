@@ -1,3 +1,4 @@
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,13 +19,6 @@ class Signature extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      //   decoration: BoxDecoration(
-      //     borderRadius: BorderRadius.circular(20),
-      //     color: Colors.black.withOpacity(0.8),
-      //   ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 20,
@@ -47,15 +41,23 @@ class Signature extends StatelessWidget {
             Container(
               margin: const EdgeInsets.symmetric(vertical: 20),
               height: Get.width - 80,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Get.theme.colorScheme.primary),
+              decoration: ShapeDecoration(
                 color: Get.theme.colorScheme.background,
+                shape: SmoothRectangleBorder(
+                  side: BorderSide(color: Get.theme.colorScheme.primary),
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 20,
+                    cornerSmoothing: 1,
+                  ),
+                ),
               ),
               child: Stack(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                  ClipSmoothRect(
+                    radius: SmoothBorderRadius(
+                      cornerRadius: 20,
+                      cornerSmoothing: 1,
+                    ),
                     child: SfSignaturePad(
                       key: signatureKey,
                       backgroundColor: Colors.transparent,
