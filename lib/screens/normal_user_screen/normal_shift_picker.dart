@@ -106,7 +106,7 @@ class ScaffoldBody extends StatelessWidget {
                         ),
                         flexibleSpace: SingleChildScrollView(
                           clipBehavior: Clip.none,
-                          //   physics: const NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           child: Container(
                             constraints: const BoxConstraints(
                                 // maxHeight: Get.size.height * 0.5 + 20,

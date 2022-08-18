@@ -151,6 +151,12 @@ class ScreenExchangeReq extends StatelessWidget {
 
   Card getShiftContent() {
     return Card(
+      shape: SmoothRectangleBorder(
+        borderRadius: SmoothBorderRadius(
+          cornerRadius: 15,
+          cornerSmoothing: 1,
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Row(
@@ -223,6 +229,12 @@ class ScreenExchangeReq extends StatelessWidget {
 
   Card getSupplierContent() {
     return Card(
+      shape: SmoothRectangleBorder(
+        borderRadius: SmoothBorderRadius(
+          cornerRadius: 15,
+          cornerSmoothing: 1,
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Row(

@@ -107,32 +107,31 @@ class MyDrawer extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        SizedBox(
+                        Container(
                           height: 100,
-                          child: Container(
-                            decoration: ShapeDecoration(
-                              color: Colors.grey,
-                              image: const DecorationImage(
-                                image: AssetImage(
-                                  'assets/user_avatar.png',
-                                ),
-                                fit: BoxFit.cover,
+                          width: 100,
+                          decoration: ShapeDecoration(
+                            color: Colors.grey,
+                            image: const DecorationImage(
+                              image: AssetImage(
+                                'assets/user_avatar.png',
                               ),
-                              shape: SmoothRectangleBorder(
-                                borderRadius: SmoothBorderRadius(
-                                  cornerRadius: 20,
-                                  cornerSmoothing: 1,
-                                ),
+                              fit: BoxFit.cover,
+                            ),
+                            shape: SmoothRectangleBorder(
+                              borderRadius: SmoothBorderRadius(
+                                cornerRadius: 20,
+                                cornerSmoothing: 1,
                               ),
                             ),
-                            clipBehavior: Clip.antiAlias,
-                            child: imgUint8List != null
-                                ? Image.memory(
-                                    imgUint8List,
-                                    fit: BoxFit.cover,
-                                  )
-                                : null,
                           ),
+                          clipBehavior: Clip.antiAlias,
+                          child: imgUint8List != null
+                              ? Image.memory(
+                                  imgUint8List,
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
                         ),
                         const SizedBox(height: 10),
                         Text("${ServerService.currentUser.name}"),
@@ -145,6 +144,8 @@ class MyDrawer extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 40),
                     child: Container(
+                      height: 50,
+                      width: 50,
                       decoration: ShapeDecoration(
                         color: Colors.grey,
                         image: const DecorationImage(
