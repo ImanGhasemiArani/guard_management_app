@@ -100,6 +100,7 @@ abstract class User {
     rank = parseUser['rank'];
     organPos = parseUser['organPos'];
     userType = parseUser['userType'];
+    profileImage = parseUser['profileImg'];
   }
 
   set username(String? id) {
@@ -150,8 +151,17 @@ abstract class User {
     _userType = _userTypeEnum!.value.tr;
   }
 
-  set profileImage(Uint8List? profileImage) {
-    _profileImage = profileImage;
+  set profileImage(dynamic profileImgStr) {
+    profileImgStr = profileImgStr as String?;
+    if (profileImgStr == null || profileImgStr.isEmpty) return;
+    _profileImage = Uint8List.fromList(profileImgStr.codeUnits);
+  }
+
+  void updateProfileImg(Uint8List? profileImg) {
+    if (profileImg == null || profileImg.isEmpty) return;
+    final str = String.fromCharCodes(profileImg);
+    profileImage = str;
+    ServerService.updateProfileImgToServer(str);
   }
 
   void updatePhone(String newPhone) {

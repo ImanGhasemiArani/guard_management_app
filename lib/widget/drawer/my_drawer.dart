@@ -99,47 +99,77 @@ class MyDrawer extends StatelessWidget {
           ),
           footerDivider:
               Divider(color: Colors.white.withOpacity(0.3), height: 1),
-          headerBuilder: (context, extended) => extended
-              ? Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(
-                        height: 100,
-                        child: ClipSmoothRect(
-                          radius: SmoothBorderRadius(
-                            cornerRadius: 20,
-                            cornerSmoothing: 1,
-                          ),
+          headerBuilder: (context, extended) {
+            final imgUint8List = ServerService.currentUser.profileImage;
+            return extended
+                ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          height: 100,
                           child: Container(
-                            color: Colors.grey,
-                            child: Image.asset(
-                              'assets/user_avatar.png',
+                            decoration: ShapeDecoration(
+                              color: Colors.grey,
+                              image: const DecorationImage(
+                                image: AssetImage(
+                                  'assets/user_avatar.png',
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                              shape: SmoothRectangleBorder(
+                                borderRadius: SmoothBorderRadius(
+                                  cornerRadius: 20,
+                                  cornerSmoothing: 1,
+                                ),
+                              ),
                             ),
+                            clipBehavior: Clip.antiAlias,
+                            child: imgUint8List != null
+                                ? Image.memory(
+                                    imgUint8List,
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text("${ServerService.currentUser.name}"),
+                        const SizedBox(height: 5),
+                        Text("${ServerService.currentUser.username}"),
+                      ],
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 40),
+                    child: Container(
+                      decoration: ShapeDecoration(
+                        color: Colors.grey,
+                        image: const DecorationImage(
+                          image: AssetImage(
+                            'assets/user_avatar.png',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                        shape: SmoothRectangleBorder(
+                          borderRadius: SmoothBorderRadius(
+                            cornerRadius: 15,
+                            cornerSmoothing: 1,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      Text("${ServerService.currentUser.name}"),
-                      const SizedBox(height: 5),
-                      Text("${ServerService.currentUser.username}"),
-                    ],
-                  ),
-                )
-              : Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 40),
-                  child: ClipSmoothRect(
-                    radius: SmoothBorderRadius(
-                      cornerRadius: 15,
-                      cornerSmoothing: 1,
+                      clipBehavior: Clip.antiAlias,
+                      child: imgUint8List != null
+                          ? Image.memory(
+                              imgUint8List,
+                              fit: BoxFit.cover,
+                            )
+                          : null,
                     ),
-                    child: Container(
-                        color: Colors.grey,
-                        child: Image.asset('assets/user_avatar.png')),
-                  ),
-                ),
+                  );
+          },
           footerBuilder: (context, extended) {
             return extended
                 ? Padding(

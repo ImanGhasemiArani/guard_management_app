@@ -8,8 +8,11 @@ import 'package:get/get.dart';
 
 import '../../lang/strs.dart';
 import '../../services/server_service.dart';
+import '../../utils/img_utils.dart';
 import '../../widget/loading_widget/loading_widget.dart';
 import '../../widget/staggered_animations/flutter_staggered_animations.dart';
+
+final profileImg = Rx<Uint8List?>(null);
 
 class ScreenUserProfile extends StatelessWidget {
   const ScreenUserProfile({Key? key}) : super(key: key);
@@ -38,7 +41,10 @@ class ScreenUserProfile extends StatelessWidget {
                           ),
                         ),
                         children: [
-                          _buildTop(),
+                          Obx(() {
+                            profileImg.value;
+                            return _buildTop();
+                          }),
                           const SizedBox(height: 30),
                           _buildNameContent(),
                           const SizedBox(height: 35),
@@ -73,35 +79,6 @@ class ScreenUserProfile extends StatelessWidget {
       ),
     );
   }
-
-//   return AnimationLimiter(
-//                 key: UniqueKey(),
-//                 child: ListView(
-//                   padding: EdgeInsets.zero,
-//                   children: [
-//                     AnimationConfiguration.staggeredList(
-//                       position: 0,
-//                       duration: const Duration(milliseconds: 500),
-//                       child: SlideAnimation(
-//                         verticalOffset: 50,
-//                         child: FadeInAnimation(
-//                           child: _buildTop(),
-//                         ),
-//                       ),
-//                     ),
-//                     AnimationConfiguration.staggeredList(
-//                       position: 2,
-//                       duration: const Duration(milliseconds: 500),
-//                       child: SlideAnimation(
-//                         verticalOffset: 50,
-//                         child: FadeInAnimation(
-//                           child: _buildContent(),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               );
 
   AppBar _buildAppBar() => AppBar(
         automaticallyImplyLeading: false,
@@ -189,21 +166,31 @@ class ScreenUserProfile extends StatelessWidget {
               height: profileHight - 16,
               width: profileHight - 16,
               margin: const EdgeInsets.all(8),
+              //   padding: const EdgeInsets.all(0),
               decoration: ShapeDecoration(
                 color: Colors.grey,
                 image: const DecorationImage(
                   image: AssetImage(
                     'assets/user_avatar.png',
                   ),
+                  fit: BoxFit.cover,
                 ),
                 shape: SmoothRectangleBorder(
+                  //   side: BorderSide(
+                  //       color: Get.theme.colorScheme.surface, width: 10),
                   borderRadius: SmoothBorderRadius(
                     cornerRadius: 20,
                     cornerSmoothing: 1,
                   ),
                 ),
               ),
-              child: imgUint8List != null ? Image.memory(imgUint8List) : null,
+              clipBehavior: Clip.antiAlias,
+              child: imgUint8List != null
+                  ? Image.memory(
+                      imgUint8List,
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ),
           ),
           Positioned(
@@ -211,7 +198,7 @@ class ScreenUserProfile extends StatelessWidget {
             bottom: -5,
             child: CupertinoButton(
               padding: EdgeInsets.zero,
-              onPressed: () {},
+              onPressed: _onCameraButtonPressed,
               child: Card(
                 color: Get.theme.colorScheme.background,
                 shape: SmoothRectangleBorder(
@@ -233,25 +220,6 @@ class ScreenUserProfile extends StatelessWidget {
         ],
       );
 
-//   Widget _buildContent() {
-//     return Directionality(
-//       textDirection: TextDirection.rtl,
-//       child: Padding(
-//         padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           children: [
-//             _buildNameContent(),
-//             _buildDataContent(),
-//             _buildTeamContent(),
-//             _buildContactContent(),
-//             _buildChangePasswordContent(),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
   Widget _buildNameContent() => Text(
         ServerService.currentUser.name ?? "",
         textAlign: TextAlign.center,
@@ -259,7 +227,13 @@ class ScreenUserProfile extends StatelessWidget {
             .copyWith(color: Get.theme.colorScheme.onBackground),
       );
 
-  void _onCameraButtonPressed() {}
+  Future<void> _onCameraButtonPressed() async {
+    var imgUL = await ImgUtils.pickImage();
+    if (imgUL == null || imgUL.isEmpty) return;
+    imgUL = await ImgUtils.compressImg(imgUL);
+    ServerService.currentUser.updateProfileImg(imgUL);
+    profileImg.value = imgUL;
+  }
 
   Widget _buildDataContent() {
     return Card(

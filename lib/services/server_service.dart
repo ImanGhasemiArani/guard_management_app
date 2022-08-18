@@ -118,6 +118,24 @@ class ServerService {
     return const MapEntry(false, null);
   }
 
+  static Future<void> updateProfileImgToServer(String profileImgStr) async {
+    currentParseUser.set("profileImg", profileImgStr);
+    await currentParseUser.save().then((value) {
+      if (value.success) {
+        showSnackbar(
+          Strs.operationSuccessfulMessageStr.tr,
+          messageType: MessageType.success,
+        );
+      } else {
+        showSnackbar(
+          Strs.operationFailedErrorMessage.tr,
+          messageType: MessageType.error,
+        );
+      }
+    });
+    updateCurrentUserData();
+  }
+
   static Future<void> updateEmailToServer(String email) async {
     currentParseUser.set("email", email);
     await currentParseUser.save().then((value) {
