@@ -130,6 +130,12 @@ class MyDrawer extends StatelessWidget {
                               ? Image.memory(
                                   imgUint8List,
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/user_avatar.png',
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
                                 )
                               : null,
                         ),
@@ -166,6 +172,12 @@ class MyDrawer extends StatelessWidget {
                           ? Image.memory(
                               imgUint8List,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/user_avatar.png',
+                                  fit: BoxFit.cover,
+                                );
+                              },
                             )
                           : null,
                     ),

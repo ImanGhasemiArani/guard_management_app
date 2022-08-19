@@ -38,6 +38,7 @@ class ScreenHome extends StatelessWidget {
               child: AnimationLimiter(
                 key: UniqueKey(),
                 child: GridView.count(
+                  clipBehavior: Clip.none,
                   crossAxisCount: 3,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,

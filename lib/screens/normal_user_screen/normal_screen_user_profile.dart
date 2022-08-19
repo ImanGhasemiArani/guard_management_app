@@ -166,7 +166,6 @@ class ScreenUserProfile extends StatelessWidget {
               height: profileHight - 16,
               width: profileHight - 16,
               margin: const EdgeInsets.all(8),
-              //   padding: const EdgeInsets.all(0),
               decoration: ShapeDecoration(
                 color: Colors.grey,
                 image: const DecorationImage(
@@ -176,8 +175,6 @@ class ScreenUserProfile extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
                 shape: SmoothRectangleBorder(
-                  //   side: BorderSide(
-                  //       color: Get.theme.colorScheme.surface, width: 10),
                   borderRadius: SmoothBorderRadius(
                     cornerRadius: 20,
                     cornerSmoothing: 1,
@@ -189,6 +186,12 @@ class ScreenUserProfile extends StatelessWidget {
                   ? Image.memory(
                       imgUint8List,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/user_avatar.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
                     )
                   : null,
             ),
