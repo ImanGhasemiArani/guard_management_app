@@ -23,6 +23,9 @@ class DataUtils {
       final shifts = row['shifts'] as Map<String, dynamic>;
       final username = row['username'] as String;
       final name = row['name'] as String;
+      final profileImg = row['profileImg'];
+      final post = row['post'];
+      final teamName = row['teamName'];
 
       shifts.entries.map((e) {
         final key = e.key;
@@ -36,10 +39,13 @@ class DataUtils {
           return {
             'username': username,
             'name': name,
+            'post': post,
+            'teamName': teamName,
             'shift': {
               "des": ShiftType.valueOf(char).value.tr,
               "isExchangeable": isExchangeable
-            }
+            },
+            'profileImg': profileImg
           };
         }).toList();
         return MapEntry(dateTime, values);

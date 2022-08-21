@@ -31,10 +31,10 @@ typedef MarkerBuilder = Widget Function(DateTime date, List? events);
 // const double _kDatePickerHeaderLandscapeWidth = 168.0;
 
 const Duration _kMonthScrollDuration = Duration(milliseconds: 200);
-const double _kDayPickerRowHeight = 50.0;
+double _kDayPickerRowHeight = 50.0;
 const int _kMaxDayPickerRowCount = 6; // A 31 day month that starts on Saturday.
 // Two extra rows: one for the day-of-week header and one for the month header.
-const double _kMaxDayPickerHeight =
+double _kMaxDayPickerHeight =
     _kDayPickerRowHeight * (_kMaxDayPickerRowCount + 2);
 
 class _DayPickerGridDelegate extends SliverGridDelegate {
@@ -375,15 +375,18 @@ class CalendarDayPicker extends StatelessWidget {
         children: [
           SizedBox(
             height: _kDayPickerRowHeight,
-            child: Center(
-              child: Text(
-                "${pDate.monthname}  ${pDate.year}",
-                style: themeData.textTheme.headline5,
+            child: FittedBox(
+              child: Center(
+                child: Text(
+                  "${pDate.monthname}  ${pDate.year}",
+                  style: themeData.textTheme.headline5,
+                ),
               ),
             ),
           ),
           PreferredSize(
-            preferredSize: const Size(500, 500),
+            preferredSize: Size(
+                double.infinity, _kMaxDayPickerHeight - _kDayPickerRowHeight),
             child: GridView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -397,34 +400,34 @@ class CalendarDayPicker extends StatelessWidget {
       ),
     );
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: _kDayPickerRowHeight,
-                child: Center(
-                  child: ExcludeSemantics(
-                    child: Text(
-                      "${pDate.monthname}  ${pDate.year}",
-                      style: themeData.textTheme.headline5,
-                    ),
-                  ),
-                ),
-              ),
-              Flexible(
-                child: GridView.custom(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: _kDayPickerGridDelegate,
-                  childrenDelegate: SliverChildListDelegate(labels,
-                      addRepaintBoundaries: false),
-                ),
-              ),
-            ],
-          )),
-    );
+    // return Padding(
+    //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+    //   child: Directionality(
+    //       textDirection: TextDirection.rtl,
+    //       child: Column(
+    //         children: <Widget>[
+    //           SizedBox(
+    //             height: _kDayPickerRowHeight,
+    //             child: Center(
+    //               child: ExcludeSemantics(
+    //                 child: Text(
+    //                   "${pDate.monthname}  ${pDate.year}",
+    //                   style: themeData.textTheme.headline5,
+    //                 ),
+    //               ),
+    //             ),
+    //           ),
+    //           Flexible(
+    //             child: GridView.custom(
+    //               physics: const NeverScrollableScrollPhysics(),
+    //               gridDelegate: _kDayPickerGridDelegate,
+    //               childrenDelegate: SliverChildListDelegate(labels,
+    //                   addRepaintBoundaries: false),
+    //             ),
+    //           ),
+    //         ],
+    //       )),
+    // );
   }
 }
 
@@ -1066,6 +1069,10 @@ class JalaliTableCalendar extends StatefulWidget {
 class _JalaliTableCalendarState extends State<JalaliTableCalendar> {
   @override
   Widget build(BuildContext context) {
+    _kDayPickerRowHeight =
+        math.min(50, MediaQuery.of(context).size.height * 0.45 / 8);
+    _kMaxDayPickerHeight = _kDayPickerRowHeight * (_kMaxDayPickerRowCount + 2);
+
     DateTime initialDate = DateTime.now();
     DateTime firstDate = DateTime(1700);
     DateTime lastDate = DateTime(2200);

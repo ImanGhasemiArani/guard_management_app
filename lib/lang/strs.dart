@@ -52,6 +52,7 @@ class Strs {
   static const String themeStr = "پوسته";
   static const String automaticStr = "اتوماتیک";
   static const String darkThemeStr = "حالت تیره";
+  static const String isExchangeableStr = "قابل تعویض";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
@@ -10,55 +9,49 @@ import '../../services/server_service.dart';
 import '../../utils/data_utils.dart';
 import '../../widget/calendar/calendar.dart';
 import '../../widget/calendar/src/persian_date.dart';
-import '../../widget/loading_widget/loading_widget.dart';
+import '../../widget/future_builder/custom_future_builder.dart';
 import '../../widget/staggered_animations/flutter_staggered_animations.dart';
-
-typedef OnShiftPicked = void Function(
-    MapEntry<DateTime, Map<String, dynamic>> shift);
+import '../../widget/tile/shift_list_tile.dart';
 
 Rx<DateTime> currentSelectedDate =
     DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).obs;
 
-// ignore: must_be_immutable
-class ShiftPicker extends HookWidget {
-  ShiftPicker({
-    Key? key,
-    this.onShiftPicked,
-  }) : super(key: key);
+class ShiftPicker extends StatelessWidget {
+  const ShiftPicker({Key? key, this.onShiftPicked}) : super(key: key);
 
-  late ScrollController _scrollController;
   final OnShiftPicked? onShiftPicked;
 
   @override
   Widget build(BuildContext context) {
     currentSelectedDate.value =
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    _scrollController = useScrollController();
     return Scaffold(
-      appBar: AppBar(
+      appBar: _buildAppBar(),
+      body: BodyWidget(
+        onShiftPicked: onShiftPicked,
+      ),
+    );
+  }
+
+  AppBar _buildAppBar() => AppBar(
+        backgroundColor: Get.theme.scaffoldBackgroundColor,
         title: Text(
           Strs.selectShiftStr.tr,
           style: Get.theme.textTheme.bodyLarge,
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,
-      ),
-      body: ScaffoldBody(
-        scrollController: _scrollController,
-        onShiftPicked: onShiftPicked,
-      ),
-    );
-  }
+      );
 }
 
-class ScaffoldBody extends StatelessWidget {
-  const ScaffoldBody({
+// ignore: must_be_immutable
+class BodyWidget extends HookWidget {
+  BodyWidget({
     Key? key,
-    required this.scrollController,
     this.onShiftPicked,
   }) : super(key: key);
 
-  final ScrollController scrollController;
+  late ScrollController _scrollController;
   final OnShiftPicked? onShiftPicked;
 
   Future<Map<String, dynamic>> getData() async {
@@ -67,270 +60,151 @@ class ScaffoldBody extends StatelessWidget {
       username: ServerService.currentUser.username!,
       isOnlyGuard: true,
       isFilterDate: true,
-      afterDate: "${f.y}-${f.m}-${f.d}",
+      afterDate: "${f.y}-${f.m}-${24}",
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getData(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          try {
-            if (!snapshot.hasData || snapshot.data == null) throw Exception();
-            var events = DataUtils.convertPlanToEvents(
-                [snapshot.data as Map<String, dynamic>]);
-            RxInt segmentController = 0.obs;
-            return SafeArea(
-              child: Center(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 25),
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: NestedScrollView(
-                    clipBehavior: Clip.none,
-                    controller: scrollController,
-                    headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                      SliverAppBar(
-                        automaticallyImplyLeading: false,
-                        floating: false,
-                        forceElevated: innerBoxIsScrolled,
-                        scrolledUnderElevation: 0,
-                        elevation: 0,
-                        backgroundColor: Colors.transparent,
-                        collapsedHeight: 400 < Get.size.height * 0.5 + 20
-                            ? 400
-                            : Get.size.height * 0.5 + 20,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        flexibleSpace: SingleChildScrollView(
-                          clipBehavior: Clip.none,
-                          physics: const NeverScrollableScrollPhysics(),
-                          child: Container(
-                            constraints: const BoxConstraints(
-                                // maxHeight: Get.size.height * 0.5 + 20,
-                                maxWidth: 600),
-                            child: CalendarContent(
-                              events: events,
-                              scrollController: scrollController,
-                              segmentController: segmentController,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SliverAppBar(
-                        automaticallyImplyLeading: false,
-                        pinned: true,
-                        forceElevated: true,
-                        centerTitle: true,
-                        scrolledUnderElevation: 0,
-                        elevation: 0,
-                        backgroundColor: Get.theme.colorScheme.background,
-                        title: Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: Obx(
-                            () => CupertinoSlidingSegmentedControl<int>(
-                              groupValue: segmentController.value,
-                              children: {
-                                1: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Text(
-                                    Strs.eventDayContentTitleStr.tr,
-                                    style: Get.theme.textTheme.subtitle2,
-                                  ),
-                                ),
-                                0: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Text(
-                                    Strs.workingPlanTitleStr.tr,
-                                    style: Get.theme.textTheme.subtitle2,
-                                  ),
-                                ),
-                              },
-                              onValueChanged: (index) {
-                                segmentController.value = index ?? 0;
-                              },
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                    body: Column(
-                      children: [
-                        Obx(
-                          () => segmentController.value == 0
-                              ? ShiftsListView(
-                                  events: events,
-                                  onShiftPicked: onShiftPicked,
-                                )
-                              : const DayEventsListView(),
-                        ),
-                      ],
+    _scrollController = useScrollController();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+      child: CustomFutureBuilder(
+        future: getData(),
+        isFutureReturnData: true,
+        builder: (context, data) {
+          var events =
+              DataUtils.convertPlanToEvents([data as Map<String, dynamic>]);
+          RxInt segmentController = 0.obs;
+          return CustomScrollView(
+            controller: _scrollController,
+            clipBehavior: Clip.none,
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverList(
+                  delegate: SliverChildListDelegate(
+                AnimationConfiguration.toStaggeredList(
+                  duration: const Duration(milliseconds: 500),
+                  childAnimationBuilder: (widget) => SlideAnimation(
+                    horizontalOffset: 50,
+                    child: FadeInAnimation(
+                      child: widget,
                     ),
                   ),
+                  children: [
+                    CalendarContent(
+                      events: events,
+                      scrollController: _scrollController,
+                    ),
+                    // Padding(
+                    //   padding:
+                    //       const EdgeInsets.only(top: 20, right: 20, left: 20),
+                    //   child: Obx(
+                    //     () => CustomSlidingSegmentedControl<int>(
+                    //       initialValue: segmentController.value,
+                    //       children: {
+                    //         1: Text(
+                    //           Strs.eventDayContentTitleStr.tr,
+                    //           style: Get.theme.textTheme.subtitle2,
+                    //         ),
+                    //         0: Text(
+                    //           Strs.workingPlanTitleStr.tr,
+                    //           style: Get.theme.textTheme.subtitle2,
+                    //         ),
+                    //       },
+                    //       onValueChanged: (index) {
+                    //         _scrollController.jumpTo(0);
+                    //         segmentController.value = index;
+                    //       },
+                    //       decoration: BoxDecoration(
+                    //         color: CupertinoColors.lightBackgroundGray,
+                    //         borderRadius: BorderRadius.circular(10),
+                    //       ),
+                    //       thumbDecoration: BoxDecoration(
+                    //         color: Colors.white,
+                    //         borderRadius: BorderRadius.circular(8),
+                    //         boxShadow: [
+                    //           BoxShadow(
+                    //             color: Colors.black.withOpacity(.3),
+                    //             blurRadius: 4.0,
+                    //             spreadRadius: 1.0,
+                    //             offset: const Offset(0.0, 2.0),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       isStretch: true,
+                    //       height: 35,
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
                 ),
-              ),
-            );
-          } catch (e) {
-            return Center(
-              child: Text(
-                "${Strs.failedToLoadDataFromServerErrorMessage.tr}\n${Strs.tryAgainErrorMessage.tr}",
-                textDirection: TextDirection.rtl,
-                textAlign: TextAlign.center,
-                style: Get.theme.textTheme.subtitle2,
-              ),
-            );
-          }
-        } else {
-          return const LoadingWidget();
-        }
-      },
-    );
-  }
-}
-
-class DayEventsListView extends StatelessWidget {
-  const DayEventsListView({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Obx(
-      () {
-        return FutureBuilder(
-          future: ServerService.getDayEvents(currentSelectedDate.value),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.data == null || !snapshot.hasData) {
-                return Center(
-                  child: Text(
-                    Strs.failedToLoadErrorStr.tr,
-                    style: Get.theme.textTheme.subtitle2,
-                  ),
-                );
-              } else {
-                try {
-                  var dayMap = snapshot.data as Map<String, dynamic>;
-                  var events = dayMap['events'] as List<dynamic>;
-                  return Expanded(
-                    child: AnimationLimiter(
-                      key: UniqueKey(),
-                      child: ListView.builder(
-                        itemCount: events.length + 1,
-                        itemBuilder: (context, index) {
-                          return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: const Duration(milliseconds: 500),
-                            child: SlideAnimation(
-                              verticalOffset: 50,
-                              child: FadeInAnimation(
-                                child: index == 0
-                                    ? _getFirstContent(
-                                        dayMap['is_holiday'] ?? false)
-                                    : _getEventChild(events, index - 1),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+              )),
+              Obx(
+                () {
+                  var eventShifts = events[currentSelectedDate.value] ?? [];
+                  return ShiftListView(
+                    shifts: eventShifts,
+                    onShiftPicked: onShiftPicked,
                   );
-                } catch (e) {
-                  return Center(
-                    child: Text(
-                      Strs.failedToLoadErrorStr.tr,
-                      style: Get.theme.textTheme.subtitle2,
-                    ),
-                  );
-                }
-              }
-            } else {
-              return const Expanded(child: LoadingWidget());
-            }
-          },
-        );
-      },
-    );
-  }
-
-  Container _getFirstContent(bool isHoliday) {
-    var currentDate = Jalali.fromDateTime(currentSelectedDate.value);
-    var nowTime = DateTime.now();
-    bool isToday = currentSelectedDate.value.year == nowTime.year &&
-        currentSelectedDate.value.month == nowTime.month &&
-        currentSelectedDate.value.day == nowTime.day;
-    String title =
-        "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayLong[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthLong[currentDate.month - 1]}  ${currentDate.year} ${isHoliday ? '- ${Strs.holidayStr.tr}' : ''}";
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      height: 50,
-      color: Get.theme.colorScheme.background,
-      alignment: Alignment.centerRight,
-      child: Text(
-        "${Strs.eventsDayStr.tr}$title",
-        style: Get.theme.textTheme.subtitle1,
-      ),
-    );
-  }
-
-  Container _getEventChild(List<dynamic> events, int index) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      alignment: Alignment.centerRight,
-      child: Text(
-        events[index]['description'],
-        style: Get.theme.textTheme.subtitle1,
-        textDirection: TextDirection.rtl,
+                },
+              ),
+              //   Obx(
+              //     () {
+              //       var eventShifts = events[currentSelectedDate.value] ?? [];
+              //       return segmentController.value == 0
+              //           ? ShiftListView(
+              //               shifts: eventShifts,
+              //               onShiftPicked: onShiftPicked,
+              //             )
+              //           : const DayEventListView();
+              //     },
+              //   ),
+            ],
+          );
+        },
       ),
     );
   }
 }
 
-class ShiftsListView extends StatelessWidget {
-  const ShiftsListView({
+class ShiftListView extends StatelessWidget {
+  const ShiftListView({
     Key? key,
-    required this.events,
+    required this.shifts,
     this.onShiftPicked,
   }) : super(key: key);
 
-  final Map<DateTime, List> events;
+  final List<dynamic> shifts;
   final OnShiftPicked? onShiftPicked;
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () {
-        var newEvents = events[currentSelectedDate.value] ?? [];
-        return Expanded(
-          child: AnimationLimiter(
-            key: UniqueKey(),
-            child: ListView.builder(
-              itemCount: newEvents.length + 1,
-              itemBuilder: (context, index) {
-                return AnimationConfiguration.staggeredList(
-                  position: index,
-                  duration: const Duration(milliseconds: 500),
-                  child: SlideAnimation(
-                    verticalOffset: 50,
-                    child: FadeInAnimation(
-                      child: index == 0
-                          ? _getFirstContent()
-                          : ShiftsListTile(
-                              event: newEvents[index - 1],
-                              onShiftPicked: onShiftPicked,
-                            ),
-                    ),
-                  ),
-                );
-              },
+    return SliverList(
+      key: UniqueKey(),
+      delegate: SliverChildListDelegate(
+        AnimationConfiguration.toStaggeredList(
+          duration: const Duration(milliseconds: 500),
+          childAnimationBuilder: (widget) => SlideAnimation(
+            verticalOffset: 50,
+            child: FadeInAnimation(
+              child: widget,
             ),
           ),
-        );
-      },
+          children: List.generate(
+            shifts.length + 1,
+            (index) {
+              if (index == 0) {
+                return _getFirstContent();
+              }
+              return ShiftListTile(
+                shift: shifts[index - 1],
+                onShiftPicked: onShiftPicked,
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 
@@ -356,73 +230,113 @@ class ShiftsListView extends StatelessWidget {
   }
 }
 
-class ShiftsListTile extends StatelessWidget {
-  const ShiftsListTile({
-    Key? key,
-    required this.event,
-    this.onShiftPicked,
-  }) : super(key: key);
+// class DayEventListView extends StatelessWidget {
+//   const DayEventListView({
+//     Key? key,
+//   }) : super(key: key);
 
-  final Map<String, dynamic> event;
-  final OnShiftPicked? onShiftPicked;
+//   @override
+//   Widget build(BuildContext context) {
+//     return FutureBuilder(
+//       future: ServerService.getDayEvents(currentSelectedDate.value),
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.done) {
+//           if (snapshot.data == null || !snapshot.hasData) {
+//             return Center(
+//               child: Text(
+//                 Strs.failedToLoadErrorStr.tr,
+//                 style: Get.theme.textTheme.subtitle2,
+//               ),
+//             );
+//           } else {
+//             try {
+//               var dayMap = snapshot.data as Map<String, dynamic>;
+//               var events = dayMap['events'] as List<dynamic>;
+//               return SliverList(
+//                 delegate: SliverChildListDelegate(
+//                   AnimationConfiguration.toStaggeredList(
+//                     duration: const Duration(milliseconds: 500),
+//                     childAnimationBuilder: (widget) => SlideAnimation(
+//                       verticalOffset: 50,
+//                       child: FadeInAnimation(
+//                         child: widget,
+//                       ),
+//                     ),
+//                     children: List.generate(
+//                       events.length + 1,
+//                       (index) {
+//                         if (index == 0) {
+//                           return _getFirstContent(
+//                               dayMap['is_holiday'] ?? false);
+//                         }
+//                         return _getEventChild(events, index - 1);
+//                       },
+//                     ),
+//                   ),
+//                 ),
+//               );
+//             } catch (e) {
+//               return Center(
+//                 child: Text(
+//                   Strs.failedToLoadErrorStr.tr,
+//                   style: Get.theme.textTheme.subtitle2,
+//                 ),
+//               );
+//             }
+//           }
+//         } else {
+//           return const Expanded(child: LoadingWidget());
+//         }
+//       },
+//     );
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        textDirection: TextDirection.rtl,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                event["name"],
-                style: Get.theme.textTheme.subtitle1,
-              ),
-              Text(
-                event["shift"]["des"],
-                style: Get.theme.textTheme.bodyText2,
-              ),
-            ],
-          ),
-          if (!event["shift"]["isExchangeable"])
-            Text(Strs.isNotExchangeableStr.tr,
-                style: Get.theme.textTheme.subtitle2!.copyWith(
-                  color: Get.theme.colorScheme.primary,
-                )),
-          if (event["shift"]["isExchangeable"])
-            CupertinoButton(
-              onPressed: () {
-                onShiftPicked?.call(MapEntry(currentSelectedDate.value, event));
-              },
-              padding: EdgeInsets.zero,
-              child: Text(Strs.selectStr.tr,
-                  style: Get.theme.textTheme.subtitle2!.copyWith(
-                    color: Get.theme.colorScheme.primary,
-                  )),
-            ),
-        ],
-      ),
-    );
-  }
-}
+//   Container _getFirstContent(bool isHoliday) {
+//     var currentDate = Jalali.fromDateTime(currentSelectedDate.value);
+//     var nowTime = DateTime.now();
+//     bool isToday = currentSelectedDate.value.year == nowTime.year &&
+//         currentSelectedDate.value.month == nowTime.month &&
+//         currentSelectedDate.value.day == nowTime.day;
+//     String title =
+//         "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayLong[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthLong[currentDate.month - 1]}  ${currentDate.year} ${isHoliday ? '- ${Strs.holidayStr.tr}' : ''}";
+//     return Container(
+//       margin: const EdgeInsets.symmetric(vertical: 10),
+//       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//       height: 50,
+//       color: Get.theme.colorScheme.background,
+//       alignment: Alignment.centerRight,
+//       child: Text(
+//         "${Strs.eventsDayStr.tr}$title",
+//         style: Get.theme.textTheme.subtitle1,
+//       ),
+//     );
+//   }
+
+//   Container _getEventChild(List<dynamic> events, int index) {
+//     return Container(
+//       margin: const EdgeInsets.symmetric(vertical: 10),
+//       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//       alignment: Alignment.centerRight,
+//       child: Text(
+//         events[index]['description'],
+//         style: Get.theme.textTheme.subtitle1,
+//         textDirection: TextDirection.rtl,
+//       ),
+//     );
+//   }
+// }
 
 class CalendarContent extends StatelessWidget {
   const CalendarContent({
     Key? key,
     required this.events,
-    required this.scrollController,
-    required this.segmentController,
+    this.scrollController,
+    this.segmentController,
   }) : super(key: key);
 
   final Map<DateTime, List<dynamic>>? events;
-  final ScrollController scrollController;
-  final RxInt segmentController;
+  final ScrollController? scrollController;
+  final RxInt? segmentController;
 
   @override
   Widget build(BuildContext context) {
@@ -431,10 +345,10 @@ class CalendarContent extends StatelessWidget {
         context: context,
         events: events,
         onDaySelected: (day) {
-          scrollController.animateTo(0,
+          scrollController?.animateTo(0,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeIn);
-          segmentController.value = 0;
+          segmentController?.value = 0;
           currentSelectedDate.value = day;
         },
         marker: (date, events) {

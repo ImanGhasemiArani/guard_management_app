@@ -54,6 +54,7 @@ class MainMaterial extends StatelessWidget {
             scrolledUnderElevation: 0,
           ),
           cardTheme: CardTheme(
+            clipBehavior: Clip.antiAlias,
             elevation: 8,
             color: const Color(0xffFFFFFF),
             surfaceTintColor: const Color(0xffFFFFFF),
@@ -95,6 +96,7 @@ class MainMaterial extends StatelessWidget {
             scrolledUnderElevation: 0,
           ),
           cardTheme: CardTheme(
+            clipBehavior: Clip.antiAlias,
             elevation: 8,
             color: const Color(0xff16202A),
             surfaceTintColor: const Color(0xff16202A),

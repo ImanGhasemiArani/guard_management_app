@@ -62,7 +62,7 @@ class ScaffoldBody extends StatelessWidget {
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 25),
                   constraints: const BoxConstraints(maxWidth: 600),
-                  child: ShiftsListView(
+                  child: UserListView(
                     users: usersMap,
                     onUserPicked: onUserPicked,
                   ),
@@ -87,8 +87,8 @@ class ScaffoldBody extends StatelessWidget {
   }
 }
 
-class ShiftsListView extends StatelessWidget {
-  const ShiftsListView({
+class UserListView extends StatelessWidget {
+  const UserListView({
     Key? key,
     required this.users,
     this.onUserPicked,
