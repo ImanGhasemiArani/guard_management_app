@@ -1,16 +1,13 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:guard_management_app/screens/normal_user_screen/normal_screen_settings.dart';
 import 'package:sidebarx/sidebarx.dart';
 
-import '../../main.dart';
 import '../../widget/btn_nav_bar/button_navigation_bar.dart';
 import '../../widget/drawer/my_drawer.dart';
 import '../screen_holder.dart';
+import 'normal_screen_settings.dart';
 import 'normal_screen_user_profile.dart';
-import 'normal_screen_calender.dart';
 import 'normal_screen_home.dart';
 
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -20,25 +17,15 @@ RxBool isSideBarExpanded = false.obs;
 
 // ignore: must_be_immutable
 class NormalScreenHolder extends ScreenHolder {
-  NormalScreenHolder({Key? key}) : super(key: key);
-
-  late PageController _pageController;
+  const NormalScreenHolder({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     setupDrawer();
-    _pageController = usePageController(initialPage: 1);
     return Scaffold(
       key: scaffoldKey,
       extendBody: true,
-      body: PageView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _pageController,
-        children: [
-          ScreenCalender(),
-          const ScreenHome(),
-        ],
-      ),
+      body: const ScreenHome(),
       //   floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       //   floatingActionButton: BtnNavBar(pageController: _pageController),
       endDrawerEnableOpenDragGesture: false,

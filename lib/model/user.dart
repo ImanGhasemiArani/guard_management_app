@@ -257,13 +257,13 @@ class NormalUser extends User {
           fRank,
           fOrganPos,
           fUserType,
-          NormalScreenHolder(),
+          const NormalScreenHolder(),
         );
 
   NormalUser.fromParseUser(ParseUser parseUser)
       : super.fromParseUser(
           parseUser,
-          NormalScreenHolder(),
+          const NormalScreenHolder(),
         );
 }
 

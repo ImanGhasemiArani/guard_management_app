@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import '../../widget/drawer/my_drawer.dart';
 import '../../widget/staggered_animations/flutter_staggered_animations.dart';
 import 'normal_screen_exchange_req.dart';
 import 'normal_screen_holder.dart';
+import 'normal_screen_shift_schedule.dart';
 
 class ScreenHome extends StatelessWidget {
   const ScreenHome({
@@ -31,47 +33,52 @@ class ScreenHome extends StatelessWidget {
         if (!GetPlatform.isMobile)
           MyDrawer(sideBarXController: sideBarXController),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(30),
-            child: Directionality(
-              textDirection: TextDirection.rtl,
-              child: AnimationLimiter(
-                key: UniqueKey(),
-                child: GridView.count(
-                  clipBehavior: Clip.none,
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  children: [
-                    HomeGridChild(
-                      index: 0,
-                      label: Strs.exchangeReqStr.tr,
-                      icon: CupertinoIcons.doc_text,
-                      openWidget: const ScreenExchangeReq(),
-                    ),
-                    HomeGridChild(
-                      index: 1,
-                      label: Strs.leaveRequestStr.tr,
-                      icon: CupertinoIcons.doc_person,
-                      openWidget: const Scaffold(
-                          body: Center(child: Text('leave request'))),
-                    ),
-                    HomeGridChild(
-                      index: 2,
-                      label: Strs.formsStr.tr,
-                      icon: CupertinoIcons.doc_plaintext,
-                      openWidget:
-                          const Scaffold(body: Center(child: Text('forms'))),
-                    ),
-                    HomeGridChild(
-                      index: 3,
-                      label: Strs.historyStr.tr,
-                      icon: CupertinoIcons.time,
-                      openWidget:
-                          const Scaffold(body: Center(child: Text('History'))),
-                    ),
-                  ],
-                ),
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: AnimationLimiter(
+              key: UniqueKey(),
+              child: GridView.count(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.all(30),
+                clipBehavior: Clip.none,
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                children: [
+                  HomeGridChild(
+                    index: 0,
+                    label: Strs.shiftScheduleStr.tr,
+                    icon: CupertinoIcons.calendar,
+                    openWidget: const ScreenShiftSchedule(),
+                  ),
+                  HomeGridChild(
+                    index: 1,
+                    label: Strs.exchangeReqStr.tr,
+                    icon: CupertinoIcons.doc_text,
+                    openWidget: const ScreenExchangeReq(),
+                  ),
+                  HomeGridChild(
+                    index: 2,
+                    label: Strs.leaveRequestStr.tr,
+                    icon: CupertinoIcons.doc_person,
+                    openWidget: const Scaffold(
+                        body: Center(child: Text('leave request'))),
+                  ),
+                  HomeGridChild(
+                    index: 3,
+                    label: Strs.formsStr.tr,
+                    icon: CupertinoIcons.doc_plaintext,
+                    openWidget:
+                        const Scaffold(body: Center(child: Text('forms'))),
+                  ),
+                  HomeGridChild(
+                    index: 4,
+                    label: Strs.historyStr.tr,
+                    icon: CupertinoIcons.time,
+                    openWidget:
+                        const Scaffold(body: Center(child: Text('History'))),
+                  ),
+                ],
               ),
             ),
           ),
@@ -151,6 +158,8 @@ class ScreenHome extends StatelessWidget {
       );
 }
 
+AutoSizeGroup group = AutoSizeGroup();
+
 class HomeGridChild extends StatelessWidget {
   const HomeGridChild({
     Key? key,
@@ -186,25 +195,51 @@ class HomeGridChild extends StatelessWidget {
               padding: EdgeInsets.zero,
               onPressed: action,
               child: SizedBox(
-                height: double.infinity,
-                width: double.infinity,
                 child: Card(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
+                  child: SizedBox(
+                    height: double.infinity,
+                    width: double.infinity,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(5),
                       child: Column(
                         textDirection: TextDirection.rtl,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(
-                            icon,
-                            size: 45,
-                            color: Get.theme.colorScheme.secondary,
+                          Expanded(
+                            flex: 2,
+                            child: Center(
+                              child: Icon(
+                                icon,
+                                size: 45,
+                                color: Get.theme.colorScheme.secondary,
+                              ),
+                            ),
                           ),
-                          const SizedBox(height: 10),
-                          Text(label),
+                          Expanded(
+                            flex: 1,
+                            child: Center(
+                              child: AutoSizeText(
+                                label,
+                                style: TextStyle(
+                                  fontFamily: Get
+                                      .theme.textTheme.labelLarge?.fontFamily,
+                                  fontStyle:
+                                      Get.theme.textTheme.labelLarge?.fontStyle,
+                                  fontSize:
+                                      Get.theme.textTheme.labelLarge?.fontSize,
+                                  fontWeight: Get
+                                      .theme.textTheme.labelLarge?.fontWeight,
+                                  letterSpacing: Get.theme.textTheme.labelLarge
+                                      ?.letterSpacing,
+                                ),
+                                group: group,
+                                overflow: TextOverflow.ellipsis,
+                                minFontSize: 5,
+                                maxLines: 1,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),

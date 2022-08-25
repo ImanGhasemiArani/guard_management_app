@@ -71,4 +71,26 @@ class DataUtils {
         .removeWhere((key, value) => key == ServerService.currentUser.username);
     return result;
   }
+
+  /// Sorter:
+  /// 
+  ///       List<Map<String, dynamic>> => sort by isCurrentUser
+  static List<Map<String, dynamic>> sortByCurrentUser(
+    List<Map<String, dynamic>> list,
+  ) {
+    list = [...list];
+    final currentUserUsername = ServerService.currentUser.username;
+    list.sort((a, b) {
+      final aUsername = a['username'] as String;
+      final bUsername = b['username'] as String;
+      if (aUsername == currentUserUsername) {
+        return -1;
+      } else if (bUsername == currentUserUsername) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    return list;
+  }
 }

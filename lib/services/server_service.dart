@@ -205,6 +205,24 @@ class ServerService {
     return json.decode(utf8.decode(response.bodyBytes));
   }
 
+  static Future<List<Map<String, dynamic>>> getAllUserSchedule(
+      {bool isOnlyGuard = false,
+      bool isFilterDate = false,
+      String? afterDate}) async {
+    final func = ParseCloudFunction("allUserSchedule");
+    final response = await func.execute(parameters: {
+      "isOnlyGuard": isOnlyGuard,
+      "isFilterDate": isFilterDate,
+      "afterDate": afterDate
+    });
+    if (response.success) {
+      final result = response.result as List<dynamic>;
+      return result.map((e) => e as Map<String, dynamic>).toList();
+    } else {
+      throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
+    }
+  }
+
   static Future<Map<String, dynamic>> getSpecificUserSchedule(
       {required String username,
       bool isOnlyGuard = false,

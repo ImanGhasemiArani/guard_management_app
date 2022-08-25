@@ -5,7 +5,6 @@ import 'package:shamsi_date/shamsi_date.dart';
 
 import '../../lang/strs.dart';
 import '../../model/user.dart';
-import '../../services/server_service.dart';
 import '../../utils/data_utils.dart';
 import '../../widget/calendar/calendar.dart';
 import '../../widget/calendar/src/persian_date.dart';
@@ -17,18 +16,35 @@ Rx<DateTime> currentSelectedDate =
     DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).obs;
 
 class ShiftPicker extends StatelessWidget {
-  const ShiftPicker({Key? key, this.onShiftPicked}) : super(key: key);
+  const ShiftPicker({
+    Key? key,
+    this.onShiftPicked,
+    this.future,
+    this.isShowAppBar = true,
+    this.isShowMarkCalendar = true,
+    this.isShowExchangeableBanner = true,
+    this.isFilterCurrentUser = true,
+  }) : super(key: key);
 
   final OnShiftPicked? onShiftPicked;
+  final Future<Object?>? future;
+  final bool isShowAppBar;
+  final bool isShowMarkCalendar;
+  final bool isShowExchangeableBanner;
+  final bool isFilterCurrentUser;
 
   @override
   Widget build(BuildContext context) {
     currentSelectedDate.value =
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: isShowAppBar ? _buildAppBar() : null,
       body: BodyWidget(
         onShiftPicked: onShiftPicked,
+        future: future,
+        isShowMarkCalendar: isShowMarkCalendar,
+        isShowExchangeableBanner: isShowExchangeableBanner,
+        isFilterCurrentUser: isFilterCurrentUser,
       ),
     );
   }
@@ -49,20 +65,18 @@ class BodyWidget extends HookWidget {
   BodyWidget({
     Key? key,
     this.onShiftPicked,
+    this.future,
+    this.isShowMarkCalendar = true,
+    this.isShowExchangeableBanner = true,
+    this.isFilterCurrentUser = true,
   }) : super(key: key);
 
   late ScrollController _scrollController;
   final OnShiftPicked? onShiftPicked;
-
-  Future<Map<String, dynamic>> getData() async {
-    final f = currentSelectedDate.value.toJalali().formatter;
-    return await ServerService.getSpecificUserSchedule(
-      username: ServerService.currentUser.username!,
-      isOnlyGuard: true,
-      isFilterDate: true,
-      afterDate: "${f.y}-${f.m}-${24}",
-    );
-  }
+  final Future<Object?>? future;
+  final bool isShowMarkCalendar;
+  final bool isShowExchangeableBanner;
+  final bool isFilterCurrentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -70,12 +84,18 @@ class BodyWidget extends HookWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: CustomFutureBuilder(
-        future: getData(),
+        future: future,
         isFutureReturnData: true,
         builder: (context, data) {
-          var events =
-              DataUtils.convertPlanToEvents([data as Map<String, dynamic>]);
-          RxInt segmentController = 0.obs;
+          Map<DateTime, List> events;
+          try {
+            events =
+                DataUtils.convertPlanToEvents([data as Map<String, dynamic>]);
+          } catch (e) {
+            events = DataUtils.convertPlanToEvents(
+                data as List<Map<String, dynamic>>);
+          }
+          //   RxInt segmentController = 0.obs;
           return CustomScrollView(
             controller: _scrollController,
             clipBehavior: Clip.none,
@@ -95,6 +115,7 @@ class BodyWidget extends HookWidget {
                     CalendarContent(
                       events: events,
                       scrollController: _scrollController,
+                      isShowMarkCalendar: isShowMarkCalendar,
                     ),
                     // Padding(
                     //   padding:
@@ -146,6 +167,8 @@ class BodyWidget extends HookWidget {
                   return ShiftListView(
                     shifts: eventShifts,
                     onShiftPicked: onShiftPicked,
+                    isShowExchangeableBanner: isShowExchangeableBanner,
+                    isFilterCurrentUser: isFilterCurrentUser,
                   );
                 },
               ),
@@ -173,16 +196,21 @@ class ShiftListView extends StatelessWidget {
     Key? key,
     required this.shifts,
     this.onShiftPicked,
+    this.isShowExchangeableBanner = true,
+    this.isFilterCurrentUser = true,
   }) : super(key: key);
 
   final List<dynamic> shifts;
   final OnShiftPicked? onShiftPicked;
+  final bool isShowExchangeableBanner;
+  final bool isFilterCurrentUser;
 
   @override
   Widget build(BuildContext context) {
     return SliverList(
       key: UniqueKey(),
       delegate: SliverChildListDelegate(
+        addAutomaticKeepAlives: true,
         AnimationConfiguration.toStaggeredList(
           duration: const Duration(milliseconds: 500),
           childAnimationBuilder: (widget) => SlideAnimation(
@@ -200,6 +228,8 @@ class ShiftListView extends StatelessWidget {
               return ShiftListTile(
                 shift: shifts[index - 1],
                 onShiftPicked: onShiftPicked,
+                isShowExchangeableBanner: isShowExchangeableBanner,
+                isFilterCurrentUser: isFilterCurrentUser,
               );
             },
           ),
@@ -332,11 +362,13 @@ class CalendarContent extends StatelessWidget {
     required this.events,
     this.scrollController,
     this.segmentController,
+    this.isShowMarkCalendar = true,
   }) : super(key: key);
 
   final Map<DateTime, List<dynamic>>? events;
   final ScrollController? scrollController;
   final RxInt? segmentController;
+  final bool isShowMarkCalendar;
 
   @override
   Widget build(BuildContext context) {
@@ -351,65 +383,68 @@ class CalendarContent extends StatelessWidget {
           segmentController?.value = 0;
           currentSelectedDate.value = day;
         },
-        marker: (date, events) {
-          if (events == null || events.isEmpty) return const SizedBox();
-          if (events.length > 1) {
-            return Stack(
-              children: [
-                Positioned(
-                  top: -4,
-                  left: 4,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Get.theme.colorScheme.primary,
-                      shape: BoxShape.circle,
+        marker: isShowMarkCalendar
+            ? (date, events) {
+                if (events == null || events.isEmpty) return const SizedBox();
+                if (events.length > 1) {
+                  return Stack(
+                    children: [
+                      Positioned(
+                        top: -4,
+                        left: 4,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Get.theme.colorScheme.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          padding: const EdgeInsets.all(6.0),
+                          child: const Text(""),
+                        ),
+                      ),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Get.theme.colorScheme.secondary,
+                            shape: BoxShape.circle,
+                          ),
+                          padding: const EdgeInsets.all(6.0),
+                          child: const Text(""),
+                        ),
+                      ),
+                    ],
+                  );
+                } else if ((events.first)['shift']['des'] ==
+                    ShiftType.N.value) {
+                  return Positioned(
+                    top: -4,
+                    left: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Get.theme.colorScheme.secondary,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: const EdgeInsets.all(6.0),
+                      child: const Text(""),
                     ),
-                    padding: const EdgeInsets.all(6.0),
-                    child: const Text(""),
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Get.theme.colorScheme.secondary,
-                      shape: BoxShape.circle,
+                  );
+                } else {
+                  return Positioned(
+                    top: -4,
+                    left: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Get.theme.colorScheme.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: const EdgeInsets.all(6.0),
+                      child: const Text(""),
                     ),
-                    padding: const EdgeInsets.all(6.0),
-                    child: const Text(""),
-                  ),
-                ),
-              ],
-            );
-          } else if ((events.first)['shift']['des'] == ShiftType.N.value) {
-            return Positioned(
-              top: -4,
-              left: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Get.theme.colorScheme.secondary,
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(6.0),
-                child: const Text(""),
-              ),
-            );
-          } else {
-            return Positioned(
-              top: -4,
-              left: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Get.theme.colorScheme.primary,
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(6.0),
-                child: const Text(""),
-              ),
-            );
-          }
-        },
+                  );
+                }
+              }
+            : (date, events) => const SizedBox(),
       ),
     );
   }

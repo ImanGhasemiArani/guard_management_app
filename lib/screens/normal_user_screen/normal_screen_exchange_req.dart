@@ -131,6 +131,15 @@ class ScreenExchangeReq extends StatelessWidget {
                               shift.value['shift']['des'];
                           Get.back();
                         },
+                        future: Future.sync(() async {
+                          final f = Jalali.now().formatter;
+                          return await ServerService.getSpecificUserSchedule(
+                            username: ServerService.currentUser.username!,
+                            isOnlyGuard: true,
+                            isFilterDate: true,
+                            afterDate: "${f.y}-${f.m}-${f.d}",
+                          );
+                        }),
                       );
                     });
               },

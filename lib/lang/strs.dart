@@ -53,6 +53,7 @@ class Strs {
   static const String automaticStr = "اتوماتیک";
   static const String darkThemeStr = "حالت تیره";
   static const String isExchangeableStr = "قابل تعویض";
+  static const String shiftScheduleStr = "صورت کشیک";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =
