@@ -73,6 +73,16 @@ List<String> dayLong = const [
   'جمعه',
 ];
 
+List<String> dayShort = const [
+  'د',
+  'س',
+  'چ',
+  'پ',
+  'ج',
+  'ش',
+  'ی',
+];
+
 class PersianDate {
   int? _year;
   int? _month;

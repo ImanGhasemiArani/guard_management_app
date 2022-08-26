@@ -8,6 +8,7 @@ import '../../lang/strs.dart';
 import '../../services/server_service.dart';
 import '../../utils/data_utils.dart';
 import '../../widget/appbar/my_appbar.dart';
+import '../../widget/shift_schedule_table_view/shift_schedule_table_view.dart';
 import 'normal_shift_picker.dart';
 
 class ScreenShiftSchedule extends StatelessWidget {
@@ -20,9 +21,11 @@ class ScreenShiftSchedule extends StatelessWidget {
     final isTableView = false.obs;
     return Scaffold(
       appBar: getAppBar(isTableView),
-      body: Obx(() => isTableView.value
-          ? const ShiftTableView()
-          : const ShiftCalendarView()),
+      body: Obx(
+        () => !isTableView.value
+            ? const ShiftScheduleTableView()
+            : const ShiftCalendarView(),
+      ),
     );
   }
 
@@ -86,15 +89,6 @@ class ScreenShiftSchedule extends StatelessWidget {
           ),
         ],
       );
-}
-
-class ShiftTableView extends StatelessWidget {
-  const ShiftTableView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text('ShiftTableView');
-  }
 }
 
 class ShiftCalendarView extends StatelessWidget {

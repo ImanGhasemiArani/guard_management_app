@@ -39,9 +39,9 @@ class Strs {
   static const String saveStr = "ذخیره";
   static const String cancelStr = "لغو";
   static const String sendStr = "ارسال";
-  static const String nightShiftStr = "شیفت شب";
+  static const String nightShiftStr = "شب";
   static const String morningShiftStr = "صبح کار";
-  static const String dayShiftStr = "شیفت روز";
+  static const String dayShiftStr = "روز";
   static const String isNotExchangeableStr = "غیر قابل تعویض";
   static const String teamStr = "تیم";
   static const String postStr = "پست";
@@ -54,6 +54,10 @@ class Strs {
   static const String darkThemeStr = "حالت تیره";
   static const String isExchangeableStr = "قابل تعویض";
   static const String shiftScheduleStr = "صورت کشیک";
+  static const String fullNameStr = "نام و نام خانوادگی";
+  static const String weekdayStr = "ایام هفته";
+  static const String dateStr = "تاریخ";
+  static const String companyNameStr = "شرکت فرودگاه های کشور";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =

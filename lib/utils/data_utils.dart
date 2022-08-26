@@ -73,7 +73,7 @@ class DataUtils {
   }
 
   /// Sorter:
-  /// 
+  ///
   ///       List<Map<String, dynamic>> => sort by isCurrentUser
   static List<Map<String, dynamic>> sortByCurrentUser(
     List<Map<String, dynamic>> list,
@@ -89,6 +89,33 @@ class DataUtils {
         return 1;
       } else {
         return 0;
+      }
+    });
+    return list;
+  }
+
+  /// Sorter
+  /// 
+  ///       List<Map<String, dynamic>> => sort by teamName then sort by post
+  static List<Map<String, dynamic>> sortByTeam(
+    List<Map<String, dynamic>> list,
+  ) {
+    list = [...list];
+    list.sort((a, b) {
+      final aTeam = a['teamName'] as String;
+      final bTeam = b['teamName'] as String;
+      if (aTeam.compareTo(bTeam) == 0) {
+        final aPost = a['post'] as String;
+        final bPost = b['post'] as String;
+        if (aPost == "S") {
+          return -1;
+        } else if (bPost == "S") {
+          return 1;
+        } else {
+          return 0;
+        }
+      } else {
+        return aTeam.compareTo(bTeam);
       }
     });
     return list;

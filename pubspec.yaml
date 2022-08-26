@@ -63,6 +63,8 @@ dependencies:
   custom_sliding_segmented_control: ^1.7.1
   auto_size_text: ^3.0.0
   syncfusion_flutter_datagrid: ^20.2.45
+  syncfusion_flutter_core: ^20.2.45
+  syncfusion_flutter_datagrid_export: ^20.2.45-beta
   # google_fonts: ^3.0.1
 
 
