@@ -22,6 +22,7 @@ import '../../widget/bottom_sheet_modal/floating_modal.dart';
 ExchangeRequest exchangeRequest = ExchangeRequest(
   ServerService.currentUser.username!,
   ServerService.currentUser.name,
+  ServerService.currentUser.organPos,
 );
 
 class ScreenExchangeReq extends StatelessWidget {
@@ -32,6 +33,7 @@ class ScreenExchangeReq extends StatelessWidget {
     exchangeRequest = ExchangeRequest(
       ServerService.currentUser.username!,
       ServerService.currentUser.name,
+      ServerService.currentUser.organPos,
     );
     return Scaffold(
       appBar: getAppBar(),
@@ -351,7 +353,6 @@ class ScreenExchangeReq extends StatelessWidget {
 
   Widget getSendButton() {
     final isShowButtonIndicator = false.obs;
-    final key = GlobalKey();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: ClipSmoothRect(
@@ -370,7 +371,6 @@ class ScreenExchangeReq extends StatelessWidget {
                       Strs.sendStr.tr,
                       style: TextStyle(
                           fontFamily: Get.theme.textTheme.button!.fontFamily),
-                      key: key,
                     )
                   : FittedBox(
                       fit: BoxFit.scaleDown,

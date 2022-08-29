@@ -58,6 +58,7 @@ class Strs {
   static const String weekdayStr = "ایام هفته";
   static const String dateStr = "تاریخ";
   static const String companyNameStr = "شرکت فرودگاه های کشور";
+  static const String exportToPdfStr = "PDF";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =
@@ -83,6 +84,8 @@ class Strs {
       "برای بازیابی رمز عبور باید با پشتیبانی تماس بگیرید";
   static const String selectShiftStr = "شیفت تعویض کننده را انتخاب کنید";
   static const String selectSupplierStr = "تامین کننده را انتخاب کنید";
+  static const String exportToPdfDescriptionStr =
+      "خروجی به صورت PDF تولید شود؟";
 
   /// other strings
   static const String loginStr = "ورود";
@@ -139,4 +142,8 @@ class Strs {
   static const String titleP1Str = "شرکت فرودگاه های کشور";
   static const String titleP2Str =
       "ریاست محترم اداره مهندسی تجهیزات راداری و اتوماسیون هوانوردی";
+
+  /// Pdf file names
+  static const String exReqPdfFileNameStr = "فرم درخواست تعویض";
+  static const String shiftSchedulePdfFileNameStr = "فایل صورت کشیک";
 }

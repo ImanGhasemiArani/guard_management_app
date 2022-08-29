@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 class ExchangeRequest {
   String? changerNationalId;
   String? changerName;
+  String? changerOrganPos;
   late final Rx<String?> _supplierNationalId;
   String? supplierName;
   late final Rx<String?> _changerShiftDate;
@@ -16,6 +17,7 @@ class ExchangeRequest {
   ExchangeRequest(
     this.changerNationalId,
     this.changerName,
+    this.changerOrganPos,
   ) {
     _init();
   }

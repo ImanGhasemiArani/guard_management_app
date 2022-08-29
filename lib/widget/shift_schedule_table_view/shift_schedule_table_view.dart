@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:guard_management_app/services/pdf_service.dart';
 import 'package:shamsi_date/shamsi_date.dart';
@@ -8,8 +10,6 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../lang/strs.dart';
 import '../../model/user.dart';
-import '../../services/server_service.dart';
-import '../../utils/data_utils.dart';
 import '../calendar/src/persian_date.dart';
 import '../future_builder/custom_future_builder.dart';
 
@@ -18,30 +18,20 @@ final GlobalKey<SfDataGridState> dataGridKey = GlobalKey<SfDataGridState>();
 class ShiftScheduleTableView extends StatelessWidget {
   const ShiftScheduleTableView({
     Key? key,
+    this.future,
   }) : super(key: key);
+
+  final Future<Object?>? future;
 
   @override
   Widget build(BuildContext context) {
     return CustomFutureBuilder(
-      future: Future.sync(
-        () async {
-          final f = Jalali.now().formatter;
-          return DataUtils.sortByTeam(await ServerService.getAllUserSchedule(
-            isFilterDate: true,
-            afterDate: "${f.y}-${f.m}-${f.d}",
-          ));
-        },
-      ),
+      future: future,
       builder: (context, data) {
         AutoSizeGroup group = AutoSizeGroup();
         return Column(
           children: [
-            CupertinoButton(
-              child: Text("Click"),
-              onPressed: () {
-                PdfService.createShiftSchedulePdf(dataGridKey);
-              },
-            ),
+            _buildExportToPdfBtn(data),
             Expanded(
               child: Center(
                 child: Directionality(
@@ -80,10 +70,118 @@ class ShiftScheduleTableView extends StatelessWidget {
     );
   }
 
+  Widget _buildExportToPdfBtn(dynamic data) {
+    final isShowButtonIndicator = false.obs;
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+        decoration: ShapeDecoration(
+          color: Get.theme.colorScheme.secondary.withOpacity(0.05),
+          shape: SmoothRectangleBorder(
+            side: BorderSide(
+                color: Get.theme.colorScheme.secondary.withOpacity(0.5)),
+            borderRadius: SmoothBorderRadius(
+              cornerRadius: 15,
+              cornerSmoothing: 1,
+            ),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Text(
+                Strs.exportToPdfDescriptionStr.tr,
+                softWrap: false,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.right,
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: SizedBox(
+                  height: 52,
+                  child: CupertinoButton(
+                    onPressed: () =>
+                        _onExportToPdfBtnPressed(isShowButtonIndicator, data),
+                    child: Obx(
+                      () => !isShowButtonIndicator.value
+                          ? Text(
+                              Strs.exportToPdfStr.tr,
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(
+                                fontFamily:
+                                    Get.theme.textTheme.button!.fontFamily,
+                              ),
+                            )
+                          : FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: CircularProgressIndicator(
+                                color: Get.theme.colorScheme.onPrimary,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    // final isShowButtonIndicator = false.obs;
+    // return Padding(
+    //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+    //   child: ClipSmoothRect(
+    //     radius: SmoothBorderRadius(
+    //       cornerRadius: 15,
+    //       cornerSmoothing: 1,
+    //     ),
+    //     child: SizedBox(
+    //       width: double.infinity,
+    //       height: 52,
+    //       child: CupertinoButton.filled(
+    //         onPressed: () => _onExportToPdfBtnPressed(isShowButtonIndicator),
+    //         child: Obx(
+    //           () => !isShowButtonIndicator.value
+    //               ? Text(
+    //                   Strs.exportToPdfStr.tr,
+    //                   textDirection: TextDirection.rtl,
+    //                   style: TextStyle(
+    //                     fontFamily: Get.theme.textTheme.button!.fontFamily,
+    //                   ),
+    //                 )
+    //               : FittedBox(
+    //                   fit: BoxFit.scaleDown,
+    //                   child: CircularProgressIndicator(
+    //                     color: Get.theme.colorScheme.onPrimary,
+    //                   ),
+    //                 ),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
+  }
+
+  _onExportToPdfBtnPressed(RxBool isShowButtonIndicator, dynamic data) {
+    if (isShowButtonIndicator.value) return;
+    isShowButtonIndicator.value = true;
+
+    PdfService.createShiftSchedulePdf(dataGridKey)
+        .then((value) => isShowButtonIndicator.value = false);
+  }
+
   List<StackedHeaderRow> _buildStackHeaders(AutoSizeGroup group) {
     var cells = [
       StackedHeaderCell(
-        columnNames: ['name', 'rank', 'post'],
+        columnNames: [Strs.fullNameStr.tr, Strs.rankingStr.tr, Strs.postStr.tr],
+        text: Strs.companyNameStr.tr,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           alignment: Alignment.center,
@@ -113,7 +211,8 @@ class ShiftScheduleTableView extends StatelessWidget {
         ),
       ),
       StackedHeaderCell(
-        columnNames: ['team'],
+        columnNames: [Strs.dateStr.tr],
+        text: Strs.weekdayStr.tr,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           alignment: Alignment.center,
@@ -143,6 +242,7 @@ class ShiftScheduleTableView extends StatelessWidget {
       cells.add(
         StackedHeaderCell(
           columnNames: ['${dayNum + 1}'],
+          text: dayShortName,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             alignment: Alignment.center,
@@ -172,7 +272,7 @@ class ShiftScheduleTableView extends StatelessWidget {
   List<GridColumn> _buildColumns(AutoSizeGroup group) {
     final columns = [
       GridColumn(
-        columnName: 'name',
+        columnName: Strs.fullNameStr.tr,
         label: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           alignment: Alignment.center,
@@ -195,7 +295,7 @@ class ShiftScheduleTableView extends StatelessWidget {
         ),
       ),
       GridColumn(
-        columnName: 'rank',
+        columnName: Strs.rankingStr.tr,
         label: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           alignment: Alignment.center,
@@ -218,7 +318,7 @@ class ShiftScheduleTableView extends StatelessWidget {
         ),
       ),
       GridColumn(
-        columnName: 'post',
+        columnName: Strs.postStr.tr,
         label: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           alignment: Alignment.center,
@@ -241,7 +341,7 @@ class ShiftScheduleTableView extends StatelessWidget {
         ),
       ),
       GridColumn(
-        columnName: 'team',
+        columnName: Strs.dateStr.tr,
         label: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           alignment: Alignment.center,
@@ -303,11 +403,13 @@ class ShiftDataSource extends DataGridSource {
     _shifts = shifts.map<DataGridRow>((e) {
       var date = Jalali.now();
       var cells = [
-        DataGridCell<String>(columnName: 'name', value: e['name']),
-        DataGridCell<String>(columnName: 'rank', value: e['rank'] ?? ""),
-        DataGridCell<String>(columnName: 'post', value: e['post']),
+        DataGridCell<String>(columnName: Strs.fullNameStr.tr, value: e['name']),
         DataGridCell<String>(
-            columnName: 'team', value: "${Strs.teamStr} ${e['teamName']}"),
+            columnName: Strs.rankingStr.tr, value: e['rank'] ?? ""),
+        DataGridCell<String>(columnName: Strs.postStr.tr, value: e['post']),
+        DataGridCell<String>(
+            columnName: Strs.dateStr.tr,
+            value: "${Strs.teamStr} ${e['teamName']}"),
       ];
       for (var dayNum in Iterable<int>.generate(date.monthLength).toList()) {
         cells.add(
@@ -339,7 +441,7 @@ class ShiftDataSource extends DataGridSource {
       cells: row.getCells().map<Widget>(
         (dataGridCell) {
           return Container(
-            color: dataGridCell.columnName == 'name'
+            color: dataGridCell.columnName == Strs.fullNameStr.tr
                 ? Get.theme.colorScheme.background
                 : null,
             alignment: Alignment.center,

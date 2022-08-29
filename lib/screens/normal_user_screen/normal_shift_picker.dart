@@ -85,7 +85,6 @@ class BodyWidget extends HookWidget {
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: CustomFutureBuilder(
         future: future,
-        isFutureReturnData: true,
         builder: (context, data) {
           Map<DateTime, List> events;
           try {

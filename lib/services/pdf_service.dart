@@ -7,12 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
+import 'package:pdf/pdf.dart' as ppw;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:image/image.dart' as image;
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_datagrid_export/export.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart' as gp;
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../lang/strs.dart';
 import '../model/exchange_request.dart';
@@ -21,9 +21,6 @@ class PdfService {
   PdfService._();
 
   static Future<void> createExchangeReqPdf(ExchangeRequest req) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = directory.path;
-
     final fontReg =
         pw.Font.ttf(await rootBundle.load("fonts/Peyda-Regular.ttf"));
     final fontBold = pw.Font.ttf(await rootBundle.load("fonts/Peyda-Bold.ttf"));
@@ -38,7 +35,7 @@ class PdfService {
 
     pdf.addPage(
       pw.Page(
-        pageFormat: PdfPageFormat.a5,
+        pageFormat: ppw.PdfPageFormat.a5,
         textDirection: pw.TextDirection.rtl,
         margin: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         build: (pw.Context context) {
@@ -107,7 +104,7 @@ class PdfService {
                                 text: Strs.bodyP2Str.tr,
                               ),
                               pw.TextSpan(
-                                text: "  ${null ?? '..............'}  ",
+                                text: "  ${req.changerOrganPos ?? '..............'}  ",
                                 style: style.copyWith(
                                     fontWeight: pw.FontWeight.bold),
                               ),
@@ -261,9 +258,47 @@ class PdfService {
       ),
     );
 
-    final file = File("$path/exReq.pdf");
-    await file.writeAsBytes(await pdf.save());
-    OpenFile.open("$path/exReq.pdf");
+    savePdfToDevice(await pdf.save(), Strs.exReqPdfFileNameStr.tr);
+  }
+
+  static Future<void> createShiftSchedulePdf(
+      GlobalKey<SfDataGridState> dataGridKey) async {
+    var document = PdfDocument();
+    var font = PdfTrueTypeFont(
+        (await rootBundle.load("fonts/Peyda-Regular.ttf")).buffer.asUint8List(),
+        12);
+    document.pageSettings.orientation = PdfPageOrientation.landscape;
+    document.pageSettings.size = PdfPageSize.a2;
+    var pdfPage = document.pages.add();
+    var pdfGrid = dataGridKey.currentState!.exportToPdfGrid(
+      fitAllColumnsInOnePage: true,
+      canRepeatHeaders: false,
+      //   autoColumnWidth: false,
+      cellExport: (details) {
+        details.pdfCell.style.font = font;
+        details.pdfCell.stringFormat = PdfStringFormat(
+          textDirection: PdfTextDirection.rightToLeft,
+          alignment: PdfTextAlignment.center,
+          lineAlignment: PdfVerticalAlignment.middle,
+        );
+      },
+    );
+    pdfGrid.draw(
+      page: pdfPage,
+      bounds: Rect.zero,
+    );
+    final List<int> bytes = document.saveSync();
+    savePdfToDevice(bytes, Strs.shiftSchedulePdfFileNameStr.tr);
+  }
+
+  static Future<void> savePdfToDevice(
+    List<int> byteCodes, [
+    String fileName = "temp",
+  ]) async {
+    final path = (await getApplicationDocumentsDirectory()).path;
+    final file = File("$path/$fileName.pdf");
+    await file.writeAsBytes(byteCodes);
+    OpenFile.open("$path/$fileName.pdf");
   }
 
   static Future<Uint8List?> changeSignatureColorToBlack(
@@ -283,34 +318,5 @@ class PdfService {
 
   static Future<Uint8List> getAssetImageAsUint8List(String imgAssetPath) async {
     return (await rootBundle.load(imgAssetPath)).buffer.asUint8List();
-  }
-
-  static Future<void> savePdfToDevice(List<int> byteCodes) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = directory.path;
-    final file = File("$path/ShiftSchedule.pdf");
-    await file.writeAsBytes(byteCodes);
-    OpenFile.open("$path/ShiftSchedule.pdf");
-  }
-
-  static Future<void> createShiftSchedulePdf(
-      GlobalKey<SfDataGridState> dataGridKey) async {
-    var document = gp.PdfDocument();
-    var font = gp.PdfTrueTypeFont(
-        (await rootBundle.load("fonts/Peyda-Regular.ttf")).buffer.asUint8List(),
-        16);
-    document.pageSettings.orientation = gp.PdfPageOrientation.landscape;
-    var pdfPage = document.pages.add();
-    var pdfGrid = dataGridKey.currentState!.exportToPdfGrid(
-      cellExport: (details) {
-        details.pdfCell.style.font = font;
-      },
-    );
-    pdfGrid.draw(
-      page: pdfPage,
-      bounds: const Rect.fromLTWH(0, 0, 0, 0),
-    );
-    final List<int> bytes = document.saveSync();
-    PdfService.savePdfToDevice(bytes);
   }
 }

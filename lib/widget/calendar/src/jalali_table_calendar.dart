@@ -719,6 +719,7 @@ class _CalendarMonthPickerState extends State<CalendarMonthPicker>
   void dispose() {
     _timer?.cancel();
     _dayPickerController?.dispose();
+    _chevronOpacityController.dispose();
     calendarInitialized = false;
     super.dispose();
   }

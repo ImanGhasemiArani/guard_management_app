@@ -65,6 +65,7 @@ dependencies:
   syncfusion_flutter_datagrid: ^20.2.45
   syncfusion_flutter_core: ^20.2.45
   syncfusion_flutter_datagrid_export: ^20.2.45-beta
+  syncfusion_flutter_pdf: ^20.2.45
   # google_fonts: ^3.0.1
 
 
