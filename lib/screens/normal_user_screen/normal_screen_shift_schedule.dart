@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
+import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
 import '../../services/server_service.dart';
 import '../../utils/data_utils.dart';
@@ -20,8 +21,7 @@ class ScreenShiftSchedule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isTableView = false.obs;
-    return 
-    Scaffold(
+    return Scaffold(
       appBar: getAppBar(isTableView),
       body: CustomFutureBuilder(
         future: Future.sync(
@@ -36,7 +36,7 @@ class ScreenShiftSchedule extends StatelessWidget {
           },
         ),
         builder: (context, data) => Obx(
-          () => !isTableView.value
+          () => isTableView.value
               ? ShiftScheduleTableView(
                   future: Future.sync(() => data),
                 )
@@ -59,47 +59,36 @@ class ScreenShiftSchedule extends StatelessWidget {
           child: Container(
             color: Colors.transparent,
             padding: const EdgeInsets.all(15),
-            child: const Icon(
-              CupertinoIcons.chevron_back,
-            ),
+            child: Assets.icons.arrowLeft3.svg(),
           ),
         ),
         actions: [
-          CupertinoButton(
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              isTableView.value = !isTableView.value;
-            },
-            child: Card(
-              shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius(
-                  cornerRadius: 10,
-                  cornerSmoothing: 1,
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                isTableView.value = !isTableView.value;
+              },
+              child: Card(
+                shape: SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 10,
+                    cornerSmoothing: 1,
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      CupertinoIcons.calendar,
-                      size: 20,
-                      color: Get.theme.colorScheme.secondary,
-                    ),
-                    const SizedBox(width: 5),
-                    Icon(
-                      CupertinoIcons.arrow_right_arrow_left,
-                      size: 15,
-                      color: Get.theme.colorScheme.primary,
-                    ),
-                    const SizedBox(width: 5),
-                    Icon(
-                      CupertinoIcons.table,
-                      size: 20,
-                      color: Get.theme.colorScheme.secondary,
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Assets.icons.calendar.svg(size: 20),
+                      const SizedBox(width: 5),
+                      Assets.icons.arrowSwapHorizontal.svg(size: 15),
+                      const SizedBox(width: 5),
+                      Assets.icons.grid1.svg(size: 20),
+                    ],
+                  ),
                 ),
               ),
             ),

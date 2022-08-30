@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
 import '../../widget/appbar/my_appbar.dart';
 import '../../widget/drawer/my_drawer.dart';
@@ -48,33 +49,35 @@ class ScreenHome extends StatelessWidget {
                   HomeGridChild(
                     index: 0,
                     label: Strs.shiftScheduleStr.tr,
-                    icon: CupertinoIcons.calendar,
+                    iconWidget:
+                        Assets.icons.calendar.svg(size: 45),
                     openWidget: const ScreenShiftSchedule(),
                   ),
                   HomeGridChild(
                     index: 1,
                     label: Strs.exchangeReqStr.tr,
-                    icon: CupertinoIcons.doc_text,
+                    iconWidget:
+                        Assets.icons.documentText.svg(size: 45),
                     openWidget: const ScreenExchangeReq(),
                   ),
                   HomeGridChild(
                     index: 2,
                     label: Strs.leaveRequestStr.tr,
-                    icon: CupertinoIcons.doc_person,
+                    iconWidget: Assets.icons.note1.svg(size: 45),
                     openWidget: const Scaffold(
                         body: Center(child: Text('leave request'))),
                   ),
                   HomeGridChild(
                     index: 3,
                     label: Strs.formsStr.tr,
-                    icon: CupertinoIcons.doc_plaintext,
+                    iconWidget: Assets.icons.note2.svg(size: 45),
                     openWidget:
                         const Scaffold(body: Center(child: Text('forms'))),
                   ),
                   HomeGridChild(
                     index: 4,
                     label: Strs.historyStr.tr,
-                    icon: CupertinoIcons.time,
+                    iconWidget: Assets.icons.clock.svg(size: 45),
                     openWidget:
                         const Scaffold(body: Center(child: Text('History'))),
                   ),
@@ -101,10 +104,7 @@ class ScreenHome extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(14),
-              child: Icon(
-                CupertinoIcons.envelope,
-                color: Get.theme.colorScheme.primary,
-              ),
+              child: Assets.icons.directNormal.svg(),
             ),
           ),
         ),
@@ -142,10 +142,7 @@ class ScreenHome extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 15),
-                          child: Icon(
-                            CupertinoIcons.bars,
-                            color: Get.theme.colorScheme.secondary,
-                          ),
+                          child: Assets.icons.category.svg(),
                         ),
                       ],
                     ),
@@ -165,13 +162,13 @@ class HomeGridChild extends StatelessWidget {
     Key? key,
     required this.index,
     required this.label,
-    required this.icon,
+    required this.iconWidget,
     required this.openWidget,
   }) : super(key: key);
 
   final int index;
   final String label;
-  final IconData icon;
+  final Widget iconWidget;
   final Widget openWidget;
 
   @override
@@ -209,11 +206,7 @@ class HomeGridChild extends StatelessWidget {
                           Expanded(
                             flex: 2,
                             child: Center(
-                              child: Icon(
-                                icon,
-                                size: 45,
-                                color: Get.theme.colorScheme.secondary,
-                              ),
+                              child: iconWidget,
                             ),
                           ),
                           Expanded(

@@ -1,9 +1,9 @@
 import 'package:figma_squircle/figma_squircle.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sidebarx/sidebarx.dart';
 
+import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
 import '../../screens/screen_log_in.dart';
 import '../../services/server_service.dart';
@@ -112,10 +112,8 @@ class MyDrawer extends StatelessWidget {
                           width: 100,
                           decoration: ShapeDecoration(
                             color: Colors.grey,
-                            image: const DecorationImage(
-                              image: AssetImage(
-                                'assets/user_avatar.png',
-                              ),
+                            image: DecorationImage(
+                              image: Assets.userAvatar.image().image,
                               fit: BoxFit.cover,
                             ),
                             shape: SmoothRectangleBorder(
@@ -131,10 +129,8 @@ class MyDrawer extends StatelessWidget {
                                   imgUint8List,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      'assets/user_avatar.png',
-                                      fit: BoxFit.cover,
-                                    );
+                                    return Assets.userAvatar
+                                        .image(fit: BoxFit.cover);
                                   },
                                 )
                               : null,
@@ -154,10 +150,8 @@ class MyDrawer extends StatelessWidget {
                       width: 50,
                       decoration: ShapeDecoration(
                         color: Colors.grey,
-                        image: const DecorationImage(
-                          image: AssetImage(
-                            'assets/user_avatar.png',
-                          ),
+                        image: DecorationImage(
+                          image: Assets.userAvatar.image().image,
                           fit: BoxFit.cover,
                         ),
                         shape: SmoothRectangleBorder(
@@ -173,10 +167,8 @@ class MyDrawer extends StatelessWidget {
                               imgUint8List,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/user_avatar.png',
-                                  fit: BoxFit.cover,
-                                );
+                                return Assets.userAvatar
+                                    .image(fit: BoxFit.cover);
                               },
                             )
                           : null,
@@ -218,13 +210,15 @@ class MyDrawer extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(14.0),
-                    child: Icon(
-                      _sideBarXController.extended
-                          ? CupertinoIcons.chevron_forward
-                          : CupertinoIcons.chevron_back,
-                      color: Get.theme.colorScheme.onSurface.withOpacity(0.7),
-                      size: 20,
-                    ),
+                    child: _sideBarXController.extended
+                        ? Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: RotatedBox(
+                              quarterTurns: 2,
+                              child: Assets.icons.arrowLeft3.svg(size: 20),
+                            ),
+                          )
+                        : Assets.icons.arrowLeft3.svg(size: 20),
                   ),
                 ],
               ),
@@ -232,42 +226,42 @@ class MyDrawer extends StatelessWidget {
           },
           items: [
             SidebarXItem(
-              icon: CupertinoIcons.home,
+              iconWidget: Assets.icons.home1.svg(),
               label: Strs.homeStr.tr,
               onTap: () {},
             ),
             SidebarXItem(
-              icon: CupertinoIcons.person,
+              iconWidget: Assets.icons.profile.svg(),
               label: Strs.profileStr.tr,
               onTap: () {},
             ),
             SidebarXItem(
-              icon: CupertinoIcons.gear_big,
+              iconWidget: Assets.icons.setting2.svg(),
               label: Strs.settingsStr.tr,
               onTap: () {},
             ),
             SidebarXItem(
-              icon: CupertinoIcons.question,
+              iconWidget: Assets.icons.information.svg(),
               label: Strs.guideStr.tr,
               onTap: () {},
             ),
             SidebarXItem(
-              icon: CupertinoIcons.person_2,
+              iconWidget: Assets.icons.people.svg(),
               label: Strs.supportStr.tr,
               onTap: () {},
             ),
             SidebarXItem(
-              icon: CupertinoIcons.lock_shield,
+              iconWidget: Assets.icons.securitySafe.svg(),
               label: Strs.termsAndConditionsStr.tr,
               onTap: () {},
             ),
             SidebarXItem(
-              icon: CupertinoIcons.info_circle,
+              iconWidget: Assets.icons.information.svg(),
               label: Strs.aboutAppStr.tr,
               onTap: () {},
             ),
             SidebarXItem(
-              icon: CupertinoIcons.square_arrow_left,
+              iconWidget: Assets.icons.logout.svg(),
               label: Strs.logoutStr.tr,
               onTap: () {
                 ServerService.logoutUser()

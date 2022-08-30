@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:guard_management_app/services/service_locator.dart';
 
+import '../assets/fonts.gen.dart';
 import '../lang/fa_ir.dart';
+import 'service_locator.dart';
 
 class LocalizationService extends Translations {
   LocalizationService(String initLang) {
@@ -25,7 +26,7 @@ class LocalizationService extends Translations {
   ];
 
   static const fontFamilies = [
-    'Peyda',
+    FontFamily.peyda,
   ];
 
   @override

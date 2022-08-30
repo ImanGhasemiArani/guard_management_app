@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
+import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
 
 class Signature extends StatelessWidget {
@@ -68,7 +69,7 @@ class Signature extends StatelessWidget {
                   ),
                   CupertinoButton(
                     onPressed: () => signatureKey.currentState!.clear(),
-                    child: const Icon(CupertinoIcons.pencil_slash),
+                    child: Assets.icons.eraser1.svg(),
                   )
                 ],
               ),

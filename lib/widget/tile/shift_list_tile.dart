@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
 import '../../screens/normal_user_screen/normal_shift_picker.dart';
 import '../../services/server_service.dart';
@@ -86,8 +87,8 @@ class ShiftListTile extends StatelessWidget {
                 clipBehavior: Clip.antiAlias,
                 decoration: ShapeDecoration(
                   color: Colors.grey,
-                  image: const DecorationImage(
-                    image: AssetImage('assets/user_avatar.png'),
+                  image: DecorationImage(
+                    image: Assets.userAvatar.image().image,
                     fit: BoxFit.cover,
                   ),
                   shape: SmoothRectangleBorder(
@@ -102,10 +103,7 @@ class ShiftListTile extends StatelessWidget {
                         userPList,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            'assets/user_avatar.png',
-                            fit: BoxFit.cover,
-                          );
+                          return Assets.userAvatar.image(fit: BoxFit.cover);
                         },
                       )
                     : null,

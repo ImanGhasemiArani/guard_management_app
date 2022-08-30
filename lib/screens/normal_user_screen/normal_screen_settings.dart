@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:guard_management_app/main.dart';
 
+import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
+import '../../main.dart';
 
 class ScreenSettings extends StatelessWidget {
   const ScreenSettings({Key? key}) : super(key: key);
@@ -42,9 +43,7 @@ class ScreenSettings extends StatelessWidget {
         child: Container(
           color: Colors.transparent,
           padding: const EdgeInsets.all(15),
-          child: const Icon(
-            CupertinoIcons.chevron_back,
-          ),
+          child: Assets.icons.arrowLeft3.svg(),
         ),
       ),
     );

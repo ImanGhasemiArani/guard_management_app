@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
 
 typedef OnUserPicked = void Function(MapEntry<String, dynamic> user);
@@ -60,8 +61,8 @@ class UserGridTile extends StatelessWidget {
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
                         color: Colors.grey,
-                        image: const DecorationImage(
-                          image: AssetImage('assets/user_avatar.png'),
+                        image: DecorationImage(
+                          image: Assets.userAvatar.image().image,
                           fit: BoxFit.cover,
                         ),
                         shape: SmoothRectangleBorder(
@@ -76,10 +77,8 @@ class UserGridTile extends StatelessWidget {
                               userPList,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/user_avatar.png',
-                                  fit: BoxFit.cover,
-                                );
+                                return Assets.userAvatar
+                                    .image(fit: BoxFit.cover);
                               },
                             )
                           : null,

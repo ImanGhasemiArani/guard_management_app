@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
 import '../../services/server_service.dart';
 import '../../utils/img_utils.dart';
@@ -87,9 +88,7 @@ class ScreenUserProfile extends StatelessWidget {
           child: Container(
             color: Colors.transparent,
             padding: const EdgeInsets.all(15),
-            child: const Icon(
-              CupertinoIcons.chevron_back,
-            ),
+            child: Assets.icons.arrowLeft3.svg(),
           ),
         ),
       );
@@ -128,8 +127,8 @@ class ScreenUserProfile extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             image: imgUint8List == null
-                ? const DecorationImage(
-                    image: AssetImage('assets/user_avatar.png'),
+                ? DecorationImage(
+                    image: Assets.userAvatar.image().image,
                     fit: BoxFit.cover,
                   )
                 : DecorationImage(
@@ -168,10 +167,8 @@ class ScreenUserProfile extends StatelessWidget {
               margin: const EdgeInsets.all(8),
               decoration: ShapeDecoration(
                 color: Colors.grey,
-                image: const DecorationImage(
-                  image: AssetImage(
-                    'assets/user_avatar.png',
-                  ),
+                image: DecorationImage(
+                  image: Assets.userAvatar.image().image,
                   fit: BoxFit.cover,
                 ),
                 shape: SmoothRectangleBorder(
@@ -187,10 +184,7 @@ class ScreenUserProfile extends StatelessWidget {
                       imgUint8List,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return Image.asset(
-                          'assets/user_avatar.png',
-                          fit: BoxFit.cover,
-                        );
+                        return Assets.userAvatar.image(fit: BoxFit.cover);
                       },
                     )
                   : null,
@@ -212,10 +206,7 @@ class ScreenUserProfile extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(5),
-                  child: Icon(
-                    CupertinoIcons.camera,
-                    color: Get.theme.colorScheme.secondary,
-                  ),
+                  child: Assets.icons.camera.svg(),
                 ),
               ),
             ),
@@ -411,7 +402,7 @@ class ScreenUserProfile extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     minSize: 0,
                     onPressed: () {},
-                    child: const Icon(CupertinoIcons.pencil),
+                    child: Assets.icons.edit2.svg(),
                   ),
                 ],
               ),

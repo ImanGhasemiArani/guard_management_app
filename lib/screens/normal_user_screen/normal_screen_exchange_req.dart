@@ -9,6 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
+import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
 import '../../model/exchange_request.dart';
 import '../../services/pdf_service.dart';
@@ -83,9 +84,7 @@ class ScreenExchangeReq extends StatelessWidget {
         child: Container(
           color: Colors.transparent,
           padding: const EdgeInsets.all(15),
-          child: const Icon(
-            CupertinoIcons.chevron_back,
-          ),
+          child: Assets.icons.arrowLeft3.svg(),
         ),
       ),
     );
