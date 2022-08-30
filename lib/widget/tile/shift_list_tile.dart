@@ -113,39 +113,52 @@ class ShiftListTile extends StatelessWidget {
 
           Expanded(
             flex: 3,
-            child: Container(
-              //   color: Colors.green,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "${shift["name"]}",
-                        style: Get.theme.textTheme.subtitle1,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${shift["name"]}",
+                      style: TextStyle(
+                        fontFamily: Get.theme.textTheme.subtitle1?.fontFamily,
+                        fontStyle: Get.theme.textTheme.subtitle1?.fontStyle,
+                        fontSize: Get.theme.textTheme.subtitle1?.fontSize,
+                        fontWeight: Get.theme.textTheme.subtitle1?.fontWeight,
+                        letterSpacing:
+                            Get.theme.textTheme.subtitle1?.letterSpacing,
                       ),
-                      Text(
-                        "${Strs.teamNameStr.tr}: ${shift["teamName"]} - ${Strs.postStr.tr}: ${shift["post"]}",
-                        style: Get.theme.textTheme.subtitle2,
+                    ),
+                    Text(
+                      "${Strs.teamNameStr.tr}: ${shift["teamName"]} - ${Strs.postStr.tr}: ${shift["post"]}",
+                      style: TextStyle(
+                        fontFamily: Get.theme.textTheme.subtitle2?.fontFamily,
+                        fontStyle: Get.theme.textTheme.subtitle2?.fontStyle,
+                        fontSize: Get.theme.textTheme.subtitle2?.fontSize,
+                        fontWeight: Get.theme.textTheme.subtitle2?.fontWeight,
+                        letterSpacing:
+                            Get.theme.textTheme.subtitle2?.letterSpacing,
                       ),
-                      Text(
-                        shift["shift"]["des"],
-                        style: Get.theme.textTheme.bodyText2,
+                    ),
+                    Text(
+                      shift["shift"]["des"],
+                      style: TextStyle(
+                        fontFamily: Get.theme.textTheme.bodyText2?.fontFamily,
+                        fontStyle: Get.theme.textTheme.bodyText2?.fontStyle,
+                        fontSize: Get.theme.textTheme.bodyText2?.fontSize,
+                        fontWeight: Get.theme.textTheme.bodyText2?.fontWeight,
+                        letterSpacing:
+                            Get.theme.textTheme.bodyText2?.letterSpacing,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-          // if (!shift["shift"]["isExchangeable"])
-          //   Text(Strs.isNotExchangeableStr.tr,
-          //       style: Get.theme.textTheme.subtitle2!.copyWith(
-          //         color: Get.theme.colorScheme.primary,
-          //       )),
         ],
       ),
     );

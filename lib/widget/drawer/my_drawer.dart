@@ -41,52 +41,53 @@ class MyDrawer extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             textStyle: TextStyle(color: Get.theme.colorScheme.onSurface),
-            //   selectedTextStyle: TextStyle(color: Get.theme.colorScheme.onSurface),
-            selectedTextStyle: TextStyle(color: Get.theme.colorScheme.primary),
+            selectedTextStyle:
+                TextStyle(color: Get.theme.colorScheme.onSurface),
             itemTextPadding: const EdgeInsets.only(right: 30),
-            //   selectedItemTextPadding: const EdgeInsets.only(right: 30),
             selectedItemTextPadding: const EdgeInsets.only(right: 30),
-            itemDecoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Get.theme.colorScheme.surface),
-            ),
+            // selectedTextStyle: TextStyle(color: Get.theme.colorScheme.primary),
+            // selectedItemTextPadding: const EdgeInsets.only(right: 30),
+            // itemDecoration: BoxDecoration(
+            //   borderRadius: BorderRadius.circular(10),
+            //   border: Border.all(color: Get.theme.colorScheme.surface),
+            // ),
             //   selectedItemDecoration: BoxDecoration(
             //     borderRadius: BorderRadius.circular(10),
             //     border: Border.all(color: Get.theme.colorScheme.surface),
             //   ),
-            selectedItemDecoration: BoxDecoration(
-              borderRadius: SmoothBorderRadius(
-                cornerRadius: 15,
-                cornerSmoothing: 1,
-              ),
-              border: Border.all(
-                  color: Get.theme.colorScheme.secondary, width: 1.5),
-              color: Get.theme.colorScheme.secondary.withOpacity(0.1),
-              // gradient: LinearGradient(
-              //   colors: [
-              //     const Color(0xFF3E3E61),
-              //     Get.theme.colorScheme.surface,
-              //   ],
-              // ),
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Colors.black.withOpacity(0.28),
-              //     blurRadius: 30,
-              //   )
-              // ],
-            ),
-            iconTheme: IconThemeData(
-              color: Get.theme.colorScheme.onSurface.withOpacity(0.7),
-              size: 20,
-            ),
+            // selectedItemDecoration: BoxDecoration(
+            //   borderRadius: SmoothBorderRadius(
+            //     cornerRadius: 15,
+            //     cornerSmoothing: 1,
+            //   ),
+            //   border: Border.all(
+            //       color: Get.theme.colorScheme.secondary, width: 1.5),
+            //   color: Get.theme.colorScheme.secondary.withOpacity(0.1),
+            //   // gradient: LinearGradient(
+            //   //   colors: [
+            //   //     const Color(0xFF3E3E61),
+            //   //     Get.theme.colorScheme.surface,
+            //   //   ],
+            //   // ),
+            //   // boxShadow: [
+            //   //   BoxShadow(
+            //   //     color: Colors.black.withOpacity(0.28),
+            //   //     blurRadius: 30,
+            //   //   )
+            //   // ],
+            // ),
+            // iconTheme: IconThemeData(
+            //   color: Get.theme.colorScheme.onSurface.withOpacity(0.7),
+            //   size: 20,
+            // ),
             //   selectedIconTheme: IconThemeData(
             //     color: Get.theme.colorScheme.onSurface.withOpacity(0.7),
             //     size: 20,
             //   ),
-            selectedIconTheme: IconThemeData(
-              color: Get.theme.colorScheme.primary,
-              size: 20,
-            ),
+            // selectedIconTheme: IconThemeData(
+            //   color: Get.theme.colorScheme.primary,
+            //   size: 20,
+            // ),
           ),
           extendedTheme: SidebarXTheme(
             width: 200,
@@ -97,8 +98,8 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
           ),
-          footerDivider:
-              Divider(color: Colors.white.withOpacity(0.3), height: 1),
+          // footerDivider:
+          //     Divider(color: Colors.white.withOpacity(0.3), height: 1),
           headerBuilder: (context, extended) {
             final imgUint8List = ServerService.currentUser.profileImage;
             return extended

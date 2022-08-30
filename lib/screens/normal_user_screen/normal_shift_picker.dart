@@ -81,110 +81,112 @@ class BodyWidget extends HookWidget {
   @override
   Widget build(BuildContext context) {
     _scrollController = useScrollController();
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-      child: CustomFutureBuilder(
-        future: future,
-        builder: (context, data) {
-          Map<DateTime, List> events;
-          try {
-            events =
-                DataUtils.convertPlanToEvents([data as Map<String, dynamic>]);
-          } catch (e) {
-            events = DataUtils.convertPlanToEvents(
-                data as List<Map<String, dynamic>>);
-          }
-          //   RxInt segmentController = 0.obs;
-          return CustomScrollView(
-            controller: _scrollController,
-            clipBehavior: Clip.none,
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverList(
-                  delegate: SliverChildListDelegate(
-                AnimationConfiguration.toStaggeredList(
-                  duration: const Duration(milliseconds: 500),
-                  childAnimationBuilder: (widget) => SlideAnimation(
-                    horizontalOffset: 50,
-                    child: FadeInAnimation(
-                      child: widget,
+    return ClipRect(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+        child: CustomFutureBuilder(
+          future: future,
+          builder: (context, data) {
+            Map<DateTime, List> events;
+            try {
+              events =
+                  DataUtils.convertPlanToEvents([data as Map<String, dynamic>]);
+            } catch (e) {
+              events = DataUtils.convertPlanToEvents(
+                  data as List<Map<String, dynamic>>);
+            }
+            //   RxInt segmentController = 0.obs;
+            return CustomScrollView(
+              controller: _scrollController,
+              clipBehavior: Clip.none,
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverList(
+                    delegate: SliverChildListDelegate(
+                  AnimationConfiguration.toStaggeredList(
+                    duration: const Duration(milliseconds: 500),
+                    childAnimationBuilder: (widget) => SlideAnimation(
+                      horizontalOffset: 50,
+                      child: FadeInAnimation(
+                        child: widget,
+                      ),
                     ),
+                    children: [
+                      CalendarContent(
+                        events: events,
+                        scrollController: _scrollController,
+                        isShowMarkCalendar: isShowMarkCalendar,
+                      ),
+                      // Padding(
+                      //   padding:
+                      //       const EdgeInsets.only(top: 20, right: 20, left: 20),
+                      //   child: Obx(
+                      //     () => CustomSlidingSegmentedControl<int>(
+                      //       initialValue: segmentController.value,
+                      //       children: {
+                      //         1: Text(
+                      //           Strs.eventDayContentTitleStr.tr,
+                      //           style: Get.theme.textTheme.subtitle2,
+                      //         ),
+                      //         0: Text(
+                      //           Strs.workingPlanTitleStr.tr,
+                      //           style: Get.theme.textTheme.subtitle2,
+                      //         ),
+                      //       },
+                      //       onValueChanged: (index) {
+                      //         _scrollController.jumpTo(0);
+                      //         segmentController.value = index;
+                      //       },
+                      //       decoration: BoxDecoration(
+                      //         color: CupertinoColors.lightBackgroundGray,
+                      //         borderRadius: BorderRadius.circular(10),
+                      //       ),
+                      //       thumbDecoration: BoxDecoration(
+                      //         color: Colors.white,
+                      //         borderRadius: BorderRadius.circular(8),
+                      //         boxShadow: [
+                      //           BoxShadow(
+                      //             color: Colors.black.withOpacity(.3),
+                      //             blurRadius: 4.0,
+                      //             spreadRadius: 1.0,
+                      //             offset: const Offset(0.0, 2.0),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //       isStretch: true,
+                      //       height: 35,
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
                   ),
-                  children: [
-                    CalendarContent(
-                      events: events,
-                      scrollController: _scrollController,
-                      isShowMarkCalendar: isShowMarkCalendar,
-                    ),
-                    // Padding(
-                    //   padding:
-                    //       const EdgeInsets.only(top: 20, right: 20, left: 20),
-                    //   child: Obx(
-                    //     () => CustomSlidingSegmentedControl<int>(
-                    //       initialValue: segmentController.value,
-                    //       children: {
-                    //         1: Text(
-                    //           Strs.eventDayContentTitleStr.tr,
-                    //           style: Get.theme.textTheme.subtitle2,
-                    //         ),
-                    //         0: Text(
-                    //           Strs.workingPlanTitleStr.tr,
-                    //           style: Get.theme.textTheme.subtitle2,
-                    //         ),
-                    //       },
-                    //       onValueChanged: (index) {
-                    //         _scrollController.jumpTo(0);
-                    //         segmentController.value = index;
-                    //       },
-                    //       decoration: BoxDecoration(
-                    //         color: CupertinoColors.lightBackgroundGray,
-                    //         borderRadius: BorderRadius.circular(10),
-                    //       ),
-                    //       thumbDecoration: BoxDecoration(
-                    //         color: Colors.white,
-                    //         borderRadius: BorderRadius.circular(8),
-                    //         boxShadow: [
-                    //           BoxShadow(
-                    //             color: Colors.black.withOpacity(.3),
-                    //             blurRadius: 4.0,
-                    //             spreadRadius: 1.0,
-                    //             offset: const Offset(0.0, 2.0),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //       isStretch: true,
-                    //       height: 35,
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
+                )),
+                Obx(
+                  () {
+                    var eventShifts = events[currentSelectedDate.value] ?? [];
+                    return ShiftListView(
+                      shifts: eventShifts,
+                      onShiftPicked: onShiftPicked,
+                      isShowExchangeableBanner: isShowExchangeableBanner,
+                      isFilterCurrentUser: isFilterCurrentUser,
+                    );
+                  },
                 ),
-              )),
-              Obx(
-                () {
-                  var eventShifts = events[currentSelectedDate.value] ?? [];
-                  return ShiftListView(
-                    shifts: eventShifts,
-                    onShiftPicked: onShiftPicked,
-                    isShowExchangeableBanner: isShowExchangeableBanner,
-                    isFilterCurrentUser: isFilterCurrentUser,
-                  );
-                },
-              ),
-              //   Obx(
-              //     () {
-              //       var eventShifts = events[currentSelectedDate.value] ?? [];
-              //       return segmentController.value == 0
-              //           ? ShiftListView(
-              //               shifts: eventShifts,
-              //               onShiftPicked: onShiftPicked,
-              //             )
-              //           : const DayEventListView();
-              //     },
-              //   ),
-            ],
-          );
-        },
+                //   Obx(
+                //     () {
+                //       var eventShifts = events[currentSelectedDate.value] ?? [];
+                //       return segmentController.value == 0
+                //           ? ShiftListView(
+                //               shifts: eventShifts,
+                //               onShiftPicked: onShiftPicked,
+                //             )
+                //           : const DayEventListView();
+                //     },
+                //   ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -249,11 +251,16 @@ class ShiftListView extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       height: 50,
-      color: Get.theme.colorScheme.background,
       alignment: Alignment.centerRight,
       child: Text(
         "${Strs.workingPlanStr.tr}$title",
-        style: Get.theme.textTheme.subtitle1,
+        style: TextStyle(
+          fontFamily: Get.theme.textTheme.subtitle1?.fontFamily,
+          fontStyle: Get.theme.textTheme.subtitle1?.fontStyle,
+          fontSize: Get.theme.textTheme.subtitle1?.fontSize,
+          fontWeight: Get.theme.textTheme.subtitle1?.fontWeight,
+          letterSpacing: Get.theme.textTheme.subtitle1?.letterSpacing,
+        ),
       ),
     );
   }

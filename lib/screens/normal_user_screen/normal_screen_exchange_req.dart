@@ -98,7 +98,13 @@ class ScreenExchangeReq extends StatelessWidget {
         const SizedBox(height: 10),
         Text(
           ServerService.currentUser.name!,
-          style: Get.theme.textTheme.bodyLarge,
+          style: TextStyle(
+            fontFamily: Get.theme.textTheme.bodyLarge?.fontFamily,
+            fontStyle: Get.theme.textTheme.bodyLarge?.fontStyle,
+            fontSize: Get.theme.textTheme.bodyLarge?.fontSize,
+            fontWeight: Get.theme.textTheme.bodyLarge?.fontWeight,
+            letterSpacing: Get.theme.textTheme.bodyLarge?.letterSpacing,
+          ),
         ),
         Wrap(
           direction: Axis.horizontal,

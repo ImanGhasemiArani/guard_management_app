@@ -93,13 +93,31 @@ class UserGridTile extends StatelessWidget {
                       children: [
                         Text(
                           (user.value)["name"],
-                          style: Get.theme.textTheme.subtitle1,
+                          style: TextStyle(
+                            fontFamily:
+                                Get.theme.textTheme.subtitle1?.fontFamily,
+                            fontStyle: Get.theme.textTheme.subtitle1?.fontStyle,
+                            fontSize: Get.theme.textTheme.subtitle1?.fontSize,
+                            fontWeight:
+                                Get.theme.textTheme.subtitle1?.fontWeight,
+                            letterSpacing:
+                                Get.theme.textTheme.subtitle1?.letterSpacing,
+                          ),
                           softWrap: false,
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
                           "${Strs.teamStr.tr} ${(user.value)["teamName"]} - ${Strs.postStr.tr} ${(user.value)["post"]}",
-                          style: Get.theme.textTheme.subtitle2,
+                          style: TextStyle(
+                            fontFamily:
+                                Get.theme.textTheme.subtitle2?.fontFamily,
+                            fontStyle: Get.theme.textTheme.subtitle2?.fontStyle,
+                            fontSize: Get.theme.textTheme.subtitle2?.fontSize,
+                            fontWeight:
+                                Get.theme.textTheme.subtitle2?.fontWeight,
+                            letterSpacing:
+                                Get.theme.textTheme.subtitle2?.letterSpacing,
+                          ),
                           textDirection: TextDirection.rtl,
                         ),
                       ],

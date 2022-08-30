@@ -16,5 +16,5 @@ Future<void> initAppStart() async {
   );
   Get.put(LocalizationService('فارسی'));
   Get.put(ThemeController(ThemeMode.values
-      .byName(sharedPreferences.getString("themeMode") ?? "dark")));
+      .byName(sharedPreferences.getString("themeMode") ?? "system")));
 }

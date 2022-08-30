@@ -49,15 +49,13 @@ class ScreenHome extends StatelessWidget {
                   HomeGridChild(
                     index: 0,
                     label: Strs.shiftScheduleStr.tr,
-                    iconWidget:
-                        Assets.icons.calendar.svg(size: 45),
+                    iconWidget: Assets.icons.calendar.svg(size: 45),
                     openWidget: const ScreenShiftSchedule(),
                   ),
                   HomeGridChild(
                     index: 1,
                     label: Strs.exchangeReqStr.tr,
-                    iconWidget:
-                        Assets.icons.documentText.svg(size: 45),
+                    iconWidget: Assets.icons.documentText.svg(size: 45),
                     openWidget: const ScreenExchangeReq(),
                   ),
                   HomeGridChild(
@@ -129,7 +127,6 @@ class ScreenHome extends StatelessWidget {
                       children: [
                         Text(
                           Strs.appNameStr.tr,
-                          key: UniqueKey(),
                           style: TextStyle(
                             fontSize: Get.theme.textTheme.headline6!.fontSize,
                             height: Get.theme.textTheme.headline6!.height,
@@ -142,7 +139,7 @@ class ScreenHome extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 15),
-                          child: Assets.icons.category.svg(),
+                          child: Assets.icons.menu1.svg(),
                         ),
                       ],
                     ),
@@ -187,6 +184,8 @@ class HomeGridChild extends StatelessWidget {
             closedColor: Colors.transparent,
             openColor: Colors.transparent,
             middleColor: Colors.transparent,
+            transitionDuration: const Duration(milliseconds: 400),
+            // transitionType: ContainerTransitionType.fadeThrough,
             openBuilder: ((context, action) => openWidget),
             closedBuilder: (context, action) => CupertinoButton(
               padding: EdgeInsets.zero,

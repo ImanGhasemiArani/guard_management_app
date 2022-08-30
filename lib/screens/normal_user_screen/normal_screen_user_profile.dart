@@ -28,6 +28,7 @@ class ScreenUserProfile extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             try {
+              bool isFirstTime = true;
               return Directionality(
                 textDirection: TextDirection.rtl,
                 child: SingleChildScrollView(
@@ -35,12 +36,18 @@ class ScreenUserProfile extends StatelessWidget {
                     child: Column(
                       children: AnimationConfiguration.toStaggeredList(
                         duration: const Duration(milliseconds: 500),
-                        childAnimationBuilder: (widget) => SlideAnimation(
-                          horizontalOffset: 50,
-                          child: FadeInAnimation(
+                        childAnimationBuilder: (widget) {
+                          var fade = FadeInAnimation(
                             child: widget,
-                          ),
-                        ),
+                          );
+                          if (isFirstTime) {
+                            isFirstTime = false;
+                            return SlideAnimation(
+                                verticalOffset: -50, child: fade);
+                          }
+                          return SlideAnimation(
+                              horizontalOffset: 50, child: fade);
+                        },
                         children: [
                           Obx(() {
                             profileImg.value;
@@ -191,13 +198,13 @@ class ScreenUserProfile extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: -5,
-            bottom: -5,
+            right: -10,
+            bottom: -10,
             child: CupertinoButton(
               padding: EdgeInsets.zero,
               onPressed: _onCameraButtonPressed,
               child: Card(
-                color: Get.theme.colorScheme.background,
+                // color: Get.theme.colorScheme.background,
                 shape: SmoothRectangleBorder(
                   borderRadius: SmoothBorderRadius(
                     cornerRadius: 10,
@@ -217,8 +224,13 @@ class ScreenUserProfile extends StatelessWidget {
   Widget _buildNameContent() => Text(
         ServerService.currentUser.name ?? "",
         textAlign: TextAlign.center,
-        style: Get.theme.textTheme.headlineMedium!
-            .copyWith(color: Get.theme.colorScheme.onBackground),
+        style: TextStyle(
+          fontFamily: Get.theme.textTheme.headlineMedium?.fontFamily,
+          fontStyle: Get.theme.textTheme.headlineMedium?.fontStyle,
+          fontSize: Get.theme.textTheme.headlineMedium?.fontSize,
+          fontWeight: Get.theme.textTheme.headlineMedium?.fontWeight,
+          letterSpacing: Get.theme.textTheme.headlineMedium?.letterSpacing,
+        ),
       );
 
   Future<void> _onCameraButtonPressed() async {
@@ -243,8 +255,13 @@ class ScreenUserProfile extends StatelessWidget {
               Text(
                 ServerService.currentUser.userType ?? "",
                 textAlign: TextAlign.center,
-                style: Get.theme.textTheme.headline6!
-                    .copyWith(color: Get.theme.colorScheme.onBackground),
+                style: TextStyle(
+                  fontFamily: Get.theme.textTheme.headline6?.fontFamily,
+                  fontStyle: Get.theme.textTheme.headline6?.fontStyle,
+                  fontSize: Get.theme.textTheme.headline6?.fontSize,
+                  fontWeight: Get.theme.textTheme.headline6?.fontWeight,
+                  letterSpacing: Get.theme.textTheme.headline6?.letterSpacing,
+                ),
               ),
               const SizedBox(height: 15),
               Wrap(
@@ -254,14 +271,26 @@ class ScreenUserProfile extends StatelessWidget {
                   Text(
                     "${Strs.nationalIdStr.tr}: ",
                     textAlign: TextAlign.center,
-                    style: Get.theme.textTheme.bodyText2!
-                        .copyWith(color: Get.theme.colorScheme.onBackground),
+                    style: TextStyle(
+                      fontFamily: Get.theme.textTheme.bodyText2?.fontFamily,
+                      fontStyle: Get.theme.textTheme.bodyText2?.fontStyle,
+                      fontSize: Get.theme.textTheme.bodyText2?.fontSize,
+                      fontWeight: Get.theme.textTheme.bodyText2?.fontWeight,
+                      letterSpacing:
+                          Get.theme.textTheme.bodyText2?.letterSpacing,
+                    ),
                   ),
                   Text(
                     ServerService.currentUser.username ?? "",
                     textAlign: TextAlign.center,
-                    style: Get.theme.textTheme.bodyText1!
-                        .copyWith(color: Get.theme.colorScheme.onBackground),
+                    style: TextStyle(
+                      fontFamily: Get.theme.textTheme.bodyText1?.fontFamily,
+                      fontStyle: Get.theme.textTheme.bodyText1?.fontStyle,
+                      fontSize: Get.theme.textTheme.bodyText1?.fontSize,
+                      fontWeight: Get.theme.textTheme.bodyText1?.fontWeight,
+                      letterSpacing:
+                          Get.theme.textTheme.bodyText1?.letterSpacing,
+                    ),
                   ),
                 ],
               ),
@@ -273,14 +302,26 @@ class ScreenUserProfile extends StatelessWidget {
                   Text(
                     "${Strs.rankingStr.tr}: ",
                     textAlign: TextAlign.center,
-                    style: Get.theme.textTheme.bodyText2!
-                        .copyWith(color: Get.theme.colorScheme.onBackground),
+                    style: TextStyle(
+                      fontFamily: Get.theme.textTheme.bodyText2?.fontFamily,
+                      fontStyle: Get.theme.textTheme.bodyText2?.fontStyle,
+                      fontSize: Get.theme.textTheme.bodyText2?.fontSize,
+                      fontWeight: Get.theme.textTheme.bodyText2?.fontWeight,
+                      letterSpacing:
+                          Get.theme.textTheme.bodyText2?.letterSpacing,
+                    ),
                   ),
                   Text(
                     ServerService.currentUser.rank ?? "",
                     textAlign: TextAlign.center,
-                    style: Get.theme.textTheme.bodyText1!
-                        .copyWith(color: Get.theme.colorScheme.onBackground),
+                    style: TextStyle(
+                      fontFamily: Get.theme.textTheme.bodyText1?.fontFamily,
+                      fontStyle: Get.theme.textTheme.bodyText1?.fontStyle,
+                      fontSize: Get.theme.textTheme.bodyText1?.fontSize,
+                      fontWeight: Get.theme.textTheme.bodyText1?.fontWeight,
+                      letterSpacing:
+                          Get.theme.textTheme.bodyText1?.letterSpacing,
+                    ),
                   ),
                 ],
               ),
@@ -292,14 +333,26 @@ class ScreenUserProfile extends StatelessWidget {
                   Text(
                     "${Strs.organPosStr.tr}: ",
                     textAlign: TextAlign.center,
-                    style: Get.theme.textTheme.bodyText2!
-                        .copyWith(color: Get.theme.colorScheme.onBackground),
+                    style: TextStyle(
+                      fontFamily: Get.theme.textTheme.bodyText2?.fontFamily,
+                      fontStyle: Get.theme.textTheme.bodyText2?.fontStyle,
+                      fontSize: Get.theme.textTheme.bodyText2?.fontSize,
+                      fontWeight: Get.theme.textTheme.bodyText2?.fontWeight,
+                      letterSpacing:
+                          Get.theme.textTheme.bodyText2?.letterSpacing,
+                    ),
                   ),
                   Text(
                     ServerService.currentUser.organPos ?? "",
                     textAlign: TextAlign.center,
-                    style: Get.theme.textTheme.bodyText1!
-                        .copyWith(color: Get.theme.colorScheme.onBackground),
+                    style: TextStyle(
+                      fontFamily: Get.theme.textTheme.bodyText1?.fontFamily,
+                      fontStyle: Get.theme.textTheme.bodyText1?.fontStyle,
+                      fontSize: Get.theme.textTheme.bodyText1?.fontSize,
+                      fontWeight: Get.theme.textTheme.bodyText1?.fontWeight,
+                      letterSpacing:
+                          Get.theme.textTheme.bodyText1?.letterSpacing,
+                    ),
                   ),
                 ],
               ),
@@ -324,8 +377,13 @@ class ScreenUserProfile extends StatelessWidget {
               Text(
                 Strs.teamStr.tr,
                 textAlign: TextAlign.center,
-                style: Get.theme.textTheme.headline6!
-                    .copyWith(color: Get.theme.colorScheme.onBackground),
+                style: TextStyle(
+                  fontFamily: Get.theme.textTheme.headline6?.fontFamily,
+                  fontStyle: Get.theme.textTheme.headline6?.fontStyle,
+                  fontSize: Get.theme.textTheme.headline6?.fontSize,
+                  fontWeight: Get.theme.textTheme.headline6?.fontWeight,
+                  letterSpacing: Get.theme.textTheme.headline6?.letterSpacing,
+                ),
               ),
               const SizedBox(height: 15),
               Wrap(
@@ -338,14 +396,26 @@ class ScreenUserProfile extends StatelessWidget {
                       Text(
                         "${Strs.teamNameStr.tr}: ",
                         textAlign: TextAlign.center,
-                        style: Get.theme.textTheme.bodyText2!.copyWith(
-                            color: Get.theme.colorScheme.onBackground),
+                        style: TextStyle(
+                          fontFamily: Get.theme.textTheme.bodyText2?.fontFamily,
+                          fontStyle: Get.theme.textTheme.bodyText2?.fontStyle,
+                          fontSize: Get.theme.textTheme.bodyText2?.fontSize,
+                          fontWeight: Get.theme.textTheme.bodyText2?.fontWeight,
+                          letterSpacing:
+                              Get.theme.textTheme.bodyText2?.letterSpacing,
+                        ),
                       ),
                       Text(
                         "${ServerService.currentUser.teamData != null ? ServerService.currentUser.teamData!['teamName'] : ''}",
                         textAlign: TextAlign.center,
-                        style: Get.theme.textTheme.bodyText1!.copyWith(
-                            color: Get.theme.colorScheme.onBackground),
+                        style: TextStyle(
+                          fontFamily: Get.theme.textTheme.bodyText1?.fontFamily,
+                          fontStyle: Get.theme.textTheme.bodyText1?.fontStyle,
+                          fontSize: Get.theme.textTheme.bodyText1?.fontSize,
+                          fontWeight: Get.theme.textTheme.bodyText1?.fontWeight,
+                          letterSpacing:
+                              Get.theme.textTheme.bodyText1?.letterSpacing,
+                        ),
                       ),
                     ],
                   ),
@@ -357,14 +427,26 @@ class ScreenUserProfile extends StatelessWidget {
                       Text(
                         "${Strs.postStr.tr}: ",
                         textAlign: TextAlign.center,
-                        style: Get.theme.textTheme.bodyText2!.copyWith(
-                            color: Get.theme.colorScheme.onBackground),
+                        style: TextStyle(
+                          fontFamily: Get.theme.textTheme.bodyText2?.fontFamily,
+                          fontStyle: Get.theme.textTheme.bodyText2?.fontStyle,
+                          fontSize: Get.theme.textTheme.bodyText2?.fontSize,
+                          fontWeight: Get.theme.textTheme.bodyText2?.fontWeight,
+                          letterSpacing:
+                              Get.theme.textTheme.bodyText2?.letterSpacing,
+                        ),
                       ),
                       Text(
                         "${ServerService.currentUser.teamData != null ? ServerService.currentUser.teamData!['post'] : ''}",
                         textAlign: TextAlign.center,
-                        style: Get.theme.textTheme.bodyText1!.copyWith(
-                            color: Get.theme.colorScheme.onBackground),
+                        style: TextStyle(
+                          fontFamily: Get.theme.textTheme.bodyText1?.fontFamily,
+                          fontStyle: Get.theme.textTheme.bodyText1?.fontStyle,
+                          fontSize: Get.theme.textTheme.bodyText1?.fontSize,
+                          fontWeight: Get.theme.textTheme.bodyText1?.fontWeight,
+                          letterSpacing:
+                              Get.theme.textTheme.bodyText1?.letterSpacing,
+                        ),
                       ),
                     ],
                   ),
@@ -395,8 +477,14 @@ class ScreenUserProfile extends StatelessWidget {
                   Text(
                     Strs.userContactInfoStr.tr,
                     textAlign: TextAlign.center,
-                    style: Get.theme.textTheme.headline6!
-                        .copyWith(color: Get.theme.colorScheme.onBackground),
+                    style: TextStyle(
+                      fontFamily: Get.theme.textTheme.headline6?.fontFamily,
+                      fontStyle: Get.theme.textTheme.headline6?.fontStyle,
+                      fontSize: Get.theme.textTheme.headline6?.fontSize,
+                      fontWeight: Get.theme.textTheme.headline6?.fontWeight,
+                      letterSpacing:
+                          Get.theme.textTheme.headline6?.letterSpacing,
+                    ),
                   ),
                   CupertinoButton(
                     padding: EdgeInsets.zero,
@@ -414,14 +502,26 @@ class ScreenUserProfile extends StatelessWidget {
                   Text(
                     "${Strs.phoneNumberStr.tr}: ",
                     textAlign: TextAlign.center,
-                    style: Get.theme.textTheme.bodyText2!
-                        .copyWith(color: Get.theme.colorScheme.onBackground),
+                    style: TextStyle(
+                      fontFamily: Get.theme.textTheme.bodyText2?.fontFamily,
+                      fontStyle: Get.theme.textTheme.bodyText2?.fontStyle,
+                      fontSize: Get.theme.textTheme.bodyText2?.fontSize,
+                      fontWeight: Get.theme.textTheme.bodyText2?.fontWeight,
+                      letterSpacing:
+                          Get.theme.textTheme.bodyText2?.letterSpacing,
+                    ),
                   ),
                   Text(
                     ServerService.currentUser.phone ?? "",
                     textAlign: TextAlign.center,
-                    style: Get.theme.textTheme.bodyText1!
-                        .copyWith(color: Get.theme.colorScheme.onBackground),
+                    style: TextStyle(
+                      fontFamily: Get.theme.textTheme.bodyText1?.fontFamily,
+                      fontStyle: Get.theme.textTheme.bodyText1?.fontStyle,
+                      fontSize: Get.theme.textTheme.bodyText1?.fontSize,
+                      fontWeight: Get.theme.textTheme.bodyText1?.fontWeight,
+                      letterSpacing:
+                          Get.theme.textTheme.bodyText1?.letterSpacing,
+                    ),
                   ),
                 ],
               ),
@@ -433,14 +533,26 @@ class ScreenUserProfile extends StatelessWidget {
                   Text(
                     "${Strs.emailStr.tr}: ",
                     textAlign: TextAlign.center,
-                    style: Get.theme.textTheme.bodyText2!
-                        .copyWith(color: Get.theme.colorScheme.onBackground),
+                    style: TextStyle(
+                      fontFamily: Get.theme.textTheme.bodyText2?.fontFamily,
+                      fontStyle: Get.theme.textTheme.bodyText2?.fontStyle,
+                      fontSize: Get.theme.textTheme.bodyText2?.fontSize,
+                      fontWeight: Get.theme.textTheme.bodyText2?.fontWeight,
+                      letterSpacing:
+                          Get.theme.textTheme.bodyText2?.letterSpacing,
+                    ),
                   ),
                   Text(
                     ServerService.currentUser.email ?? "",
                     textAlign: TextAlign.center,
-                    style: Get.theme.textTheme.bodyText1!
-                        .copyWith(color: Get.theme.colorScheme.onBackground),
+                    style: TextStyle(
+                      fontFamily: Get.theme.textTheme.bodyText1?.fontFamily,
+                      fontStyle: Get.theme.textTheme.bodyText1?.fontStyle,
+                      fontSize: Get.theme.textTheme.bodyText1?.fontSize,
+                      fontWeight: Get.theme.textTheme.bodyText1?.fontWeight,
+                      letterSpacing:
+                          Get.theme.textTheme.bodyText1?.letterSpacing,
+                    ),
                   ),
                 ],
               ),
