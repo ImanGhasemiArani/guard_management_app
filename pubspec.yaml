@@ -38,7 +38,7 @@ dependencies:
   shared_preferences: ^2.0.15
   connectivity_plus: ^2.3.6
   # device_info_plus: ^4.0.1
-  flutter_secure_storage: ^5.0.2
+  flutter_secure_storage: ^6.0.0
   loading_animation_widget: ^1.2.0+2
   flutter_hooks: ^0.18.5+1
   persian_number_utility: ^1.1.2
