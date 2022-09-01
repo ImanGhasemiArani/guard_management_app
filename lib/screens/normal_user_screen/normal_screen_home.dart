@@ -12,6 +12,7 @@ import '../../widget/drawer/my_drawer.dart';
 import '../../widget/staggered_animations/flutter_staggered_animations.dart';
 import 'normal_screen_exchange_req.dart';
 import 'normal_screen_holder.dart';
+import 'normal_screen_message_box.dart';
 import 'normal_screen_shift_schedule.dart';
 
 class ScreenHome extends StatelessWidget {
@@ -90,19 +91,28 @@ class ScreenHome extends StatelessWidget {
 
   PreferredSizeWidget getAppBar() => MyAppBar(
         automaticallyImplyLeading: false,
-        title: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: () {},
-          child: Card(
-            shape: SmoothRectangleBorder(
-              borderRadius: SmoothBorderRadius(
-                cornerRadius: 15,
-                cornerSmoothing: 1,
+        title: OpenContainer(
+          closedElevation: 0,
+          openElevation: 0,
+          clipBehavior: Clip.none,
+          closedColor: Colors.transparent,
+          openColor: Colors.transparent,
+          middleColor: Colors.transparent,
+          openBuilder: ((context, action) => const ScreenMessageBox()),
+          closedBuilder: (context, action) => CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: action,
+            child: Card(
+              shape: SmoothRectangleBorder(
+                borderRadius: SmoothBorderRadius(
+                  cornerRadius: 15,
+                  cornerSmoothing: 1,
+                ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: Assets.icons.directNormal.svg(),
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Assets.icons.directNormal.svg(),
+              ),
             ),
           ),
         ),
@@ -184,8 +194,6 @@ class HomeGridChild extends StatelessWidget {
             closedColor: Colors.transparent,
             openColor: Colors.transparent,
             middleColor: Colors.transparent,
-            transitionDuration: const Duration(milliseconds: 400),
-            // transitionType: ContainerTransitionType.fadeThrough,
             openBuilder: ((context, action) => openWidget),
             closedBuilder: (context, action) => CupertinoButton(
               padding: EdgeInsets.zero,

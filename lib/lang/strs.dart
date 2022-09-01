@@ -59,6 +59,7 @@ class Strs {
   static const String dateStr = "تاریخ";
   static const String companyNameStr = "شرکت فرودگاه های کشور";
   static const String exportToPdfStr = "PDF";
+  static const String messageBoxStr = "پیام ها";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =
