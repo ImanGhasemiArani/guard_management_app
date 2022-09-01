@@ -13,6 +13,7 @@ import '../../widget/staggered_animations/flutter_staggered_animations.dart';
 import 'normal_screen_exchange_req.dart';
 import 'normal_screen_holder.dart';
 import 'normal_screen_message_box.dart';
+import 'normal_screen_requests.dart';
 import 'normal_screen_shift_schedule.dart';
 
 class ScreenHome extends StatelessWidget {
@@ -75,6 +76,12 @@ class ScreenHome extends StatelessWidget {
                   ),
                   HomeGridChild(
                     index: 4,
+                    label: Strs.requestsStr.tr,
+                    iconWidget: Assets.icons.receiptItem.svg(size: 45),
+                    openWidget: const ScreenRequests(),
+                  ),
+                  HomeGridChild(
+                    index: 5,
                     label: Strs.historyStr.tr,
                     iconWidget: Assets.icons.clock.svg(size: 45),
                     openWidget:

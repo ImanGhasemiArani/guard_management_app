@@ -60,6 +60,12 @@ class Strs {
   static const String companyNameStr = "شرکت فرودگاه های کشور";
   static const String exportToPdfStr = "PDF";
   static const String messageBoxStr = "پیام ها";
+  static const String requestsStr = "درخواست ها";
+  static const String exchangesStr = "تعویض ها";
+  static const String leavesStr = "مرخصی ها";
+  static const String announcementsStr = "اطلاعیه ها";
+  static const String conversationsStr = "گفتگو ها";
+  static const String supplyRequestsStr = "تامین کنندگی";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =

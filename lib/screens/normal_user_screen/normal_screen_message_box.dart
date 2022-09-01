@@ -44,56 +44,72 @@ class BodyWidget extends HookWidget {
   Widget build(BuildContext context) {
     var pageController = usePageController();
     final selectedTab = 0.obs;
-    return Scaffold(
-      body: Column(
-        children: [
-          Obx(
-            () => CupertinoSlidingSegmentedControl(
-              groupValue: selectedTab.value,
-              children: const {
-                0: Text("منتظر پاسخ"),
-                1: Text("پاسخ داده شده"),
-                2: Text("پاسخ نداده شده"),
-              },
-              onValueChanged: (int? index) {
-                selectedTab.value = index ?? 0;
-                pageController.animateToPage(
-                  index ?? 0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
-              },
+    final w = Get.width / 3;
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Obx(
+                () => CupertinoSlidingSegmentedControl(
+                  groupValue: selectedTab.value,
+                  children: {
+                    0: Text(
+                      Strs.announcementsStr.tr,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                    ),
+                    1: Text(
+                      Strs.conversationsStr.tr,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                    ),
+                    2: Text(
+                      Strs.supplyRequestsStr.tr,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                    )
+                  },
+                  onValueChanged: (int? index) {
+                    selectedTab.value = index ?? 0;
+                    pageController.animateToPage(
+                      index ?? 0,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
-          Expanded(
-            child: PageView(
-              controller: pageController,
-              children: [
-                Scaffold(
-                  body: Container(
-                    height: 500,
-                    width: 500,
-                    color: Colors.red,
+            Expanded(
+              child: PageView(
+                controller: pageController,
+                children: [
+                  Scaffold(
+                    body: Center(
+                      child: Text(Strs.announcementsStr.tr),
+                    ),
                   ),
-                ),
-                Scaffold(
-                  body: Container(
-                    height: 500,
-                    width: 500,
-                    color: Colors.green,
+                  Scaffold(
+                    body: Center(
+                      child: Text(Strs.conversationsStr.tr),
+                    ),
                   ),
-                ),
-                Scaffold(
-                  body: Container(
-                    height: 500,
-                    width: 500,
-                    color: Colors.blue,
+                  Scaffold(
+                    body: Center(
+                      child: Text(Strs.supplyRequestsStr.tr),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
