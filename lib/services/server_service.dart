@@ -5,6 +5,7 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:http/http.dart' as http;
 
 import '../lang/strs.dart';
+import '../model/exchange_request.dart';
 import '../model/user.dart';
 import '../screens/screen_log_in.dart';
 import '../utils/device_info.dart';
@@ -286,6 +287,33 @@ class ServerService {
     if (response.success) {
       final resultList = response.result as Map<String, dynamic>;
       return resultList;
+    } else {
+      throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
+    }
+  }
+
+  static Future<void> createExchangeRequest({
+    required String username,
+    required ExchangeRequest request,
+  }) async {
+    final func = ParseCloudFunction("createExchangeRequest");
+    final response = await func.execute(parameters: {
+      'username': currentUser.username,
+      'request': request.parseMap(),
+    });
+    if (response.success) {
+      try {
+        if (response.result as bool) {
+          showSnackbar(Strs.operationSuccessfulMessageStr.tr,
+              messageType: MessageType.success);
+        } else {
+          showSnackbar(Strs.failedToRegisterRequestErrorMessage.tr,
+              messageType: MessageType.error);
+        }
+      } catch (e) {
+        showSnackbar(Strs.duplicateRequestErrorMessage.tr,
+            messageType: MessageType.error);
+      }
     } else {
       throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
     }

@@ -38,7 +38,7 @@ class Strs {
   static const String signStr = "امضا کنید";
   static const String saveStr = "ذخیره";
   static const String cancelStr = "لغو";
-  static const String sendStr = "ارسال";
+  static const String registerReqStr = "ثبت درخواست";
   static const String nightShiftStr = "شب";
   static const String morningShiftStr = "صبح کار";
   static const String dayShiftStr = "روز";
@@ -79,6 +79,9 @@ class Strs {
   static const String failedToLoadDataFromServerErrorMessage =
       "خطا در بارگذاری اطلاعات از سرور";
   static const String tryAgainErrorMessage = "لطفا دوباره تلاش کنید";
+  static const String failedToRegisterRequestErrorMessage =
+      "ثبت درخواست به دلیل تداخل یا اطلاعات اشتباه انجام نشد";
+  static const String duplicateRequestErrorMessage = "درخواست قبلا ثبت شده است";
 
   /// Warning messages
   static const String fillExchangeReqFormWarningMessage =

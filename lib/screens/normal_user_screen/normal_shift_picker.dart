@@ -421,8 +421,7 @@ class CalendarContent extends StatelessWidget {
                       ),
                     ],
                   );
-                } else if ((events.first)['shift']['des'] ==
-                    ShiftType.N.value) {
+                } else if ((events.first)['shift']['des'] == ShiftType.N.name) {
                   return Positioned(
                     top: -4,
                     left: 0,

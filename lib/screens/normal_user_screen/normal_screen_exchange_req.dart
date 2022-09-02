@@ -131,9 +131,7 @@ class ScreenExchangeReq extends StatelessWidget {
                     builder: (context) {
                       return ShiftPicker(
                         onShiftPicked: (shift) {
-                          var f = Jalali.fromDateTime(shift.key).formatter;
-                          exchangeRequest.changerShiftDate =
-                              "${f.d}  ${f.mN}  ${f.y}";
+                          exchangeRequest.changerShiftDate = shift.key;
                           exchangeRequest.changerShiftDescription =
                               shift.value['shift']['des'];
                           Get.back();
@@ -179,12 +177,24 @@ class ScreenExchangeReq extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text(
-              "${exchangeRequest.changerShiftDate}",
-              style: Get.theme.textTheme.headline6,
+              "${exchangeRequest.changerShiftDateString}",
+              style: TextStyle(
+                fontFamily: Get.theme.textTheme.headline6?.fontFamily,
+                fontStyle: Get.theme.textTheme.headline6?.fontStyle,
+                fontSize: Get.theme.textTheme.headline6?.fontSize,
+                fontWeight: Get.theme.textTheme.headline6?.fontWeight,
+                letterSpacing: Get.theme.textTheme.headline6?.letterSpacing,
+              ),
             ),
             Text(
-              "${exchangeRequest.changerShiftDescription}",
-              style: Get.theme.textTheme.bodyLarge,
+              "${exchangeRequest.changerShiftDescriptionString}",
+              style: TextStyle(
+                fontFamily: Get.theme.textTheme.bodyLarge?.fontFamily,
+                fontStyle: Get.theme.textTheme.bodyLarge?.fontStyle,
+                fontSize: Get.theme.textTheme.bodyLarge?.fontSize,
+                fontWeight: Get.theme.textTheme.bodyLarge?.fontWeight,
+                letterSpacing: Get.theme.textTheme.bodyLarge?.letterSpacing,
+              ),
             ),
           ],
         ),
@@ -258,7 +268,13 @@ class ScreenExchangeReq extends StatelessWidget {
           children: [
             Text(
               "${exchangeRequest.supplierName}",
-              style: Get.theme.textTheme.bodyLarge,
+              style: TextStyle(
+                fontFamily: Get.theme.textTheme.bodyLarge?.fontFamily,
+                fontStyle: Get.theme.textTheme.bodyLarge?.fontStyle,
+                fontSize: Get.theme.textTheme.bodyLarge?.fontSize,
+                fontWeight: Get.theme.textTheme.bodyLarge?.fontWeight,
+                letterSpacing: Get.theme.textTheme.bodyLarge?.letterSpacing,
+              ),
             ),
           ],
         ),
@@ -351,8 +367,10 @@ class ScreenExchangeReq extends StatelessWidget {
       );
       isShowButtonIndicator.value = false;
     } else {
-      PdfService.createExchangeReqPdf(exchangeRequest)
-          .then((value) => isShowButtonIndicator.value = false);
+      ServerService.createExchangeRequest(
+        username: ServerService.currentUser.username!,
+        request: exchangeRequest,
+      ).then((value) => isShowButtonIndicator.value = false);
     }
   }
 
@@ -373,7 +391,7 @@ class ScreenExchangeReq extends StatelessWidget {
             child: Obx(
               () => !isShowButtonIndicator.value
                   ? Text(
-                      Strs.sendStr.tr,
+                      Strs.registerReqStr.tr,
                       style: TextStyle(
                           fontFamily: Get.theme.textTheme.button!.fontFamily),
                     )

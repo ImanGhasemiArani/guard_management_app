@@ -113,7 +113,7 @@ class PdfService {
                               ),
                               pw.TextSpan(
                                 text:
-                                    "  ${req.changerShiftDescription ?? '..............'}  ",
+                                    "  ${req.changerShiftDescriptionString ?? '..............'}  ",
                                 style: style.copyWith(
                                     fontWeight: pw.FontWeight.bold),
                               ),
@@ -122,7 +122,7 @@ class PdfService {
                               ),
                               pw.TextSpan(
                                 text:
-                                    "  ${req.changerShiftDate ?? '..............'}  ",
+                                    "  ${req.changerShiftDateString ?? '..............'}  ",
                                 style: style.copyWith(
                                     fontWeight: pw.FontWeight.bold),
                               ),

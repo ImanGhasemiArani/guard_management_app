@@ -1,7 +1,5 @@
-import 'package:get/get.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
-import '../model/user.dart';
 import '../services/server_service.dart';
 
 class DataUtils {
@@ -42,8 +40,8 @@ class DataUtils {
             'post': post,
             'teamName': teamName,
             'shift': {
-              "des": ShiftType.valueOf(char).value.tr,
-              "isExchangeable": isExchangeable
+              "des": char,
+              "isExchangeable": isExchangeable,
             },
             'profileImg': profileImg
           };
@@ -95,7 +93,7 @@ class DataUtils {
   }
 
   /// Sorter
-  /// 
+  ///
   ///       List<Map<String, dynamic>> => sort by teamName then sort by post
   static List<Map<String, dynamic>> sortByTeam(
     List<Map<String, dynamic>> list,
