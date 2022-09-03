@@ -16,6 +16,7 @@ class ExchangeRequest {
   late final Rx<Uint8List?> _changerSignature;
   late final Rx<Uint8List?> _supplierSignature;
   late final Rx<Uint8List?> _headUserSignature;
+  bool isSeen = false;
 
   ExchangeRequest(
     this.changerNationalId,
@@ -60,10 +61,44 @@ class ExchangeRequest {
     _headUserSignature = Rx<Uint8List?>(null);
   }
 
+  ExchangeRequest.fromParse(Map<String, dynamic> map) {
+    _init();
+    changerName = map['changerName'];
+    changerNationalId = map['changerUsername'];
+    changerOrganPos = map['changerOrganPos'];
+    supplierName = map['supplierName'];
+    supplierNationalId = map['supplierUsername'];
+    final date = (map['shiftDate'] as String).split("-");
+    changerShiftDate = map['shiftDate'] == null
+        ? null
+        : Jalali(int.parse(date[0]), int.parse(date[1]), int.parse(date[2]))
+            .toDateTime();
+    changerShiftDescription = map['shiftDes'];
+    changerSignature =
+        Uint8List.fromList((map['changerSign'] as String?)?.codeUnits ?? []);
+    supplierSignature =
+        Uint8List.fromList((map['supplierSign'] as String?)?.codeUnits ?? []);
+    headUserSignature =
+        Uint8List.fromList((map['headUserSign'] as String?)?.codeUnits ?? []);
+    if (changerSignature != null && changerSignature!.isEmpty) {
+      changerSignature = null;
+    }
+    if (supplierSignature != null && supplierSignature!.isEmpty) {
+      supplierSignature = null;
+    }
+    if (headUserSignature != null && headUserSignature!.isEmpty) {
+      headUserSignature = null;
+    }
+    isSeen = map['isSeen'] ?? false;
+  }
+
   Map<String, dynamic> parseMap() {
     var f = Jalali.fromDateTime(changerShiftDate!).formatter;
     return {
+      'changerName': changerName,
       'changerUsername': changerNationalId!,
+      'changerOrganPos': changerOrganPos,
+      'supplierName': supplierName,
       'supplierUsername': supplierNationalId!,
       'shiftDate': "${f.y}-${f.m}-${f.d}",
       'shiftDes': changerShiftDescription!,
@@ -76,6 +111,12 @@ class ExchangeRequest {
       'headUserSign': headUserSignature != null
           ? String.fromCharCodes(headUserSignature!)
           : null,
+      'isSeen': isSeen,
     };
+  }
+
+  @override
+  String toString() {
+    return 'ExchangeRequest{changerNationalId: $changerNationalId, changerName: $changerName, changerOrganPos: $changerOrganPos, supplierNationalId: $supplierNationalId, supplierName: $supplierName, changerShiftDate: $changerShiftDate, changerShiftDescription: $changerShiftDescription, changerSignature: $changerSignature, supplierSignature: $supplierSignature, headUserSignature: $headUserSignature}';
   }
 }

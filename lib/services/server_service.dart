@@ -40,11 +40,11 @@ class ServerService {
     String? username,
     String? password,
     String? sessionToken,
-  }) {
+  }) async {
     if (sessionToken != null) {
-      return _loginUserWithSessionToken(sessionToken);
+      return await _loginUserWithSessionToken(sessionToken);
     } else {
-      return _loginUserWithCredentials(username!, password!);
+      return await _loginUserWithCredentials(username!, password!);
     }
   }
 
@@ -314,6 +314,20 @@ class ServerService {
         showSnackbar(Strs.duplicateRequestErrorMessage.tr,
             messageType: MessageType.error);
       }
+    } else {
+      throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getExRequestsFromServer(
+      {required String username}) async {
+    final func = ParseCloudFunction("getRequests");
+    final response = await func.execute(parameters: {"username": username});
+    if (response.success) {
+      final resultList = (response.result as List<dynamic>)
+          .map((e) => e as Map<String, dynamic>)
+          .toList();
+      return resultList;
     } else {
       throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
     }

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:guard_management_app/model/exchange_request.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,7 +16,11 @@ bool isShowDialog = false;
 
 Future<MapEntry<bool, String?>> setupServices() async {
   await _setupServiceLocator();
-  return await _hasLoginUser();
+  final response = await _hasLoginUser();
+  if (response.key) {
+    await _listenToNotifications();
+  }
+  return response;
 }
 
 Future<void> _setupServiceLocator() async {
@@ -101,5 +106,11 @@ Future<void> _showConnectionError() async {
 Future<MapEntry<bool, String?>> _hasLoginUser() async {
   var sessionToken = await secureStorage.read(key: 'sessionToken');
   if (sessionToken == null) return const MapEntry(false, null);
-  return ServerService.loginUser(sessionToken: sessionToken);
+  return await ServerService.loginUser(sessionToken: sessionToken);
+}
+
+Future<void> _listenToNotifications() async {
+  final requests = await ServerService.getExRequestsFromServer(
+      username: ServerService.currentUser.username!);
+  final reqs = requests.map((e) => ExchangeRequest.fromParse(e)).toList();
 }
