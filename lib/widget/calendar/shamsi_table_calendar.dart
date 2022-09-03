@@ -47,7 +47,7 @@ double calendarHeight = cellHeight * 7 + monthHeaderHeight;
 var _selectedDate = Jalali.now().obs;
 
 typedef OnDateSelected = void Function(Jalali date);
-typedef EventMarkerBuilder = Widget Function(Jalali date, List<dynamic> event);
+typedef EventMarkerBuilder = Widget Function(double cellHeight,Jalali date, List<dynamic> event);
 
 class ShamsiTableCalendar extends HookWidget {
   const ShamsiTableCalendar({
@@ -299,7 +299,7 @@ class DayWidget extends StatelessWidget {
       return dayWidget;
     }
 
-    final marker = markerBuilder.call(date, event!);
+    final marker = markerBuilder.call(cellHeight,date, event!);
     return Stack(
       children: [
         dayWidget,
@@ -406,7 +406,7 @@ int getMonthCount(Jalali startDate, Jalali endDate) {
       (endDate.month - startDate.month);
 }
 
-Widget defaultEventMarkerBuilder(Jalali date, List<dynamic> event) {
+Widget defaultEventMarkerBuilder(double cellHeight, Jalali date, List<dynamic> event) {
   return Container(
     height: double.infinity,
     width: double.infinity,

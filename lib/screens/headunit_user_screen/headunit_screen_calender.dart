@@ -449,7 +449,7 @@ class CalendarContent extends StatelessWidget {
           segmentController.value = 0;
           currentSelectedDate.value = day.toDateTime();
         },
-        eventMarkerBuilder: (date, events) {
+        eventMarkerBuilder: (cellHeight, date, events) {
           return Container(
             width: double.infinity,
             height: double.infinity,

@@ -393,7 +393,8 @@ class CalendarContent extends StatelessWidget {
           segmentController?.value = 0;
           currentSelectedDate.value = day.toDateTime();
         },
-        eventMarkerBuilder: (date, event) {
+        eventMarkerBuilder: (cellHeight, date, event) {
+          final dotHeight = min(cellHeight / 4 - 2, 7).toDouble();
           return isShowMarkCalendar
               ? Container(
                   height: double.infinity,
@@ -412,11 +413,11 @@ class CalendarContent extends StatelessWidget {
                             ShiftType.N.name) {
                           color = Colors.indigoAccent;
                         } else {
-                          color = Colors.tealAccent;
+                          color = Colors.orange;
                         }
                         return Container(
-                          height: 5,
-                          width: 5,
+                          height: dotHeight,
+                          width: dotHeight,
                           margin: const EdgeInsets.symmetric(horizontal: 1),
                           decoration: BoxDecoration(
                             color: color,

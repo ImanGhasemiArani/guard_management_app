@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
+import '../../model/user.dart';
 import '../../screens/normal_user_screen/normal_shift_picker.dart';
 import '../../services/server_service.dart';
 
@@ -110,7 +111,6 @@ class ShiftListTile extends StatelessWidget {
               ),
             ),
           ),
-
           Expanded(
             flex: 3,
             child: Padding(
@@ -144,7 +144,7 @@ class ShiftListTile extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      shift["shift"]["des"],
+                      ShiftType.valueOf(shift["shift"]["des"]).value,
                       style: TextStyle(
                         fontFamily: Get.theme.textTheme.bodyText2?.fontFamily,
                         fontStyle: Get.theme.textTheme.bodyText2?.fontStyle,
