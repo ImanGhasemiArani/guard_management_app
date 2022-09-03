@@ -47,7 +47,6 @@ class ScreenShiftSchedule extends StatelessWidget {
   }
 
   PreferredSizeWidget getAppBar(RxBool isTableView) => MyAppBar(
-        // backgroundColor: Get.theme.colorScheme.background,
         title: FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(Strs.shiftScheduleStr.tr),
@@ -109,7 +108,6 @@ class ShiftCalendarView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShiftPicker(
       isShowAppBar: false,
-      isShowMarkCalendar: false,
       isShowExchangeableBanner: false,
       future: Future.sync(
         () {

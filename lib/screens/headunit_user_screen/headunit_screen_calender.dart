@@ -8,8 +8,7 @@ import 'package:shamsi_date/shamsi_date.dart';
 
 import '../../lang/strs.dart';
 import '../../services/server_service.dart';
-import '../../widget/calendar/calendar.dart';
-import '../../widget/calendar/src/persian_date.dart';
+import '../../widget/calendar/shamsi_table_calendar.dart';
 
 Rx<DateTime> currentSelectedDate =
     DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).obs;
@@ -269,7 +268,7 @@ class DayEventContent extends StatelessWidget {
         currentSelectedDate.value.month == nowTime.month &&
         currentSelectedDate.value.day == nowTime.day;
     String title =
-        "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayLong[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthLong[currentDate.month - 1]}  ${currentDate.year} ${isHoliday ? '- ${Strs.holidayStr.tr}' : ''}";
+        "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayFull[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthFull[currentDate.month - 1]}  ${currentDate.year} ${isHoliday ? '- ${Strs.holidayStr.tr}' : ''}";
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -345,7 +344,7 @@ class PlanEventContent extends StatelessWidget {
         currentSelectedDate.value.month == nowTime.month &&
         currentSelectedDate.value.day == nowTime.day;
     String title =
-        "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayLong[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthLong[currentDate.month - 1]}  ${currentDate.year}";
+        "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayFull[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthFull[currentDate.month - 1]}  ${currentDate.year}";
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -441,17 +440,16 @@ class CalendarContent extends StatelessWidget {
         color: Colors.black.withOpacity(0.4),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: JalaliTableCalendar(
-        context: context,
+      child: ShamsiTableCalendar(
         events: events,
         onDaySelected: (day) {
           scrollController.animateTo(0,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeIn);
           segmentController.value = 0;
-          currentSelectedDate.value = day;
+          currentSelectedDate.value = day.toDateTime();
         },
-        marker: (date, events) {
+        eventMarkerBuilder: (date, events) {
           return Container(
             width: double.infinity,
             height: double.infinity,

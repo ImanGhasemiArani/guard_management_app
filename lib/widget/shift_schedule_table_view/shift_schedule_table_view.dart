@@ -3,14 +3,14 @@ import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:guard_management_app/services/pdf_service.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../lang/strs.dart';
 import '../../model/user.dart';
-import '../calendar/src/persian_date.dart';
+import '../../services/pdf_service.dart';
+import '../calendar/shamsi_table_calendar.dart';
 import '../future_builder/custom_future_builder.dart';
 
 final GlobalKey<SfDataGridState> dataGridKey = GlobalKey<SfDataGridState>();
@@ -238,7 +238,7 @@ class ShiftScheduleTableView extends StatelessWidget {
     var date = Jalali.now();
     for (var dayNum in Iterable<int>.generate(date.monthLength).toList()) {
       var newDate = Jalali(date.year, date.month, dayNum + 1);
-      final dayShortName = dayShort[(newDate.weekDay - 1 - 2) % 7];
+      final dayShortName = dayExp[(newDate.weekDay - 1 - 2) % 7];
       cells.add(
         StackedHeaderCell(
           columnNames: ['${dayNum + 1}'],
@@ -422,7 +422,11 @@ class ShiftDataSource extends DataGridSource {
               key.split('-').map((str) => int.parse(str)).toList();
           cells[jalaliStr[2] + 3] = DataGridCell<String>(
               columnName: '${jalaliStr[2]}',
-              value: ShiftType.valueOf(value['des']).value[0]);
+              value: (value['des'] as String)
+                  .characters
+                  .map((e) => ShiftType.valueOf(e).value[0])
+                  .toList()
+                  .join(' '));
         },
       );
       return DataGridRow(cells: cells);

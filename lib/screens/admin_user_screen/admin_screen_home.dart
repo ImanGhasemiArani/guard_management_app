@@ -6,7 +6,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 import '../../lang/strs.dart';
-import '../../widget/calendar/src/persian_date.dart';
+import '../../widget/calendar/shamsi_table_calendar.dart';
 
 class ScreenHome extends StatelessWidget {
   const ScreenHome({
@@ -195,7 +195,7 @@ class PlanEventContent extends StatelessWidget {
         date.month == nowTime.month &&
         date.day == nowTime.day;
     String title =
-        "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayLong[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthLong[currentDate.month - 1]}  ${currentDate.year}";
+        "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayFull[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthFull[currentDate.month - 1]}  ${currentDate.year}";
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

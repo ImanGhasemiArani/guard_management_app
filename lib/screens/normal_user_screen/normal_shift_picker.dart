@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
@@ -6,8 +8,7 @@ import 'package:shamsi_date/shamsi_date.dart';
 import '../../lang/strs.dart';
 import '../../model/user.dart';
 import '../../utils/data_utils.dart';
-import '../../widget/calendar/calendar.dart';
-import '../../widget/calendar/src/persian_date.dart';
+import '../../widget/calendar/shamsi_table_calendar.dart';
 import '../../widget/future_builder/custom_future_builder.dart';
 import '../../widget/staggered_animations/flutter_staggered_animations.dart';
 import '../../widget/tile/shift_list_tile.dart';
@@ -113,7 +114,9 @@ class BodyWidget extends HookWidget {
                     ),
                     children: [
                       CalendarContent(
-                        events: events,
+                        events: isFilterCurrentUser
+                            ? DataUtils.filterCurrentUserFromEventsMap(events)
+                            : events,
                         scrollController: _scrollController,
                         isShowMarkCalendar: isShowMarkCalendar,
                       ),
@@ -246,7 +249,7 @@ class ShiftListView extends StatelessWidget {
         currentSelectedDate.value.month == nowTime.month &&
         currentSelectedDate.value.day == nowTime.day;
     String title =
-        "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayLong[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthLong[currentDate.month - 1]}  ${currentDate.year}";
+        "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayFull[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthFull[currentDate.month - 1]}  ${currentDate.year}";
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -334,7 +337,7 @@ class ShiftListView extends StatelessWidget {
 //         currentSelectedDate.value.month == nowTime.month &&
 //         currentSelectedDate.value.day == nowTime.day;
 //     String title =
-//         "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayLong[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthLong[currentDate.month - 1]}  ${currentDate.year} ${isHoliday ? '- ${Strs.holidayStr.tr}' : ''}";
+//         "${isToday ? ' ${Strs.todayStr.tr}' : ''} ${dayFull[currentDate.weekDay - 1]}  ${currentDate.day}  ${monthFull[currentDate.month - 1]}  ${currentDate.year} ${isHoliday ? '- ${Strs.holidayStr.tr}' : ''}";
 //     return Container(
 //       margin: const EdgeInsets.symmetric(vertical: 10),
 //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -379,77 +382,53 @@ class CalendarContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: JalaliTableCalendar(
-        context: context,
+      child: ShamsiTableCalendar(
         events: events,
         onDaySelected: (day) {
-          scrollController?.animateTo(0,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeIn);
+          scrollController?.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeIn,
+          );
           segmentController?.value = 0;
-          currentSelectedDate.value = day;
+          currentSelectedDate.value = day.toDateTime();
         },
-        marker: isShowMarkCalendar
-            ? (date, events) {
-                if (events == null || events.isEmpty) return const SizedBox();
-                if (events.length > 1) {
-                  return Stack(
-                    children: [
-                      Positioned(
-                        top: -4,
-                        left: 4,
-                        child: Container(
+        eventMarkerBuilder: (date, event) {
+          return isShowMarkCalendar
+              ? Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                      min(event.length, 4),
+                      (index) {
+                        final Color? color;
+                        if ((event[index])['shift']['des'] ==
+                            ShiftType.D.name) {
+                          color = Colors.amber;
+                        } else if ((event[index])['shift']['des'] ==
+                            ShiftType.N.name) {
+                          color = Colors.indigoAccent;
+                        } else {
+                          color = Colors.tealAccent;
+                        }
+                        return Container(
+                          height: 5,
+                          width: 5,
+                          margin: const EdgeInsets.symmetric(horizontal: 1),
                           decoration: BoxDecoration(
-                            color: Get.theme.colorScheme.primary,
+                            color: color,
                             shape: BoxShape.circle,
                           ),
-                          padding: const EdgeInsets.all(6.0),
-                          child: const Text(""),
-                        ),
-                      ),
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Get.theme.colorScheme.secondary,
-                            shape: BoxShape.circle,
-                          ),
-                          padding: const EdgeInsets.all(6.0),
-                          child: const Text(""),
-                        ),
-                      ),
-                    ],
-                  );
-                } else if ((events.first)['shift']['des'] == ShiftType.N.name) {
-                  return Positioned(
-                    top: -4,
-                    left: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Get.theme.colorScheme.secondary,
-                        shape: BoxShape.circle,
-                      ),
-                      padding: const EdgeInsets.all(6.0),
-                      child: const Text(""),
+                        );
+                      },
                     ),
-                  );
-                } else {
-                  return Positioned(
-                    top: -4,
-                    left: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Get.theme.colorScheme.primary,
-                        shape: BoxShape.circle,
-                      ),
-                      padding: const EdgeInsets.all(6.0),
-                      child: const Text(""),
-                    ),
-                  );
-                }
-              }
-            : (date, events) => const SizedBox(),
+                  ),
+                )
+              : const SizedBox();
+        },
       ),
     );
   }

@@ -60,13 +60,22 @@ class DataUtils {
 
   /// Filter:
   ///
-  ///      Map<String, String> => remove all data about currentUser
-  static Map<String, String> filterCurrentUserFromUsersMap(
-    Map<String, String> map,
+  ///      Map<DateTime, List<dynamic>> => return all data about currentUser
+  static Map<DateTime, List<dynamic>> filterCurrentUserFromEventsMap(
+    Map<DateTime, List<dynamic>> map,
   ) {
     var result = {...map};
-    result
-        .removeWhere((key, value) => key == ServerService.currentUser.username);
+    result.removeWhere((key, value) {
+      final temp = value.every((element) =>
+          element['username'] != ServerService.currentUser.username);
+      if (!temp) {
+        result[key] = value
+            .where((element) =>
+                element['username'] == ServerService.currentUser.username)
+            .toList();
+      }
+      return temp;
+    });
     return result;
   }
 

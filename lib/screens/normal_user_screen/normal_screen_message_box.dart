@@ -89,6 +89,9 @@ class BodyWidget extends HookWidget {
             Expanded(
               child: PageView(
                 controller: pageController,
+                onPageChanged: (value) {
+                  selectedTab.value = value;
+                },
                 children: [
                   Scaffold(
                     body: Center(
