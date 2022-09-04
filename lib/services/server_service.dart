@@ -332,4 +332,27 @@ class ServerService {
       throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
     }
   }
+
+  static Future<void> send() async {
+    /*{ 
+        "to": "<Device FCM token>", 
+        "notification": { 
+            "title": "Check this Mobile (title)", 
+            "body": "Rich Notification testing (body)", 
+            "mutable_content": true, 
+            "sound": "Tri-tone"
+            }, 
+        "data": { 
+            "url": "<url of media image>", 
+            "dl": "<deeplink action on tap of notification>" 
+            }
+    }*/
+
+    final func = ParseCloudFunction("send");
+    final response = await func.execute();
+    if (response.success) {
+    } else {
+      throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
+    }
+  }
 }

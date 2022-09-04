@@ -1,4 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -113,4 +115,14 @@ Future<void> _listenToNotifications() async {
   final requests = await ServerService.getExRequestsFromServer(
       username: ServerService.currentUser.username!);
   final reqs = requests.map((e) => ExchangeRequest.fromParse(e)).toList();
+}
+
+Future<void> setupFirebase() async {
+  await Firebase.initializeApp();
+  late FirebaseMessaging messaging;
+  messaging = FirebaseMessaging.instance;
+  final r = await messaging.getToken();
+  FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+    print(event.notification!.body);
+  });
 }
