@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
+import 'normal_screen_exchanges_tab.dart';
 
 class ScreenRequests extends StatelessWidget {
   const ScreenRequests({super.key});
@@ -69,14 +70,13 @@ class BodyWidget extends HookWidget {
           ),
           Expanded(
             child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
               controller: pageController,
               onPageChanged: (value) {
                 selectedTab.value = value;
               },
               children: const [
-                Scaffold(
-                  body: Center(child: Text(Strs.exchangesStr)),
-                ),
+                ScreenExchangesTab(),
                 Scaffold(
                   body: Center(child: Text(Strs.leavesStr)),
                 ),

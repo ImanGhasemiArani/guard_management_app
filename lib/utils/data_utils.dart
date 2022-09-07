@@ -1,5 +1,7 @@
 import 'package:shamsi_date/shamsi_date.dart';
 
+import '../lang/strs.dart';
+import '../model/exchange_request.dart';
 import '../services/server_service.dart';
 
 class DataUtils {
@@ -125,6 +127,30 @@ class DataUtils {
         return aTeam.compareTo(bTeam);
       }
     });
+    return list;
+  }
+
+  /// Filter:
+  ///
+  ///      List<ExchangeRequest> => filter by isChanger or isSupplier
+  static List<ExchangeRequest> filterReqTickets(
+    List<ExchangeRequest> reqs,
+    List<String> filters,
+  ) {
+    final list = <ExchangeRequest>[];
+    for (var filter in filters) {
+      if (filter == Strs.changerReqStr) {
+        list.addAll(reqs
+            .where(
+                (e) => e.changerUsername == ServerService.currentUser.username)
+            .toList());
+      } else if (filter == Strs.supplierReqStr) {
+        list.addAll(reqs
+            .where(
+                (e) => e.supplierUsername == ServerService.currentUser.username)
+            .toList());
+      }
+    }
     return list;
   }
 }

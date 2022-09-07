@@ -66,6 +66,17 @@ class Strs {
   static const String announcementsStr = "اطلاعیه ها";
   static const String conversationsStr = "گفتگو ها";
   static const String supplyRequestsStr = "تامین کنندگی";
+  static const String confirmationsStr = "تاییدیه ها";
+  static const String exchangeReqShiftStr = "شیفت تعویض";
+  static const String changerConfirmStr = "تایید تعویض کننده";
+  static const String supplierConfirmStr = "تایید تامین کننده";
+  static const String headerConfirmStr = "تایید مسئول واحد";
+  static const String notConfirmedStr = "تایید نشده";
+  static const String waitedConfirmStr = "در انتظار تایید";
+  static const String failedConfirmStr = "رد شده توسط";
+  static const String requestStatusStr = "وضعیت درخواست";
+  static const String confirmStr = "تایید";
+  static const String rejectStr = "رد";
 
   /// Errors messages
   static const String invalidPhoneNumberErrorMessage =

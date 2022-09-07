@@ -298,7 +298,6 @@ class ServerService {
   }) async {
     final func = ParseCloudFunction("createExchangeRequest");
     final response = await func.execute(parameters: {
-      'username': currentUser.username,
       'request': request.parseMap(),
     });
     if (response.success) {
@@ -321,13 +320,37 @@ class ServerService {
 
   static Future<List<Map<String, dynamic>>> getExRequestsFromServer(
       {required String username}) async {
-    final func = ParseCloudFunction("getRequests");
+    final func = ParseCloudFunction("getSpecificUserRequests");
     final response = await func.execute(parameters: {"username": username});
     if (response.success) {
       final resultList = (response.result as List<dynamic>)
           .map((e) => e as Map<String, dynamic>)
           .toList();
       return resultList;
+    } else {
+      throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
+    }
+  }
+
+  static Future<void> changeExReqStatus({
+    required String username,
+    required ExchangeRequest req,
+    required ExchangeRequestStatus status,
+  }) async {
+    final func = ParseCloudFunction("changeExReqStatus");
+    final response = await func.execute(parameters: {
+      "username": username,
+      "req": req.parseMap(),
+      "status": status.name,
+    });
+    if (response.success) {
+      if ((response.result as Map<String, dynamic>).keys.first == "true") {
+        showSnackbar(Strs.operationSuccessfulMessageStr.tr,
+            messageType: MessageType.success);
+      } else {
+        showSnackbar(Strs.failedToRegisterRequestErrorMessage.tr,
+            messageType: MessageType.error);
+      }
     } else {
       throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
     }

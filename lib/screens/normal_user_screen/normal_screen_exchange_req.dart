@@ -12,7 +12,6 @@ import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
 import '../../model/exchange_request.dart';
-import '../../services/pdf_service.dart';
 import '../../services/server_service.dart';
 import '../../utils/show_toast.dart';
 import '../../widget/signature/signature.dart';
@@ -231,7 +230,7 @@ class ScreenExchangeReq extends StatelessWidget {
                     builder: (context) {
                       return UserPicker(
                         onUserPicked: (user) {
-                          exchangeRequest.supplierNationalId = user.key;
+                          exchangeRequest.supplierUsername = user.key;
                           exchangeRequest.supplierName = (user.value)["name"];
                           Get.back();
                         },
@@ -244,7 +243,7 @@ class ScreenExchangeReq extends StatelessWidget {
         Obx(
           () {
             return Visibility(
-              visible: exchangeRequest.supplierNationalId != null,
+              visible: exchangeRequest.supplierUsername != null,
               child: getSupplierContent(),
             );
           },
@@ -354,11 +353,11 @@ class ScreenExchangeReq extends StatelessWidget {
   void _onSendButtonPressed(RxBool isShowButtonIndicator) {
     if (isShowButtonIndicator.value) return;
     isShowButtonIndicator.value = true;
-    if (exchangeRequest.changerNationalId == null ||
+    if (exchangeRequest.changerUsername == null ||
         exchangeRequest.changerName == null ||
         exchangeRequest.changerShiftDate == null ||
         exchangeRequest.changerShiftDescription == null ||
-        exchangeRequest.supplierNationalId == null ||
+        exchangeRequest.supplierUsername == null ||
         exchangeRequest.supplierName == null ||
         exchangeRequest.changerSignature == null) {
       showSnackbar(

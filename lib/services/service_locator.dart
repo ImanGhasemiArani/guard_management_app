@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:guard_management_app/model/exchange_request.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -50,6 +49,8 @@ void _setupConnectionListener() {
   Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
     if (result == ConnectivityResult.none) {
       _showConnectionError();
+    } else {
+    //   isShowDialog ? Get.back() : null;
     }
   });
 }
@@ -112,9 +113,9 @@ Future<MapEntry<bool, String?>> _hasLoginUser() async {
 }
 
 Future<void> _listenToNotifications() async {
-  final requests = await ServerService.getExRequestsFromServer(
-      username: ServerService.currentUser.username!);
-  final reqs = requests.map((e) => ExchangeRequest.fromParse(e)).toList();
+//   final requests = await ServerService.getExRequestsFromServer(
+//       username: ServerService.currentUser.username!);
+//   final reqs = requests.map((e) => ExchangeRequest.fromParse(e)).toList();
 }
 
 Future<void> setupFirebase() async {
