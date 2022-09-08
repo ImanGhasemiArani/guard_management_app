@@ -25,12 +25,7 @@ Future<void> _setupServiceLocator() async {
   _setupConnectionListener();
   await _checkInternetConnection();
   await _initParseServer();
-  try {
-    await NotificationService().initLocalNotification();
-  } catch (e,s) {
-    print(e);
-    print(s);
-  }
+  await NotificationService().initLocalNotification();
 }
 
 Future<void> _initParseServer() async {
