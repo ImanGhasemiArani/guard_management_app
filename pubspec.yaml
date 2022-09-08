@@ -66,11 +66,7 @@ dependencies:
   syncfusion_flutter_datagrid_export: ^20.2.45-beta
   syncfusion_flutter_pdf: ^20.2.45
   flutter_svg: ^1.1.4
-  firebase_core: ^1.21.1
-  flutter_local_notifications: ^9.9.1
-  firebase_messaging: ^13.0.0
   chips_choice: ^2.1.0-nullsafety.0
-  # google_fonts: ^3.0.1
 
 
 dev_dependencies:

@@ -3,47 +3,45 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:guard_management_app/services/server_service.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 import '../../lang/strs.dart';
 import '../../model/exchange_request.dart';
+import '../../services/server_service.dart';
 import '../bottom_sheet_modal/floating_modal.dart';
 import '../signature/signature.dart';
 
 typedef FooterBuilder = Widget Function(
     void Function() switchExpand, bool isExpanded);
+bool isShowButton = false;
 
+// ignore: must_be_immutable
 class RequestTicketWidget extends StatelessWidget {
   RequestTicketWidget({
     super.key,
     ExchangeRequest? request,
-    Widget? collapsed,
-    Widget? expanded,
-    FooterBuilder? footer,
-    double? collapsedHeight,
-    double? expandedHeight,
+    this.collapsed,
+    this.expanded,
+    this.footer,
+    this.collapsedHeight,
+    this.expandedHeight,
     this.isShowButton = false,
   }) {
     if (request != null) {
-      _request = request;
-      _buildContents();
+      _request = request.obs;
+      _buildContents(request);
     } else {
-      _collapsed = collapsed;
-      _expanded = expanded;
-      _footer = footer;
-      _collapsedHeight = collapsedHeight;
-      _expandedHeight = expandedHeight;
+      _request = null.obs;
     }
   }
 
-  late final ExchangeRequest? _request;
-  late final Widget? _collapsed;
-  late final Widget? _expanded;
-  late final FooterBuilder? _footer;
-  late final double? _collapsedHeight;
-  late final double? _expandedHeight;
-  final bool isShowButton;
+  late final Rx<ExchangeRequest?> _request;
+  Widget? collapsed;
+  Widget? expanded;
+  FooterBuilder? footer;
+  double? collapsedHeight;
+  double? expandedHeight;
+  bool isShowButton;
 
   @override
   Widget build(BuildContext context) {
@@ -59,27 +57,32 @@ class RequestTicketWidget extends StatelessWidget {
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.easeInOutQuart,
                 height: isExpanded.value
-                    ? _expandedHeight! + _collapsedHeight!
-                    : _collapsedHeight,
+                    ? expandedHeight! + collapsedHeight!
+                    : collapsedHeight,
                 child: SingleChildScrollView(
                   physics: const NeverScrollableScrollPhysics(),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: _collapsedHeight,
-                        width: double.infinity,
-                        child: _collapsed,
-                      ),
-                      SizedBox(
-                        height: _expandedHeight,
-                        width: double.infinity,
-                        child: _expanded,
-                      ),
-                    ],
+                  child: Obx(
+                    () {
+                      _buildContents(_request.value!);
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: collapsedHeight,
+                            width: double.infinity,
+                            child: collapsed,
+                          ),
+                          SizedBox(
+                            height: expandedHeight,
+                            width: double.infinity,
+                            child: expanded,
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ),
-              _footer!(
+              footer!(
                 () => isExpanded.value = !isExpanded.value,
                 isExpanded.value,
               ),
@@ -90,15 +93,15 @@ class RequestTicketWidget extends StatelessWidget {
     );
   }
 
-  void _buildContents() {
-    _collapsedHeight = isShowButton ? 180 : 120;
-    _expandedHeight = 300;
-    _collapsed = _buildCollapsedContent();
-    _expanded = _buildExpandedContent();
-    _footer = _buildFooterContent;
+  void _buildContents(ExchangeRequest request) {
+    collapsedHeight = isShowButton ? 180 : 120;
+    expandedHeight = 300;
+    collapsed = _buildCollapsedContent(request);
+    expanded = _buildExpandedContent(request);
+    footer = _buildFooterContent;
   }
 
-  Widget _buildCollapsedContent() {
+  Widget _buildCollapsedContent(ExchangeRequest request) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
@@ -120,11 +123,11 @@ class RequestTicketWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "${_request?.reqStatus}",
+                  "${request.reqStatus}",
                   style: TextStyle(
-                    color: _request!.status!.name.contains("W")
+                    color: request.status!.name.contains("W")
                         ? Colors.amber
-                        : _request!.status!.name.contains("F")
+                        : request.status!.name.contains("F")
                             ? Colors.red
                             : Colors.green,
                     fontFamily: Get.theme.textTheme.subtitle2?.fontFamily,
@@ -153,7 +156,7 @@ class RequestTicketWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "${_request?.changerName}",
+                  "${request.changerName}",
                   style: TextStyle(
                     fontFamily: Get.theme.textTheme.subtitle2?.fontFamily,
                     fontStyle: Get.theme.textTheme.subtitle2?.fontStyle,
@@ -184,7 +187,7 @@ class RequestTicketWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "${_request?.supplierName}",
+                    "${request.supplierName}",
                     style: TextStyle(
                       fontFamily: Get.theme.textTheme.subtitle2?.fontFamily,
                       fontStyle: Get.theme.textTheme.subtitle2?.fontStyle,
@@ -214,7 +217,7 @@ class RequestTicketWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "${_request?.changerShiftDateString}",
+                  "${request.changerShiftDateString}",
                   style: TextStyle(
                     fontFamily: Get.theme.textTheme.subtitle1?.fontFamily,
                     fontStyle: Get.theme.textTheme.subtitle1?.fontStyle,
@@ -224,7 +227,7 @@ class RequestTicketWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  " - ${_request?.changerShiftDescriptionString}",
+                  " - ${request.changerShiftDescriptionString}",
                   style: TextStyle(
                     fontFamily: Get.theme.textTheme.subtitle2?.fontFamily,
                     fontStyle: Get.theme.textTheme.subtitle2?.fontStyle,
@@ -270,7 +273,7 @@ class RequestTicketWidget extends StatelessWidget {
                               if (signatureKey.currentState!
                                   .toPathList()
                                   .isEmpty) {
-                                _request?.supplierSignature = null;
+                                request.supplierSignature = null;
                                 Get.back();
                                 return;
                               }
@@ -282,17 +285,17 @@ class RequestTicketWidget extends StatelessWidget {
                                               format: ImageByteFormat.png))
                                       ?.buffer
                                       .asUint8List();
-                              _request?.supplierSignature = signatureUint8List;
+                              request.supplierSignature = signatureUint8List;
 
                               Get.back();
                             },
                           );
                         },
                       ).then((value) {
-                        if (_request?.supplierSignature != null) {
+                        if (request.supplierSignature != null) {
                           ServerService.changeExReqStatus(
                               username: ServerService.currentUser.username!,
-                              req: _request!,
+                              req: request,
                               status: ExchangeRequestStatus.WH);
                         }
                       });
@@ -316,7 +319,7 @@ class RequestTicketWidget extends StatelessWidget {
                     onPressed: () {
                       ServerService.changeExReqStatus(
                           username: ServerService.currentUser.username!,
-                          req: _request!,
+                          req: request,
                           status: ExchangeRequestStatus.FS);
                     },
                   ),
@@ -328,7 +331,7 @@ class RequestTicketWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildExpandedContent() {
+  Widget _buildExpandedContent(ExchangeRequest request) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -338,7 +341,7 @@ class RequestTicketWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
-                "${Strs.changerConfirmStr.tr}: \n ${_request?.changerConfirmDate}",
+                "${Strs.changerConfirmStr.tr}: \n ${request.changerConfirmDate}",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: Get.theme.textTheme.overline?.fontFamily,
@@ -348,13 +351,13 @@ class RequestTicketWidget extends StatelessWidget {
                   letterSpacing: Get.theme.textTheme.overline?.letterSpacing,
                 ),
               ),
-              if (_request!.changerSignature != null)
+              if (request.changerSignature != null)
                 Image.memory(
-                  _request!.changerSignature!,
+                  request.changerSignature!,
                   height: 100,
                   width: 100,
                 ),
-              if (_request!.changerSignature == null)
+              if (request.changerSignature == null)
                 SizedBox(
                   height: 100,
                   width: 100,
@@ -366,7 +369,7 @@ class RequestTicketWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
-                "${Strs.supplierConfirmStr.tr}: \n ${_request?.supplierConfirmDate}",
+                "${Strs.supplierConfirmStr.tr}: \n ${request.supplierConfirmDate}",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: Get.theme.textTheme.overline?.fontFamily,
@@ -376,13 +379,13 @@ class RequestTicketWidget extends StatelessWidget {
                   letterSpacing: Get.theme.textTheme.overline?.letterSpacing,
                 ),
               ),
-              if (_request!.supplierSignature != null)
+              if (request.supplierSignature != null)
                 Image.memory(
-                  _request!.supplierSignature!,
+                  request.supplierSignature!,
                   height: 100,
                   width: 100,
                 ),
-              if (_request!.supplierSignature == null)
+              if (request.supplierSignature == null)
                 SizedBox(
                   height: 100,
                   width: 100,
@@ -394,7 +397,7 @@ class RequestTicketWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
-                "${Strs.headerConfirmStr.tr}: \n ${_request?.headUserConfirmDate}",
+                "${Strs.headerConfirmStr.tr}: \n ${request.headUserConfirmDate}",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: Get.theme.textTheme.overline?.fontFamily,
@@ -404,13 +407,13 @@ class RequestTicketWidget extends StatelessWidget {
                   letterSpacing: Get.theme.textTheme.overline?.letterSpacing,
                 ),
               ),
-              if (_request!.headUserSignature != null)
+              if (request.headUserSignature != null)
                 Image.memory(
-                  _request!.headUserSignature!,
+                  request.headUserSignature!,
                   height: 100,
                   width: 100,
                 ),
-              if (_request!.headUserSignature == null)
+              if (request.headUserSignature == null)
                 SizedBox(
                   height: 100,
                   width: 100,

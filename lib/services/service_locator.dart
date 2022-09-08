@@ -1,6 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -50,7 +48,7 @@ void _setupConnectionListener() {
     if (result == ConnectivityResult.none) {
       _showConnectionError();
     } else {
-    //   isShowDialog ? Get.back() : null;
+      //   isShowDialog ? Get.back() : null;
     }
   });
 }
@@ -118,12 +116,5 @@ Future<void> _listenToNotifications() async {
 //   final reqs = requests.map((e) => ExchangeRequest.fromParse(e)).toList();
 }
 
-Future<void> setupFirebase() async {
-  await Firebase.initializeApp();
-  late FirebaseMessaging messaging;
-  messaging = FirebaseMessaging.instance;
-  final r = await messaging.getToken();
-  FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-    print(event.notification!.body);
-  });
+Future<void> setupMessagingService() async {
 }
