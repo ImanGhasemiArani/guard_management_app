@@ -17,12 +17,6 @@ bool isShowDialog = false;
 Future<MapEntry<bool, String?>> setupServices() async {
   await _setupServiceLocator();
   final response = await _hasLoginUser();
-  if (response.key) {
-    MessageService().onMessage.listen((message) {
-      Get.snackbar(message.title, message.body);
-    });
-    await _listenToNotifications();
-  }
   return response;
 }
 
@@ -121,4 +115,9 @@ Future<void> _listenToNotifications() async {
 //   final reqs = requests.map((e) => ExchangeRequest.fromParse(e)).toList();
 }
 
-Future<void> setupMessagingService() async {}
+Future<void> setupAfterLogging() async {
+  MessageService().onMessage.listen((message) {
+    Get.snackbar(message.title, message.body);
+  });
+  await _listenToNotifications();
+}

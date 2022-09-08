@@ -25,7 +25,7 @@ class MessageService {
     query.whereEqualTo('receiver', senderUsername);
     final subscription = await client.subscribe(query);
     subscription.on(LiveQueryEvent.create, (value) {
-      _onMessage.add(Message.fromJson(value));
+      _onMessage.add(Message.fromJson((value as ParseObject).toJson()));
     });
   }
 

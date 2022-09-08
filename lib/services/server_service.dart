@@ -41,11 +41,16 @@ class ServerService {
     String? password,
     String? sessionToken,
   }) async {
+    final MapEntry<bool, String?> response;
     if (sessionToken != null) {
-      return await _loginUserWithSessionToken(sessionToken);
+      response = await _loginUserWithSessionToken(sessionToken);
     } else {
-      return await _loginUserWithCredentials(username!, password!);
+      response = await _loginUserWithCredentials(username!, password!);
     }
+    if (response.key) {
+      setupAfterLogging();
+    }
+    return response;
   }
 
   static Future<MapEntry<bool, String?>> _loginUserWithCredentials(
