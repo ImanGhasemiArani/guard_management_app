@@ -7,6 +7,7 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../lang/strs.dart';
+import 'message_service.dart';
 import 'server_service.dart';
 
 late SharedPreferences sharedPreferences;
@@ -17,6 +18,9 @@ Future<MapEntry<bool, String?>> setupServices() async {
   await _setupServiceLocator();
   final response = await _hasLoginUser();
   if (response.key) {
+    MessageService().onMessage.listen((message) {
+      Get.snackbar(message.title, message.body);
+    });
     await _listenToNotifications();
   }
   return response;
@@ -34,6 +38,7 @@ Future<void> _initParseServer() async {
     '3bwJDJEU7Ox8dnWZ3qYwzaVaOYw2rin7BVcOlvei',
     'https://parseapi.back4app.com',
     clientKey: 'JWSPNTBOgS2aKn7jbU8d0gSo3NQJIdN5MicrzuoF',
+    liveQueryUrl: 'wss://sekeh.b4a.io',
   );
   //GuardManagement Database
 //   await Parse().initialize(
@@ -116,5 +121,4 @@ Future<void> _listenToNotifications() async {
 //   final reqs = requests.map((e) => ExchangeRequest.fromParse(e)).toList();
 }
 
-Future<void> setupMessagingService() async {
-}
+Future<void> setupMessagingService() async {}
