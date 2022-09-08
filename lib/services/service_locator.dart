@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../lang/strs.dart';
 import 'message_service.dart';
+import 'notification_service.dart';
 import 'server_service.dart';
 
 late SharedPreferences sharedPreferences;
@@ -24,6 +25,12 @@ Future<void> _setupServiceLocator() async {
   _setupConnectionListener();
   await _checkInternetConnection();
   await _initParseServer();
+  try {
+    await NotificationService().initLocalNotification();
+  } catch (e,s) {
+    print(e);
+    print(s);
+  }
 }
 
 Future<void> _initParseServer() async {
@@ -109,15 +116,10 @@ Future<MapEntry<bool, String?>> _hasLoginUser() async {
   return await ServerService.loginUser(sessionToken: sessionToken);
 }
 
-Future<void> _listenToNotifications() async {
-//   final requests = await ServerService.getExRequestsFromServer(
-//       username: ServerService.currentUser.username!);
-//   final reqs = requests.map((e) => ExchangeRequest.fromParse(e)).toList();
-}
-
 Future<void> setupAfterLogging() async {
   MessageService().onMessage.listen((message) {
-    Get.snackbar(message.title, message.body);
+    // Get.snackbar(message.title, message.body);
+    NotificationService()
+        .showNotification(title: message.title, body: message.body);
   });
-  await _listenToNotifications();
 }
