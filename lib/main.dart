@@ -1,6 +1,7 @@
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 
 import 'init_app_start.dart';
@@ -13,7 +14,8 @@ import 'utils/log.dart';
 import 'widget/loading_widget/loading_widget.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -140,6 +142,7 @@ class ScreenApp extends StatelessWidget {
         future: setupServices(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            FlutterNativeSplash.remove();
             if ((snapshot.data as MapEntry<bool, String?>).key) {
               return ServerService.currentUser.screenHolder;
             } else {

@@ -337,7 +337,7 @@ class ServerService {
     }
   }
 
-  static Future<void> changeExReqStatus({
+  static Future<ExchangeRequest?> changeExReqStatus({
     required String username,
     required ExchangeRequest req,
     required ExchangeRequestStatus status,
@@ -352,6 +352,7 @@ class ServerService {
       if ((response.result as Map<String, dynamic>).keys.first == "true") {
         showSnackbar(Strs.operationSuccessfulMessageStr.tr,
             messageType: MessageType.success);
+            return ExchangeRequest.fromParse(((response.result as Map<String, dynamic>).values.first as Map<String, dynamic>));
       } else {
         showSnackbar(Strs.failedToRegisterRequestErrorMessage.tr,
             messageType: MessageType.error);
@@ -359,6 +360,7 @@ class ServerService {
     } else {
       throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
     }
+    return null;
   }
 
   static Future<void> send() async {
@@ -378,6 +380,15 @@ class ServerService {
 
     final func = ParseCloudFunction("send");
     final response = await func.execute();
+    if (response.success) {
+    } else {
+      throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);
+    }
+  }
+
+  static Future<void> readMessage(String objectId) async {
+    final func = ParseCloudFunction("readMessage");
+    final response = await func.execute(parameters: {"objectId": objectId});
     if (response.success) {
     } else {
       throw Exception(Strs.failedToLoadDataFromServerErrorMessage.tr);

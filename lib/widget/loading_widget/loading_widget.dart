@@ -8,9 +8,12 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: LoadingAnimationWidget.dotsTriangle(
-        color: Get.theme.colorScheme.primary,
-        size: 40,
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: LoadingAnimationWidget.dotsTriangle(
+          color: Get.theme.colorScheme.primary,
+          size: 40,
+        ),
       ),
     );
   }

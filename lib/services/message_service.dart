@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:get/get.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 import 'server_service.dart';
@@ -15,21 +16,23 @@ class MessageService {
     _setupChannel();
   }
 
+  final RxInt _badgeCounter = 0.obs;
+
   final ParseCloudFunction _receiveMessageCloudFunc =
       ParseCloudFunction('receiveMessage');
   final StreamController<Message> _onMessage = StreamController<Message>();
   final String senderUsername = ServerService.currentUser.username!;
 
   Future<void> _setupChannel() async {
+    await checkManualMessage();
     final client = LiveQueryClient();
     QueryBuilder<ParseObject> query =
         QueryBuilder<ParseObject>(ParseObject('Message'));
     query.whereEqualTo('receiver', senderUsername);
     query.whereEqualTo('isSent', false);
     final subscription = await client.subscribe(query);
-    subscription.on(LiveQueryEvent.create, (value) {
-      _onMessage.add(Message.fromJson((value as ParseObject).toJson()));
-    });
+    subscription.on(LiveQueryEvent.create,
+        (messageObj) => _receiveMessage(messageObj as ParseObject));
   }
 
   Future<void> checkManualMessage() async {
@@ -39,24 +42,27 @@ class MessageService {
     query.whereEqualTo('isSent', false);
     final result = await query.find();
     if (result.isNotEmpty) {
-      // ignore: invalid_use_of_protected_member, avoid_function_literals_in_foreach_calls
-      result.forEach(
-          (element) => _onMessage.add(Message.fromJson(element.toJson())));
+      // ignore: avoid_function_literals_in_foreach_calls
+      result.forEach((element) => _receiveMessage(element));
     }
   }
 
-  Future<void> _receiveMessage() async {
-    final response = await _receiveMessageCloudFunc.execute();
-    if (response.success && response.result != null) {
-      final Message message = Message.fromJson(response.result);
-      _onMessage.add(message);
-    }
+  void _receiveMessage(ParseObject messageObj) async {
+    _badgeCounter.value++;
+    ServerService.readMessage(messageObj.objectId!);
+    _onMessage.add(Message.fromJson(messageObj.toJson()));
+  }
+
+  void resetBadge() {
+    _badgeCounter.value = 0;
   }
 
   Stream<Message> get onMessage => _onMessage.stream;
+  int get badgeCounter => _badgeCounter.value;
 }
 
 class Message {
+  final String? objectId;
   final String sender;
   final String receiver;
   final String title;
@@ -69,6 +75,7 @@ class Message {
     this.title,
     this.body,
     this.data,
+    this.objectId,
   );
 
   factory Message.fromJson(Map<String, dynamic> json) {
@@ -78,6 +85,7 @@ class Message {
       json['title'] as String,
       json['body'] as String,
       json['data'] as String?,
+      json['objectId'] as String,
     );
   }
 }

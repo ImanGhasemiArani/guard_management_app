@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -5,6 +6,8 @@ import 'package:get/get.dart';
 
 import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
+import '../../services/message_service.dart';
+import 'normal_screen_exchanges_tab.dart';
 
 class ScreenMessageBox extends StatelessWidget {
   const ScreenMessageBox({super.key});
@@ -68,12 +71,20 @@ class BodyWidget extends HookWidget {
                       softWrap: false,
                       overflow: TextOverflow.fade,
                     ),
-                    2: Text(
-                      Strs.supplyRequestsStr.tr,
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.fade,
-                    )
+                    2: Obx(
+                      () => Badge(
+                        badgeColor: Get.theme.colorScheme.primary,
+                        elevation: 0,
+                        showBadge: MessageService().badgeCounter != 0,
+                        badgeContent: Text("${MessageService().badgeCounter}"),
+                        child: Text(
+                          Strs.supplyRequestsStr.tr,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
+                        ),
+                      ),
+                    ),
                   },
                   onValueChanged: (int? index) {
                     selectedTab.value = index ?? 0;
@@ -82,6 +93,7 @@ class BodyWidget extends HookWidget {
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                     );
+                    index == 2 ? MessageService().resetBadge() : null;
                   },
                 ),
               ),
@@ -103,11 +115,7 @@ class BodyWidget extends HookWidget {
                       child: Text(Strs.conversationsStr.tr),
                     ),
                   ),
-                  Scaffold(
-                    body: Center(
-                      child: Text(Strs.supplyRequestsStr.tr),
-                    ),
-                  ),
+                  RequestView(selectedFilters: [Strs.supplierReqStr.tr].obs),
                 ],
               ),
             ),

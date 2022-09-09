@@ -245,84 +245,88 @@ class RequestTicketWidget extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CupertinoButton.filled(
-                    borderRadius: BorderRadius.circular(100),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                    minSize: 0,
-                    child: Text(
-                      Strs.confirmStr.tr,
-                      style: TextStyle(
-                        fontFamily: Get.theme.textTheme.overline?.fontFamily,
-                        fontStyle: Get.theme.textTheme.overline?.fontStyle,
-                        fontSize: Get.theme.textTheme.overline?.fontSize,
-                        fontWeight: Get.theme.textTheme.overline?.fontWeight,
-                        letterSpacing:
-                            Get.theme.textTheme.overline?.letterSpacing,
+                  if (_request.value!.status!.name.contains("S"))
+                    CupertinoButton.filled(
+                      borderRadius: BorderRadius.circular(100),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 5),
+                      minSize: 0,
+                      child: Text(
+                        Strs.confirmStr.tr,
+                        style: TextStyle(
+                          fontFamily: Get.theme.textTheme.overline?.fontFamily,
+                          fontStyle: Get.theme.textTheme.overline?.fontStyle,
+                          fontSize: Get.theme.textTheme.overline?.fontSize,
+                          fontWeight: Get.theme.textTheme.overline?.fontWeight,
+                          letterSpacing:
+                              Get.theme.textTheme.overline?.letterSpacing,
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      final GlobalKey<SfSignaturePadState> signatureKey =
-                          GlobalKey();
-                      showFloatingModalBottomSheet(
-                        context: Get.context!,
-                        builder: (context) {
-                          return Signature(
-                            signatureKey: signatureKey,
-                            onSavePressed: () async {
-                              if (signatureKey.currentState!
-                                  .toPathList()
-                                  .isEmpty) {
-                                request.supplierSignature = null;
-                                Get.back();
-                                return;
-                              }
-                              final signatureUint8List =
-                                  (await (await signatureKey
-                                              .currentState!
-                                              .toImage(pixelRatio: 3.0))
-                                          .toByteData(
-                                              format: ImageByteFormat.png))
-                                      ?.buffer
-                                      .asUint8List();
-                              request.supplierSignature = signatureUint8List;
+                      onPressed: () {
+                        final GlobalKey<SfSignaturePadState> signatureKey =
+                            GlobalKey();
+                        showFloatingModalBottomSheet(
+                          context: Get.context!,
+                          builder: (context) {
+                            return Signature(
+                              signatureKey: signatureKey,
+                              onSavePressed: () async {
+                                if (signatureKey.currentState!
+                                    .toPathList()
+                                    .isEmpty) {
+                                  request.supplierSignature = null;
+                                  Get.back();
+                                  return;
+                                }
+                                final signatureUint8List =
+                                    (await (await signatureKey.currentState!
+                                                .toImage(pixelRatio: 3.0))
+                                            .toByteData(
+                                                format: ImageByteFormat.png))
+                                        ?.buffer
+                                        .asUint8List();
+                                request.supplierSignature = signatureUint8List;
 
-                              Get.back();
-                            },
-                          );
-                        },
-                      ).then((value) {
-                        if (request.supplierSignature != null) {
-                          ServerService.changeExReqStatus(
-                              username: ServerService.currentUser.username!,
-                              req: request,
-                              status: ExchangeRequestStatus.WH);
-                        }
-                      });
-                    },
-                  ),
-                  CupertinoButton(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                    minSize: 0,
-                    child: Text(
-                      Strs.rejectStr.tr,
-                      style: TextStyle(
-                        fontFamily: Get.theme.textTheme.overline?.fontFamily,
-                        fontStyle: Get.theme.textTheme.overline?.fontStyle,
-                        fontSize: Get.theme.textTheme.overline?.fontSize,
-                        fontWeight: Get.theme.textTheme.overline?.fontWeight,
-                        letterSpacing:
-                            Get.theme.textTheme.overline?.letterSpacing,
-                      ),
+                                Get.back();
+                              },
+                            );
+                          },
+                        ).then((value) {
+                          if (request.supplierSignature != null) {
+                            ServerService.changeExReqStatus(
+                                    username:
+                                        ServerService.currentUser.username!,
+                                    req: request,
+                                    status: ExchangeRequestStatus.WH)
+                                .then((value) => _request.value = value);
+                          }
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      ServerService.changeExReqStatus(
-                          username: ServerService.currentUser.username!,
-                          req: request,
-                          status: ExchangeRequestStatus.FS);
-                    },
-                  ),
+                  if (_request.value!.status!.name.contains("H"))
+                    CupertinoButton(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 5),
+                      minSize: 0,
+                      child: Text(
+                        Strs.rejectStr.tr,
+                        style: TextStyle(
+                          fontFamily: Get.theme.textTheme.overline?.fontFamily,
+                          fontStyle: Get.theme.textTheme.overline?.fontStyle,
+                          fontSize: Get.theme.textTheme.overline?.fontSize,
+                          fontWeight: Get.theme.textTheme.overline?.fontWeight,
+                          letterSpacing:
+                              Get.theme.textTheme.overline?.letterSpacing,
+                        ),
+                      ),
+                      onPressed: () {
+                        ServerService.changeExReqStatus(
+                                username: ServerService.currentUser.username!,
+                                req: request,
+                                status: ExchangeRequestStatus.FS)
+                            .then((value) => _request.value = value);
+                      },
+                    ),
                 ],
               ),
             )

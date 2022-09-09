@@ -45,31 +45,45 @@ class ScreenExchangesTab extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: CustomFutureBuilder(
-            future: Future.sync(() async {
-              final requests = await ServerService.getExRequestsFromServer(
-                  username: ServerService.currentUser.username!);
-              return requests.map((e) => ExchangeRequest.fromParse(e)).toList();
-            }),
-            builder: (context, data) {
-              return Obx(
-                () {
-                  final tickets = DataUtils.filterReqTickets(
-                      data as List<ExchangeRequest>, selectedFilters.value);
-                  return ClipRRect(
-                    child: Scaffold(
-                      body: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: RequestTicketsView(requests: tickets),
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+          child: RequestView(selectedFilters: selectedFilters),
         ),
       ],
+    );
+  }
+}
+
+class RequestView extends StatelessWidget {
+  const RequestView({
+    Key? key,
+    required this.selectedFilters,
+  }) : super(key: key);
+
+  final RxList<String> selectedFilters;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomFutureBuilder(
+      future: Future.sync(() async {
+        final requests = await ServerService.getExRequestsFromServer(
+            username: ServerService.currentUser.username!);
+        return requests.map((e) => ExchangeRequest.fromParse(e)).toList();
+      }),
+      builder: (context, data) {
+        return Obx(
+          () {
+            final tickets = DataUtils.filterReqTickets(
+                data as List<ExchangeRequest>, selectedFilters.value);
+            return ClipRRect(
+              child: Scaffold(
+                body: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: RequestTicketsView(requests: tickets),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -102,11 +116,9 @@ class RequestTicketsView extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: RequestTicketWidget(
-                    request: requests[index],
-                    isShowButton: requests[index].supplierUsername ==
-                            ServerService.currentUser.username &&
-                        requests[index].status == ExchangeRequestStatus.WS,
-                  ),
+                      request: requests[index],
+                      isShowButton: requests[index].supplierUsername ==
+                          ServerService.currentUser.username),
                 ),
               ),
             ),

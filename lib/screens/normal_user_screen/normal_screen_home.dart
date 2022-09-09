@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../../assets/assets.gen.dart';
 import '../../lang/strs.dart';
+import '../../services/message_service.dart';
 import '../../widget/appbar/my_appbar.dart';
 import '../../widget/drawer/my_drawer.dart';
 import '../../widget/staggered_animations/flutter_staggered_animations.dart';
@@ -118,7 +119,11 @@ class ScreenHome extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(14),
-                child: Assets.icons.directNormal.svg(),
+                child: Obx(
+                  () => MessageService().badgeCounter == 0
+                      ? Assets.icons.directNormal.svg()
+                      : Assets.icons.directNotification.svg(),
+                ),
               ),
             ),
           ),
