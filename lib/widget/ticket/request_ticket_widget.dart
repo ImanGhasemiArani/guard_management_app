@@ -303,7 +303,8 @@ class RequestTicketWidget extends StatelessWidget {
                         });
                       },
                     ),
-                  if (_request.value!.status!.name.contains("H"))
+                  if (_request.value!.status!.name.contains("H") ||
+                      _request.value!.status!.name.contains("WS"))
                     CupertinoButton(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 15, vertical: 5),
