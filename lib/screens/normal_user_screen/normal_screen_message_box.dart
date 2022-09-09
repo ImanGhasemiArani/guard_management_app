@@ -76,7 +76,12 @@ class BodyWidget extends HookWidget {
                         badgeColor: Get.theme.colorScheme.primary,
                         elevation: 0,
                         showBadge: MessageService().badgeCounter != 0,
-                        badgeContent: Text("${MessageService().badgeCounter}"),
+                        badgeContent: Text(
+                          "${MessageService().badgeCounter}",
+                          textAlign: TextAlign.center,
+                          textDirection: TextDirection.rtl,
+                          style: const TextStyle(fontSize: 12),
+                        ),
                         child: Text(
                           Strs.supplyRequestsStr.tr,
                           maxLines: 1,
@@ -100,10 +105,8 @@ class BodyWidget extends HookWidget {
             ),
             Expanded(
               child: PageView(
+                physics: const NeverScrollableScrollPhysics(),
                 controller: pageController,
-                onPageChanged: (value) {
-                  selectedTab.value = value;
-                },
                 children: [
                   Scaffold(
                     body: Center(
